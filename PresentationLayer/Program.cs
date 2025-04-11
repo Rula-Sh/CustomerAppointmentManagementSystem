@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using DataAccessLayer.Data;
+using DataAccessLayer.Models;
 //using DataAccessLayer.Repositories;
 //using DataAccessLayer.Repositories.Contracts;
 //using BusinessLogicLayer.Services;
@@ -13,11 +14,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+    options.UseSqlServer(connectionString),
+    ServiceLifetime.Transient); // added to avoid the error: A second operation was started on this context instance before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext.
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentity<User, Role>() // was Services.AddDefaultIdentity<IdentityUser> before i created the ApplicatonUser
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI() //added this with the AddIdentity update
+    .AddDefaultTokenProviders();//added this with the AddIdentity update
+
+builder.Services.AddScoped<RoleManager<Role>>(); // Ensure RoleManager is properly registered
+
+
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
 //builder.Services.AddDbContext<CustomerAppointmentManagementSystemContext>(options =>
@@ -47,7 +61,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
+app.MapControllerRoute( // to open the home page on startup
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();

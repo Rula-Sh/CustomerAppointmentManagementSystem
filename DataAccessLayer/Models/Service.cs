@@ -15,6 +15,8 @@ namespace DataAccessLayer.Models
         public decimal Price { get; set; }
         public DateTime[] AvailableTimeSlots { get; set; }
 
+        public virtual ICollection<ServiceDate> ServiceDates { get; set; }
+
         // Many-to-Many relationship (Appointment and Service)
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
     }
