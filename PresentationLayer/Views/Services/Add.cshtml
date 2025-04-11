@@ -8,11 +8,11 @@
 
 <hr />
 
+<form method="post" asp-action="@(Model.Id > 0 ? "Edit" : "Add")" enctype="multipart/form-data">
 
-<section class="row justify-content-between">
-    <div class="col-md-6">
-        @* columns medium 4 *@
-        <form method="post" asp-action="@(Model.Id > 0 ? "Edit" : "Add")" enctype="multipart/form-data">
+    <div class="row justify-content-between">
+        <div class="col-md-6">
+            @* columns medium 4 *@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
             @*i am already inside the controller, so i dont need to mention it*@
             <input type="hidden" asp-for="Id" />
@@ -29,11 +29,20 @@
                 @* to stop the user from resizing the text area, i need to modify the site.css file*@
             </div>
             <div class="form-group">
-                <label class="text-muted" asp-for="DurationIn"></label>
+                <label class="text-muted" asp-for="Duration"></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
-                <div id="duration-slots"></div>
+                <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
+                <select class="form-control" id="durationList" asp-for="Duration">
+                    <option value="">-- Select Duration --</option>
+                    <option value="00:30">00:30</option>
+                    <option value="01:00">01:00</option>
+                    <option value="01:30">01:30</option>
+                    <option value="02:00">02:00</option>
+                    <option value="02:30">02:30</option>
+                    <option value="03:00">03:00</option>
+                </select>
                 <p id="selectDurationAlert" class="alert alert-danger p-1 ps-2" style="display:none"> ● Please Select a duration</p>
-                <span asp-validation-for="DurationIn" class="text-danger"></span>
+                <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="text-muted" asp-for="Price"></label>
@@ -42,12 +51,12 @@
             </div>
 
             <div class="form-group">
-                <label class="text-muted" asp-for="SelectedDates"></label>
-                @* asp-for="SelectedDates" *@
-                <input type="text" id="multiDatePicker" class="form-control" placeholder="Select Dates" readonly />
-                <span asp-validation-for="SelectedDates" class="text-danger"></span>
-            </div>
+                @* i removed asp-for because inside the renderDateSection function, i added input tags named with DateTimeSlotGroup value, those values will be automatically bounded to DateTimeSlotGroups property on form submit *@
+                <label class="text-muted">Select Dates</label>
+                <input id="multiDatePicker" type="text" class="form-control" placeholder="Select Dates" readonly />
+                <p id="dateValidationAlert" class="alert alert-danger p-1 ps-2" style="display:none"> ● Please select at least one date with one time slot.</p>
 
+            </div>
 
             <button type="submit" class="btn btn-primary mt-4">
                 <i class="bi bi-check"></i>
@@ -57,13 +66,13 @@
                 <i class="bi bi-x"></i>
                 Cancel
             </a>
-        </form>
+        </div>
+        <div class="col-md-5 m-2">
+            <div id="selectedDatesContainer" class="mt-3"></div>
+        </div>
     </div>
 
-    <div class="col-md-5 m-2">
-        <div id="selectedDatesContainer" class="mt-3 rounded-4 border border-1 "></div>
-    </div>
-</section>
+</form>
 
 @section Scripts {
     @{
@@ -73,11 +82,16 @@
 
     <script>
 
-        // $(function() { ... });  is just jQuery short-hand for "$(document).ready(function() { ... });".... What it's designed to do (amongst other things) is ensure that your function is called once all the DOM elements of the page are ready to be used.
+        // $(function() { ... });  is jQuery short-hand for "$(document).ready(function() { ... });".... What it's designed to do (amongst other things) is ensure that your function is called once all the DOM elements of the page are ready to be used.
         // in page initialization load the service duration list and a list of when the service can be available
          $(function () {
-            initializeDurationDropdown();
+            //initializeDurationDropdown();
             initializeDatePicker();
+
+            $("#durationList").on("change", function () { // added this here since i no longer use initializeDurationDropdown function
+                //document.getElementById('selectDurationAlert').style.display = "none";
+                $('#selectDurationAlert').hide(); // hide the alert box
+            });
         });
 
         // -------------------------------------- list all durations a service can take --------------------------------------
@@ -98,7 +112,7 @@
             }
             //create a dropdown list of all possible durations can a service have
             const section = $(`
-                <select class="form-control" id="durationList">
+                <select class="form-control" id="durationList" asp-for="DurationIn">
                     <option value="">-- Select Duration --</option>
                     ${options}
                 </select>
@@ -109,7 +123,7 @@
             // - #durationList is dynamically created — it's not in the HTML at page load.
             // - It's only added to the DOM when initializeDurationDropdown() runs (which is in your $(function () { ... }) block).
             // - So if I try to attach an event before that element exists, document.getElementById("durationList") returns null, and jQuery’s $("#durationList") selects nothing.
-            
+
             /*document.getElementById("durationList").addEventListener("change", function () {
                 //document.getElementById('selectDurationAlert').style.display = "none";
                 $('#selectDurationAlert').hide();
@@ -129,9 +143,9 @@
             "2025-04-10": ["08:00 - 10:00", "12:00 - 14:00"],
             "2025-04-11": ["9:30 - 11:00"]
         };*/
-        
 
-        // -------------------------------------- when selectinga date, add itto selectedDates[] --------------------------------------
+
+        // -------------------------------------- when selecting a date, add itto selectedDates[] --------------------------------------
         function initializeDatePicker() {
             $("#multiDatePicker").datepicker({
                 dateFormat: "dd-mm-yy",
@@ -146,10 +160,11 @@
                         return;
                     }
                     // add the selected date to selectedDates[] and show the DateSection
-                    if (!selectedDates.includes(dateText)) { // check id the selected date was selected 
+                    if (!selectedDates.includes(dateText)) { // check id the selected date was selected
                         selectedDates.push(dateText); // add selected date to the selectedDates list
                         dateTimeData[dateText] = []; // Initialize empty time list
-                        renderDateSection(dateText);
+                        const dateIndex = selectedDates.indexOf(dateText); // to use the date index in the input tag later in renderDateSection
+                        renderDateSection(dateText, dateIndex);
                     } else if(!durationValue){
                         // document.getElementById('selectDurationAlert').style.display = "block";
                         $('#selectDurationAlert').show();
@@ -159,14 +174,14 @@
             });
         }
         // -------------------------------------- create DateSection when selecting a date --------------------------------------
-        function renderDateSection(date) {
+        function renderDateSection(date,index) {
             const container = $("#selectedDatesContainer");  // where the list of selected dates will be added in
 
             const timeOptions = generateTimeOptions(); // get the list of when the service can be available based on the duration
 
             //create a dateSection element that will contain the a list of when the service can be available
             const section = $(`
-                <div class="date-section" data-date="${date}" id="dateSection">
+                <div class="date-section rounded-4 border border-1 mb-3" data-date="${date}" id="dateSection">
                     <div class="d-flex justify-content-between bg-secondary-subtle ps-3 pe-3 pt-2 pe-2 rounded-top-4">
                         <h5>${date}</h5>
                         <i onclick="removeDate('${date}')" class="bi bi-trash3-fill h5" style="color:red;"></i>
@@ -174,11 +189,12 @@
                     <div class="time-slots row ps-3 pe-3 ">
 
                     </div>
-                    <select class="form-control time-select rounded-top-0 rounded-bottom-4" id="select-${date}" onchange="addTimeSlot('${date}')">
+                    <select asp-for="TimeSlots" class="form-control time-select  rounded-top-0 rounded-bottom-4" id="select-${date}" onchange="addTimeSlot('${date}')">
                         <option value="">-- Select Time --</option>
                         ${timeOptions}
                     </select>
-                    <input type="hidden" name="SelectedDates[]" value="${date}" />
+                    <input type="hidden" class="date-input" name="DateTimeSlotGroups[${index}].Date" value="${date}" />
+        @* <input type="hidden" asp-for="TimeSlots" name="SelectedDates[]" value="${date}" />*@
                 </div>
             `);
             // <div class="time-slots row"> will contain a list of when the service can be available
@@ -186,7 +202,7 @@
         }
 
         // -------------------------------------- list the times where a service can be available --------------------------------------
-        function generateTimeOptions() {     
+        function generateTimeOptions() {
             var durationValue = $("#durationList").val(); // get the selected service duration
             if (!durationValue) return ''; // additional check to make sure the user selected the service duration
 
@@ -236,12 +252,12 @@
                         var endHour = `${pad(hourIndex)}:00`; // pad() is a funciton created to reduce using 'hourIndex.toString().padStart(2, '0');' on multiple places
 
                     } else { // if the duration DOES have __:30
-                        if(!doesRemainerHasHalfAnHourLeft) {// if the prev time-slot does NOT end with __:30 
+                        if(!doesRemainerHasHalfAnHourLeft) {// if the prev time-slot does NOT end with __:30
                             var endHour = `${pad(hourIndex)}:30`;
                             doesRemainerHasHalfAnHourLeft = true;
 
                         } else {// if the prev time-slot DOES end with __:30
-                            var endHour = `${pad(hourIndex)}:00`;  
+                            var endHour = `${pad(hourIndex)}:00`;
                             doesRemainerHasHalfAnHourLeft = false;
                         }
                     }
@@ -350,19 +366,24 @@
 
         // -------------------------------------- add when the service can be available when selecting a time-slot form a sprcific date --------------------------------------
         function addTimeSlot(date) {
-            container = $(`.date-section[data-date="${date}"] .time-slots`); // will contain the selected item-slots that the service will be available at
-            
+            const container = $(`.date-section[data-date="${date}"] .time-slots`); // will contain the selected item-slots that the service will be available at
+
             const select = $(`#select-${date}`); // get the id of the dropdown list of a specific date
             const time = select.val(); // get the value of the selected time-slot... note: the value is an attribute of the option tag => <option value"__">.....</option>
 
             if (time && !dateTimeData[date].includes(time)) { // if time is not null and the selected time is not already in the list
                 dateTimeData[date].push(time); // add the time-slot to the specified date
+                const dateIndex = selectedDates.indexOf(date);
+                const timeIndex = dateTimeData[date].length - 1;
 
                 // create time-slot element that will contain the selected time-slot of a specific date
                 const section = $(`
                     <div class="time-slot col-4 mb-2 text-center">
                     ${time}
-                        <input type="hidden" name="TimeSlots[${date}][]" value="${time}" />
+        @*<input type="hidden" name="DateTimeSlotGroups[${dateIndex}].Date" value="${date}" /> @* moved tot in the renderDateSection function *@
+                        <input type="hidden" name="DateTimeSlotGroups[${dateIndex}].TimeSlots[${timeIndex}]" value="${time}" />
+
+        @* <input type="hidden" name="TimeSlots[${date}][]" value="${time}" /> *@
                         <i onclick="removeTimeSlot('${date}', '${time}', this)" class="bi bi-trash3" style="color:red;"></i>
                     </div>
                 `);
@@ -384,9 +405,35 @@
             delete dateTimeData[date];
             $(`.date-section[data-date="${date}"]`).remove();
         }
-    </script>
-    
+        $('form').on('submit', function (e) {
+            let isValid = false;
 
-        
+            // Check if at least one date exists and has time slots
+            for (const date in dateTimeData) { // go through each date
+                if (dateTimeData[date].length > 0) { // check time-slot list length > 0 of the each date go through the for loop
+                    isValid = true; // set true if all dates have at least 1 time-slot
+                } else{
+                    isValid = false;
+                    break;
+                }
+            }
+            console.log(isValid)
+
+            if (!isValid) {
+                e.preventDefault(); // Stop the form from submitting
+                $('#dateValidationAlert').show(); // Show the error message
+
+            console.log("inside if when false");
+            } else {
+                $('#dateValidationAlert').hide(); // Hide it just in case
+            console.log("inside if when true");
+            }
+        });
+
+
+    </script>
+
+
+
 
 }

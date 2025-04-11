@@ -23,6 +23,7 @@ namespace DataAccessLayer.Data
         public DbSet<AppointmentService> AppointmentServices { get; set; }
         public DbSet<ServiceDate> ServiceDates { get; set; }
         public DbSet<ServiceTimeSlot> ServiceTimeSlots { get; set; }
+        //public DbSet<DateTimeSlotGroup> DateTimeSlotGroups { get; set; }
 
         //public DbSet<Notification> Notifications { get; set; }
         //public DbSet<AuditLog> AuditLogs { get; set; }

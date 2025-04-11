@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace PresentationLayer.Controllers
 {
@@ -33,65 +35,76 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var viewModel = new ServiceViewModel{};
+            var viewModel = new ServiceViewModel { };
             return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects PostFormViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
-            //DatePicker.MinDate = DateTime.Now.ToString();
-            //DatePicker.MaxDate = DateTime.Now.AddDays(30).ToString();
-            //TimePicker.MinTime = "9:00:00";
-            //TimePicker.MaxTime = "18:00:00";
-            //return View();
+
         }
         [HttpPost]
         public async Task<IActionResult> Add(ServiceViewModel model)
         {
-            if (!ModelState.IsValid)
+            // make sure at least one time-slot is selected for each selected Date
+            // no longer needed i added validation on form submit in Add.cshtml
+            if (model.DateTimeSlotGroups == null || !model.DateTimeSlotGroups.Any(g => g.TimeSlots != null && g.TimeSlots.Any()))
+            {
+                // g here is each date group => { '11-05-2025': ['8:00'-'9:30','9:30'-'11:00',...], ...}
+                // g.TimeSlots != null ensures the list is not null.
+                // g.TimeSlots.Any() checks that the list contains at least one time-slot string.
+                ModelState.AddModelError("", "At least one time slot for one date is required.");
                 return View(model);
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // create Service
             var service = new Service
             {
                 Name = model.Name,
                 Description = model.Description,
-                // Add more properties if needed
+                Duration = model.Duration,
+                Price = model.Price,
+                ServiceDates = new List<ServiceDate>()
             };
+
+            // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
+            foreach (var group in model.DateTimeSlotGroups)
+            {
+                // parse the date string into DateOnly for Date prop in ServiceDate
+                if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
+                {
+                    // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
+                    ModelState.AddModelError("", $"Invalid date format: {group.Date}");
+                    return View(model);
+                }
+
+                // create ServiceDate
+                var serviceDate = new ServiceDate
+                {
+                    ServiceId = service.Id, // to link it to Services Table
+                    Date = date,
+                    ServiceTimeSlots = new List<ServiceTimeSlot>()
+                };
+
+                foreach (var time in group.TimeSlots)
+                {
+                    // create ServiceTimeSlot
+                    serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    });
+                }
+
+                service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
+            }
+
+            // update DB
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
 
-            foreach (var dateStr in model.SelectedDates)
-            {
-                if (!DateTime.TryParse(dateStr, out var parsedDateTime))
-                    continue;
-
-                var serviceDate = new ServiceDate
-                {
-                    ServiceId = service.Id,
-                    Date = DateOnly.FromDateTime(parsedDateTime)
-                };
-                _context.ServiceDates.Add(serviceDate);
-                await _context.SaveChangesAsync();
-
-                if (model.TimeSlots != null &&
-                    model.TimeSlots.TryGetValue(dateStr, out var timeList))
-                {
-                    foreach (var timeStr in timeList)
-                    {
-                        if (TimeSpan.TryParse(timeStr, out var parsedTimeSpan))
-                        {
-                            var timeSlot = new ServiceTimeSlot
-                            {
-                                ServiceDateId = serviceDate.Id,
-                                Time = TimeOnly.FromTimeSpan(parsedTimeSpan)
-                            };
-                            _context.ServiceTimeSlots.Add(timeSlot);
-                        }
-                    }
-                }
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
-
-
     }
 }

@@ -10,7 +10,7 @@ namespace DataAccessLayer.Models
     {
         public int Id { get; set; }
         public int ServiceDateId { get; set; }
-        public TimeOnly Time { get; set; }
+        public string Time { get; set; }
         public ServiceDate ServiceDate { get; set; }
     }
 }
