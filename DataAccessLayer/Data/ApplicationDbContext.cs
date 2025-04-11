@@ -12,6 +12,7 @@ namespace DataAccessLayer.Data
     IdentityRoleClaim<int>, IdentityUserToken<int>>
     // i added this extend so that i overried User/Role/UserRole and convert the default id from string to int
     {
+        public ApplicationDbContext() { }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         //public DbSet<User> Users { get; set; }
@@ -20,13 +21,23 @@ namespace DataAccessLayer.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentService> AppointmentServices { get; set; }
+        public DbSet<ServiceDate> ServiceDates { get; set; }
+        public DbSet<ServiceTimeSlot> ServiceTimeSlots { get; set; }
 
         //public DbSet<Notification> Notifications { get; set; }
         //public DbSet<AuditLog> AuditLogs { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+        {
+            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CustomerAppointmentManagementSystem;Trusted_Connection=True;MultipleActiveResultSets=true");
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //builder.HasDefaultSchema("UserSchema"); // change the name of the schema, i wont use this so that i dont change the schema to the whole tables later... currently i just want to change the name of the schema of the identity tables
 
             //builder.Entity<IdentityUser>().ToTable("Users", "security"); // was this before i created the User... when i wanted to rename the columns names
             builder.Entity<User>().ToTable("Users", "security"); // change the name of the table and the schema
@@ -83,6 +94,11 @@ namespace DataAccessLayer.Data
                     .HasForeignKey(apse => apse.AppointmentId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // set price data type Precision 5 and scale 2 // had a warning on it from PMC
+            builder.Entity<Service>()
+                .Property(s => s.Price)
+                .HasColumnType("decimal(5,2)");
         }
     }
 }

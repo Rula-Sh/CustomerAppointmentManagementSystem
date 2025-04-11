@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409110448_AddIsActiveToUsers")]
+    partial class AddIsActiveToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,53 +131,11 @@ namespace DataAccessLayer.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Services");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.ServiceDate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("ServiceDates");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.ServiceTimeSlot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ServiceDateId")
-                        .HasColumnType("int");
-
-                    b.Property<TimeOnly>("Time")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceDateId");
-
-                    b.ToTable("ServiceTimeSlots");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.User", b =>
@@ -399,28 +360,6 @@ namespace DataAccessLayer.Data.Migrations
                     b.Navigation("Service");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Models.ServiceDate", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.Service", "Service")
-                        .WithMany("ServiceDates")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.ServiceTimeSlot", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.ServiceDate", "ServiceDate")
-                        .WithMany("ServiceTimeSlots")
-                        .HasForeignKey("ServiceDateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceDate");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Models.UserRole", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Role", "Role")
@@ -489,13 +428,6 @@ namespace DataAccessLayer.Data.Migrations
             modelBuilder.Entity("DataAccessLayer.Models.Service", b =>
                 {
                     b.Navigation("AppointmentServices");
-
-                    b.Navigation("ServiceDates");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.ServiceDate", b =>
-                {
-                    b.Navigation("ServiceTimeSlots");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.User", b =>

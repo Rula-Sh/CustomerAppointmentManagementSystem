@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+
+<table class="table table-striped mt-4">
+    <thead>
+        <tr class="bg-primary text-white">
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Created At</th>
+            <th>Actions</th> @* aciton section that will have a button so that i can manage each role*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr class="@(user.IsActive ? "" : "inactive-row")">
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td class="Role">@string.Join(" , ", user.Roles)</td> @*Join() is used to join a list of strings with a separator between them*@
+                <td>@user.CreatedAt</td>
+                <td>
+                    @if (user.Id != 1)
+                    {
+                        @* if the user role is customer show the hire button, else show the fire button*@
+                        @* <a class="btn btn-primary" asp-controller="Users" asp-action="Hire" asp-route-userId="@user.Id">Hire</a> *@
+                        <a href="javascript:;" class="btn btn-primary js-hire" data-id="@user.Id" @(user.Roles.Contains("Customer") ? "" : "hidden")>Hire</a>
+                        <a href="javascript:;" class="btn btn-danger js-fire" data-id="@user.Id" @(user.Roles.Contains("Customer") ? "hidden" : "")>Fire</a>
+
+                        @* if the user IsActive show the Deactivate button, else show the Activate button*@
+                        @* <a class="btn btn-danger" asp-controller="Users" asp-action="changeAccountActivity" asp-route-userId="@user.Id">Deactivate</a> *@
+                        <a href="javascript:;" class="btn btn-warning js-deactivate" data-id="@user.Id" @(user.IsActive ? "" : "hidden")>Deactivate</a>
+                        @* <a class="btn btn-success" asp-controller="Users" asp-action="changeAccountActivity" asp-route-userId="@user.Id">Activate</a> *@
+                        <a href="javascript:;" class="btn btn-success js-activate" data-id="@user.Id" @(user.IsActive ? "hidden" : "")>Activate</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function (){
+            $('.js-hire').on('click', function(){
+                console.log("inside hire function");
+                var btn = $(this);
+                $.ajax({
+                    url: '/Users/ChangeAccountEmployement?id=' + btn.data('id'),
+                    method: 'POST',
+                    success: function(){
+                        console.log("hire success");
+                        btn.parents('tr').find('.Role').text("Employee");
+
+                        btn.prop('hidden', true);
+                        btn.siblings('.js-fire').prop('hidden', false);
+
+                    },
+                    error: function(error){
+                        alert('Something went wrong');
+                    },
+                });
+            });
+
+            $('.js-fire').on('click', function(){
+                console.log("inside fire function");
+                var btn = $(this);
+                bootbox.confirm({
+                    message: "Are you sure you want to fire this user?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-secondary'
+                        }
+                    },
+                    callback: function (result) {
+                        if(result){
+                            $.ajax({
+                                url: '/Users/ChangeAccountEmployement?id=' + btn.data('id'),
+                                method: 'POST',
+                                success: function(){
+                                    console.log("fire success");
+
+                                    btn.parents('tr').find('.Role').text("Customer");
+
+                                    btn.prop('hidden', true);
+                                    btn.siblings('.js-hire').prop('hidden', false);
+
+                                },
+                                error: function(error){
+                                    alert('Something went wrong');
+                                },
+                            });
+                        }
+                    }
+                });
+             });
+
+             $('.js-deactivate').on('click', function(){
+                console.log("inside deactivate function");
+                var btn = $(this);
+                bootbox.confirm({
+                    message: "Are you sure you want to deactivate this user?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-secondary'
+                        }
+                    },
+                    callback: function (result) {
+                        if(result){
+                            $.ajax({
+                                url: '/users/changeAccountActivity?id=' + btn.data('id'),
+                                method: 'POST',
+                                success: function(){
+                                    console.log("deactivate success");
+
+                                    // btn.parents('tr').setText.innerHTML.style.color = 'gray';
+                                    // btn.parents('tr').css('color', 'gray');
+                                    // btn.find('td').addClass('inactive-row');
+                                    // btn.style.visibility = "hidden";
+                                    // btn.parents('tr').find('.js-activate').css('visibility', 'visible');
+                                    btn.closest('tr').removeClass('active-row');
+                                    btn.closest('tr').addClass('inactive-row');
+
+                                    btn.prop('hidden', true);
+                                    btn.siblings('.js-activate').prop('hidden', false);
+
+                                },
+                                error: function(error){
+                                    alert('Something went wrong');
+                                },
+                            });
+                        }
+                    }
+                });
+             });
+
+             $('.js-activate').on('click', function(){
+                console.log("inside activate function");
+                var btn = $(this);
+                $.ajax({
+                    url: '/users/changeAccountActivity?id=' + btn.data('id'),
+                    method: 'POST',
+                    success: function(){
+                        console.log("activate success");
+
+                        btn.closest('tr').addClass('active-row');
+                        btn.closest('tr').removeClass('inactive-row');
+
+                        btn.prop('hidden', true);
+                        btn.siblings('.js-deactivate').prop('hidden', false);
+                    },
+                    error: function(error){
+                        alert('Something went wrong');
+                    },
+                });
+             });
+        });
+    </script>
+}

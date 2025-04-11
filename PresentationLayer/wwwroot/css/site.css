@@ -29,3 +29,28 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* project cutomization */
+
+.profile-picutre {
+    height: 295px;
+    width: 295px;
+    object-fit: cover;
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+}
+
+.inactive-row td {
+    color: gray !important;
+    opacity: 0.6 !important;
+    transition: color 0.3s, opacity 0.3s;
+}
+.active-row td {
+    color: black !important;
+    opacity: 1 !important;
+    transition: color 0.3s, opacity 0.3s;
+}

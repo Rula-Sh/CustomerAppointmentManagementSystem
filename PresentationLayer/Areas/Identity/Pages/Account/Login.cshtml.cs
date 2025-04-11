@@ -14,18 +14,25 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using DataAccessLayer.Models;
+using System.Net.Mail;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace PresentationLayer.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, UserManager<User> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -64,8 +71,10 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
             [Required]
-            [EmailAddress]
+            //[EmailAddress] ///i removed this because i modified the username to be part of the email....so if i inputed the username i will get an error because the input needs an email format
+            [Display(Name = "Email or Username")]
             public string Email { get; set; }
 
             /// <summary>
@@ -107,11 +116,28 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
+            //var username = new EmailAddressAttribute().IsValid(Input.Email) ? _userManager.FindByEmailAsync(Input.Email).Result.UserName : Input.Email;// this code is used to accept a username or an email when the user logs in
+            // the FindByEmailAsync is an asynchronous method... i should await... but there is another way to wait for the value without the await... that is by using .Result.theValueIWant
+            // so this part _userManager.FindByEmailAsync(Input.Email).Result.UserName... gets the user object from the email... when i get the user object, i get the value of the username
+            // i deleted the old username bacause it does not check if the user did not exist in the database so i get an error on the UserName because its null.. so i had to write this code as an alternative
+            var username = new EmailAddressAttribute().IsValid(Input.Email) ? new MailAddress(Input.Email).User : Input.Email;
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByNameAsync(username);
+                if (user != null)
+                {
+                    if (!user.IsActive)
+                    {
+                        ModelState.AddModelError(string.Empty, "Your account has been disabled.");
+                        return Page(); // or return View();
+                    }
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(username, Input.Password, Input.RememberMe, lockoutOnFailure: false); // changed the first parameter Input.Email to username variable so that it accepts the username and the email)
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
