@@ -34,6 +34,13 @@
         "font/fonts/bootstrap-icons.woff",
         "font/bootstrap-icons.min.css"
       ]
+    },
+    {
+      "library": "bootstrap@5.3.3",
+      "destination": "wwwroot/bootstrap/",
+      "files": [
+        "js/bootstrap.min.js"
+      ]
     }
   ]
 }
