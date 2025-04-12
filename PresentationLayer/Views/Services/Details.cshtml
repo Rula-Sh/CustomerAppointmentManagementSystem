@@ -1,0 +1,27 @@
+﻿@model Service
+
+@{
+    ViewData["Title"] = "@Model.Name  Details";
+}
+<div class="card-body d-flex flex-column justify-content-between">
+    <h5 class="card-title">@Model.Name Service</h5>
+    <span><strong>Price: </strong>@Model.Price JD</span>
+    <p>
+        Available in:
+        @foreach (var availability in Model.ServiceDates)
+        {
+            <span>@availability.Date -- </span>
+        }
+    </p>
+    <div>
+        Description:
+        <p> @Model.Description</p>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            @* asp-route-id="@service.Id" used to select the service*@
+            <i class="bi bi-arrow-left"></i>
+            Go Back
+        </a>
+    </div>
+</div>

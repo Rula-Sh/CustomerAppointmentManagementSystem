@@ -27,9 +27,25 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Index()
         {
             /*var posts = await _context.Posts.OrderByDescending(m => m.DatePublished.Year).ToListAsync(); // this will get me the list of posts*/
-            var services = await _context.Services.ToListAsync(); // this will get me the list of posts
+            //var services = await _context.Services.ToListAsync(); // this will get me the list of posts
 
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
+            //return View(services);
+
+            var services = await _context.Services.Select(s => new ServiceViewModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Duration = s.Duration,
+                Price = s.Price,
+                Description = s.Description,
+                DateTimeSlotGroups = s.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
+                {
+                    Date = d.Date.ToString(),
+                    TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
+                }).ToList()
+            }).ToListAsync();
+
             return View(services);
         }
 
@@ -105,6 +121,19 @@ namespace PresentationLayer.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var service = await _context.Services.Include(p => p.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).SingleOrDefaultAsync(m => m.Id == id);
+
+            if (service == null)
+                return NotFound();
+
+            return View("Details", service);
         }
     }
 }
