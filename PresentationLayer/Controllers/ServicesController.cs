@@ -27,7 +27,7 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Index()
         {
             /*var posts = await _context.Posts.OrderByDescending(m => m.DatePublished.Year).ToListAsync(); // this will get me the list of posts*/
-            //var services = await _context.Services.ToListAsync(); // this will get me the list of posts
+            //var services = await _context.Services.ToListAsync(); // this will get me the list of services
 
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
             //return View(services);
