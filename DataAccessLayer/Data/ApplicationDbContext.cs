@@ -20,7 +20,7 @@ namespace DataAccessLayer.Data
         //public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<AppointmentService> AppointmentServices { get; set; }
+        //public DbSet<AppointmentService> AppointmentServices { get; set; }
         public DbSet<ServiceDate> ServiceDates { get; set; }
         public DbSet<ServiceTimeSlot> ServiceTimeSlots { get; set; }
         //public DbSet<DateTimeSlotGroup> DateTimeSlotGroups { get; set; }
@@ -80,21 +80,35 @@ namespace DataAccessLayer.Data
                 .HasForeignKey(a => a.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            //-----------------------------------------------------------
             // Many-to-Many relationship (Appointment and Service)
-            builder.Entity<AppointmentService>(entity =>
-            {
-                entity.HasKey(apse => new { apse.AppointmentId, apse.ServiceId }); // apse => AppointmentService
+            //builder.Entity<AppointmentService>(entity =>
+            //{
+            //    entity.HasKey(apse => new { apse.AppointmentId, apse.ServiceId }); // apse => AppointmentService
 
-                entity.HasOne(apse => apse.Service)
-                    .WithMany(s => s.AppointmentServices)
-                    .HasForeignKey(apse => apse.ServiceId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            //    entity.HasOne(apse => apse.Service)
+            //        .WithMany(s => s.AppointmentServices)
+            //        .HasForeignKey(apse => apse.ServiceId)
+            //        .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(apse => apse.Appointment)
-                    .WithMany(a => a.AppointmentServices)
-                    .HasForeignKey(apse => apse.AppointmentId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+            //    entity.HasOne(apse => apse.Appointment)
+            //        .WithMany(a => a.AppointmentServices)
+            //        .HasForeignKey(apse => apse.AppointmentId)
+            //        .OnDelete(DeleteBehavior.Cascade);
+            //});
+            builder.Entity<Service>()
+                .HasMany(s => s.Appointmens)
+                .WithOne(a => a.Service)
+                .HasForeignKey(a => a.ServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // OR... same as builder.Entity<Service>()
+            //builder.Entity<Appointment>()
+            //    .HasOne(s => s.Service)
+            //    .WithMany(a => a.Appointmens)
+            //    .HasForeignKey(a => a.ServiceId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            //-----------------------------------------------------------
 
             // set price data type Precision 5 and scale 2 // had a warning on it from PMC
             builder.Entity<Service>()
