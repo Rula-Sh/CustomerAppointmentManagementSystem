@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PresentationLayer.styles.css" asp-append-version="true" />
-    <link href="~/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-
-
     <link href="~/timepicker/jquery.timepicker.min.css" rel="stylesheet" />
+    <link href="~/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/toastr.js/toastr.min.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     @* <link href="~/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" /> *@
 
 </head>
@@ -61,20 +63,20 @@
             &copy; 2025 - PresentationLayer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/bootbox.js/bootbox.min.js"></script>
     <script src="~/bootstrap/js/bootstrap.min.js"></script>
-
+    <script src="~/bootbox.js/bootbox.min.js"></script>
+    <script src="~/toastr.js/toastr.min.js"></script>
 
     <script src="~/timepicker/jquery.timepicker.min.js"></script>
     @* <script src="~/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script> *@
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
