@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414065840_AddAppointmentNameAnSetDateTypeToString")]
+    partial class AddAppointmentNameAnSetDateTypeToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +54,6 @@ namespace DataAccessLayer.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -64,9 +64,22 @@ namespace DataAccessLayer.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.AppointmentService", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppointmentId", "ServiceId");
+
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("AppointmentServices");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Role", b =>
@@ -124,7 +137,7 @@ namespace DataAccessLayer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.ServiceDate", b =>
@@ -145,7 +158,7 @@ namespace DataAccessLayer.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ServiceDates", (string)null);
+                    b.ToTable("ServiceDates");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.ServiceTimeSlot", b =>
@@ -167,7 +180,7 @@ namespace DataAccessLayer.Data.Migrations
 
                     b.HasIndex("ServiceDateId");
 
-                    b.ToTable("ServiceTimeSlots", (string)null);
+                    b.ToTable("ServiceTimeSlots");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.User", b =>
@@ -368,15 +381,26 @@ namespace DataAccessLayer.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Customer");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.AppointmentService", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.Appointment", "Appointment")
+                        .WithMany("AppointmentServices")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataAccessLayer.Models.Service", "Service")
-                        .WithMany("Appointmens")
+                        .WithMany("AppointmentServices")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
-
-                    b.Navigation("Employee");
+                    b.Navigation("Appointment");
 
                     b.Navigation("Service");
                 });
@@ -458,6 +482,11 @@ namespace DataAccessLayer.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.Appointment", b =>
+                {
+                    b.Navigation("AppointmentServices");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -465,7 +494,7 @@ namespace DataAccessLayer.Data.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Service", b =>
                 {
-                    b.Navigation("Appointmens");
+                    b.Navigation("AppointmentServices");
 
                     b.Navigation("ServiceDates");
                 });
