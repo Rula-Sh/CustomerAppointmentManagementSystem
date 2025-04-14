@@ -19,6 +19,7 @@ namespace DataAccessLayer.Models
         //public virtual ICollection<DateTimeSlotGroup> DateTimeSlotGroup { get; set; }
 
         // Many-to-Many relationship (Appointment and Service)
-        public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        //public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        public virtual ICollection<Appointment> Appointmens { get; set; }
     }
 }
