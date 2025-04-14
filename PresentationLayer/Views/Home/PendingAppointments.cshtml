@@ -1,0 +1,110 @@
+﻿@model IEnumerable<AppoitmentViewModel>
+
+@{
+    ViewData["Title"] = "Pending Appointments";
+}
+<h1>Pending Appointments</h1>
+
+@if (!Model.Any())
+{
+    <h2>
+        <i class="bi bi-exclamation-triangle"></i>
+        No Appointments booked yet
+    </h2>
+}
+else
+{
+    <div class="row">
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th> Service </th>
+                    <th> Customer </th>
+                    <th> Date </th>
+                    <th> Status </th>
+                    <th> Actions</th>
+                </tr>
+            </thead>
+            <tbody class="pendingAppointments">
+                @foreach (var appointment in Model)
+                {
+                    if (appointment.Status == "Pending")
+                    {
+                        <tr>
+                            <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id">
+                            <td>@appointment.Name</td>
+                            <td>@appointment.CustomerName</td>
+                            <td>@appointment.Date</td>
+                            <td>@appointment.Status</td>
+                            </a>
+                            <td>
+                                <a href="javascript:;" class="btn btn-success js-approve ms-1" data-id="@appointment.Id">
+                                    <i class="bi bi-check"></i>
+                                </a>
+                                <a href="javascript:;" class="btn btn-danger js-reject ms-1" data-id="@appointment.Id">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('.js-reject').on('click', function (){
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+                $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                    url: 'Reject/' + btn.data('id'),
+                    type: 'POST',
+                    success: function () {
+                    var row = btn.closest('tr');
+                    row.addClass('animate__animated', 'animate__zoomOut');
+
+                    setTimeout(function () {
+                        row.remove();
+                    }, 1000);
+
+
+                        toastr.success('Appointment Rejected');
+                    },
+                    error: function () {
+                        toastr.error('Something went wrong!');
+                    }
+                });
+            });
+
+            $('.js-approve').on('click', function () {
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+                $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                    url: 'Approve/' + btn.data('id'),
+                    type: 'POST',
+                    success: function () {
+                        var row = btn.closest('tr');
+                        row.addClass('animate__animated', 'animate__zoomOut');
+
+                        setTimeout(function () {
+                            row.remove();
+                        }, 1000);
+
+                        toastr.success('Appointment Approved');
+                    },
+                    error: function () {
+                        toastr.error('Something went wrong!');
+                    }
+                });
+            });
+        });
+    </script>
+}

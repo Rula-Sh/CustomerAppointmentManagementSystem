@@ -3,13 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootbox.js@6.0.2",
-      "destination": "wwwroot/bootbox.js/",
-      "files": [
-        "bootbox.min.js"
-      ]
-    },
-    {
       "library": "timepicker@1.3.5",
       "destination": "wwwroot/timepicker/",
       "files": [
@@ -40,6 +33,30 @@
       "destination": "wwwroot/bootstrap/",
       "files": [
         "js/bootstrap.min.js"
+      ]
+    },
+    {
+      "library": "bootbox.js@6.0.3",
+      "destination": "wwwroot/bootbox.js/",
+      "files": [
+        "bootbox.min.js"
+      ]
+    },
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/toastr.js/",
+      "files": [
+        "toastr.min.js",
+        "toastr.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/toastr.js/",
+      "files": [
+        "toastr.min.js",
+        "toastr.min.css"
       ]
     }
   ]

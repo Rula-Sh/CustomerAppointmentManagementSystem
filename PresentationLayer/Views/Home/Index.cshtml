@@ -1,8 +1,48 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<AppoitmentViewModel>
+
+@if (User.IsInRole("Employee"))
+{
+    <partial name="_EmployeeAppointments" model="Model" />
+} else if (User.IsInRole("Customer"))
+{
+    <partial name="_CustomerAppointments" model="Model" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('.js-complete').on('click', function () {
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+                bootbox.prompt({
+                    title: "This is a prompt, vertically centered!",
+                    centerVertical: true,
+                    callback: function(result){
+                        $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                            url: 'home/complete/',
+                            type: 'POST',
+                            data: { 'id' : btn.data('id'), 'notes' : result },
+                            success: function () {
+                                var row = btn.closest('tr');
+                                row.addClass('animate__animated animate__zoomOut');
+
+                                row(function () {
+                                    postContainer.remove();
+                                }, 1000);
+
+                                toastr.success('Appointment Completed');
+                            },
+                            error: function () {
+                                toastr.error('Something went wrong!');
+                            }
+                        });
+                    }
+                 });
+            });
+        });
+    </script>
+}
