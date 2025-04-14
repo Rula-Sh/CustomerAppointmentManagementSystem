@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,8 @@ namespace DataAccessLayer.Models
         // Foreign keys
         public int CustomerId { get; set; }
         public int EmployeeId { get; set; }
-
-        public DateTime Date { get; set; }
+        public string Name { get; set; }
+        public string Date { get; set; }
         public string Status { get; set; }
         public string Notes { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -25,6 +26,8 @@ namespace DataAccessLayer.Models
         public virtual User Employee { get; set; }
 
         // Many-to-Many relationship (Appointment and Service)
-        public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        //public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        public int ServiceId { get; set; }
+        public virtual Service Service { get; set; }
     }
 }
