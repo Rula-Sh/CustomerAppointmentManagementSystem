@@ -1,15 +1,19 @@
-﻿@model IEnumerable<AppoitmentViewModel>
+﻿@model IEnumerable<AppointmentViewModel>
 
 @{
     ViewData["Title"] = "Pending Appointments";
 }
 <h1>Pending Appointments</h1>
 
-@if (!Model.Any())
+@{
+    var pendingAppointments = Model.Where(a => a.Status == "Pending").ToList();
+}
+
+@if (!pendingAppointments.Any())
 {
     <h2>
         <i class="bi bi-exclamation-triangle"></i>
-        No Appointments booked yet
+        No Pending Appointments booked yet
     </h2>
 }
 else
@@ -46,7 +50,6 @@ else
                                 </a>
                             </td>
                         </tr>
-
                     }
                 }
             </tbody>
@@ -59,6 +62,40 @@ else
 
     <script>
         $(document).ready(function () {
+
+            $('.js-approve').on('click', function () {
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+
+                 bootbox.prompt({
+                    title: "Add instructions before attending the appointment",
+                    centerVertical: true,
+                    callback: function(result){
+                        if(result == ''){result='no notes';}
+                        $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                            // url: 'Approve/' + btn.data('id'),
+                            url: 'Approve/',
+                            data: { 'id' : btn.data('id'), 'notes' : result },
+                            type: 'POST',
+                            success: function () {
+                                var row = btn.closest('tr');
+                                row.addClass('animate__animated', 'animate__zoomOut');
+
+                                setTimeout(function () {
+                                    row.remove();
+                                }, 1000);
+
+                                toastr.success('Appointment Approved');
+                            },
+                            error: function (err) {
+                                toastr.error('Something went wrong!', err);
+                            }
+                        });
+                    }
+                 });
+            });
+
             $('.js-reject').on('click', function (){
                 var btn = $(this);
 
@@ -76,29 +113,6 @@ else
 
 
                         toastr.success('Appointment Rejected');
-                    },
-                    error: function () {
-                        toastr.error('Something went wrong!');
-                    }
-                });
-            });
-
-            $('.js-approve').on('click', function () {
-                var btn = $(this);
-
-                console.log(btn.data('id'));
-                $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                    url: 'Approve/' + btn.data('id'),
-                    type: 'POST',
-                    success: function () {
-                        var row = btn.closest('tr');
-                        row.addClass('animate__animated', 'animate__zoomOut');
-
-                        setTimeout(function () {
-                            row.remove();
-                        }, 1000);
-
-                        toastr.success('Appointment Approved');
                     },
                     error: function () {
                         toastr.error('Something went wrong!');
