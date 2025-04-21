@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppoitmentViewModel>
+﻿@model IEnumerable<AppointmentViewModel>
 
 @{
     ViewData["Title"] = "appointments";
@@ -12,7 +12,11 @@
     </a>
 </div>
 
-@if (!Model.Any())
+@{
+    var approvedAppointments = Model.Where(a => a.Status == "Approved").ToList();
+}
+
+@if (!approvedAppointments.Any())
 {
     <h2>
         <i class="bi bi-exclamation-triangle"></i>
@@ -64,38 +68,38 @@ else
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    @* //moved to the index.cshtml file in order to be functional*@
-    @* <script> *@
-    @*     $(document).ready(function () { *@
-    @*         $('.js-complete').on('click', function () { *@
-    @*             var btn = $(this); *@
+@* //moved to the index.cshtml file in order to be functional*@
+@* <script> *@
+@*     $(document).ready(function () { *@
+@*         $('.js-complete').on('click', function () { *@
+@*             var btn = $(this); *@
 
-    @*             console.log(btn.data('id')); *@
-    @*             bootbox.prompt({ *@
-    @*                 title: "This is a prompt, vertically centered!", *@
-    @*                 centerVertical: true, *@
-    @*                 callback: function(result){ *@
-    @*                     $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications. *@
-    @*                         url: '/Home/Complete', *@
-    @*                         type: 'POST', *@
-    @*                         data: { 'id' : btn.data('id'), 'notes' : result }, *@
-    @*                         success: function () { *@
-    @*                             var postContainer = btn.parents('.pendingAppointments'); *@
-    @*                             postContainer.addClass('animate__animated animate__zoomOut'); *@
+@*             console.log(btn.data('id')); *@
+@*             bootbox.prompt({ *@
+@*                 title: "This is a prompt, vertically centered!", *@
+@*                 centerVertical: true, *@
+@*                 callback: function(result){ *@
+@*                     $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications. *@
+@*                         url: '/Home/Complete', *@
+@*                         type: 'POST', *@
+@*                         data: { 'id' : btn.data('id'), 'notes' : result }, *@
+@*                         success: function () { *@
+@*                             var postContainer = btn.parents('.pendingAppointments'); *@
+@*                             postContainer.addClass('animate__animated animate__zoomOut'); *@
 
-    @*                             setTimeout(function () { *@
-    @*                                 postContainer.remove(); *@
-    @*                             }, 1000); *@
+@*                             setTimeout(function () { *@
+@*                                 postContainer.remove(); *@
+@*                             }, 1000); *@
 
-    @*                             toastr.success('Appointment Completed'); *@
-    @*                         }, *@
-    @*                         error: function () { *@
-    @*                             toastr.error('Something went wrong!'); *@
-    @*                         } *@
-    @*                     }); *@
-    @*                 } *@
-    @*              }); *@
-    @*         }); *@
-    @*     }); *@
-    @* </script> *@
+@*                             toastr.success('Appointment Completed'); *@
+@*                         }, *@
+@*                         error: function () { *@
+@*                             toastr.error('Something went wrong!'); *@
+@*                         } *@
+@*                     }); *@
+@*                 } *@
+@*              }); *@
+@*         }); *@
+@*     }); *@
+@* </script> *@
 }
