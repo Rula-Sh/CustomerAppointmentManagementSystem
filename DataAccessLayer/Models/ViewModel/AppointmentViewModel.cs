@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.ViewModel
 {
-    public class AppoitmentViewModel
+    public class AppointmentViewModel
     {
         public int Id { get; set; }
 
