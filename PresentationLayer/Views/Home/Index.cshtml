@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppoitmentViewModel>
+﻿@model IEnumerable<AppointmentViewModel>
 
 @if (User.IsInRole("Employee"))
 {
@@ -19,29 +19,73 @@
 
                 console.log(btn.data('id'));
                 bootbox.prompt({
-                    title: "This is a prompt, vertically centered!",
+                    title: "Provide your notes about the appointmet",
                     centerVertical: true,
                     callback: function(result){
-                        $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                            url: 'home/complete/',
-                            type: 'POST',
-                            data: { 'id' : btn.data('id'), 'notes' : result },
-                            success: function () {
+                        if(result)
+                        {
+                            if(result == ''){result='no notes';}
+                            $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                                url: 'complete/',
+                                type: 'POST',
+                                data: { 'id' : btn.data('id'), 'notes' : result },
+                                success: function () {
+                                    var row = btn.closest('tr');
+                                    row.addClass('animate__animated animate__zoomOut');
+
+                                    setTimeout(function () {
+                                        row.remove();
+                                    }, 1000);
+
+                                    toastr.success('Appointment Completed');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+                        }
+                        
+                    }
+                 });
+            });
+
+            $('.js-delete').click(function () {
+                var btn = $(this);
+                bootbox.confirm({
+                    message: "Are you sure you want to delete the appointment?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-success'
+                        }
+                    },
+                    callback: function (result) {
+                        if(result){
+                            $.ajax({
+                                url: 'home/delete/' + btn.data('id'),
+                                type: 'DELETE',
+                                success: function () {
+
                                 var row = btn.closest('tr');
                                 row.addClass('animate__animated animate__zoomOut');
 
-                                row(function () {
-                                    postContainer.remove();
+                                setTimeout(function () {
+                                    row.remove();
                                 }, 1000);
 
-                                toastr.success('Appointment Completed');
-                            },
-                            error: function () {
-                                toastr.error('Something went wrong!');
-                            }
-                        });
+                                toastr.success('Appointment deleted');
+                                },
+                                error: function (err) {
+                                    console.log('An error occurred: ' + err);
+                                }
+                            });
+                        }
                     }
-                 });
+                });
             });
         });
     </script>
