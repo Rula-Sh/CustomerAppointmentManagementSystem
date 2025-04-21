@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppoitmentViewModel>
+﻿@model IEnumerable<AppointmentViewModel>
 
 @{
     ViewData["Title"] = "appointments";
@@ -16,13 +16,13 @@
 {
     <h2>
         <i class="bi bi-exclamation-triangle"></i>
-        No Appointments Accepted yet
+        No pending appointments
     </h2>
 }
 else
 {
     <div class="row">
-        <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id">
+        @* <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id"> *@
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -40,12 +40,11 @@ else
                             <td>@appointment.Date</td>
                             <td>@appointment.Status</td>
                             <td>
-                                @if (appointment.Status == "Completed")
+                            @if (appointment.Status == "Completed" || appointment.Status == "Approved")
                                 {
                                     <a asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-outline-secondary me-1">
                                         @* asp-route-id="@appointment.Id" used to select the appointment*@
                                         <i class="bi bi-list-ul"></i>
-                                        Details
                                     </a>
                                 }
                                 @if (appointment.Status == "Pending" || appointment.Status == "Rejected")
@@ -59,6 +58,6 @@ else
                     }
                 </tbody>
             </table>
-        </a>
+        @* </a> *@
     </div>
 }
