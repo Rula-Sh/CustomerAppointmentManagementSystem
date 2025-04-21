@@ -33,26 +33,27 @@ namespace PresentationLayer.Controllers
 
             var userId = Int32.Parse(User.Identity.GetUserId());
             var appointmentsQuery = _context.Appointments.AsQueryable();
-            if(User.IsInRole("Employee"))
+            if (User.IsInRole("Employee"))
             {
                 appointmentsQuery = appointmentsQuery.Where(a => a.EmployeeId == userId);
-            }else if (User.IsInRole("Customer"))
+            }
+            else if (User.IsInRole("Customer"))
             {
                 appointmentsQuery = appointmentsQuery.Where(a => a.CustomerId == userId);
-            } 
+            }
 
-            var appointments = await appointmentsQuery.Select(a => new AppoitmentViewModel
-                {
-                    Id = a.Id,
-                    CustomerId = a.CustomerId,
-                    CustomerName = a.Customer.FullName,
-                    EmployeeId = a.EmployeeId,
-                    Name = a.Name,
-                    Date = a.Date,
-                    Notes = a.Notes,
-                    Status = a.Status,
-                    CreatedAt = a.CreatedAt,
-                }).ToListAsync();
+            var appointments = await appointmentsQuery.Select(a => new AppointmentViewModel
+            {
+                Id = a.Id,
+                CustomerId = a.CustomerId,
+                CustomerName = a.Customer.FullName,
+                EmployeeId = a.EmployeeId,
+                Name = a.Name,
+                Date = a.Date,
+                Notes = a.Notes,
+                Status = a.Status,
+                CreatedAt = a.CreatedAt,
+            }).ToListAsync();
             return View(appointments);
         }
 
@@ -86,7 +87,7 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> GetServiceDetails(int serviceId)
         {
 
-            var service =await _context.Services.Include(p => p.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).SingleOrDefaultAsync(m => m.Id == serviceId);
+            var service = await _context.Services.Include(p => p.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).SingleOrDefaultAsync(m => m.Id == serviceId);
 
             if (service == null)
                 return NotFound();
@@ -140,12 +141,58 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Employee, Customer")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return BadRequest();
 
+            var appointment = await _context.Appointments.Where(a => a.Id == id).Select(a => new AppointmentViewModel
+                {
+                    Id = a.Id,
+                    CustomerId = a.CustomerId,
+                    Customer = a.Customer,
+                    EmployeeId = a.EmployeeId,
+                    Employee = a.Employee,
+                    Name = a.Name,
+                    Date = a.Date,
+                    Notes = a.Notes,
+                    Status = a.Status,
+                    CreatedAt = a.CreatedAt,
+                }).SingleOrDefaultAsync();
+
+            if (appointment == null)
+                return NotFound();
+
+            return View("Details", appointment);
+        }
+
+        [Authorize(Roles ="Customer")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int? id)
+        {
+
+            if (id == null)
+                return BadRequest();
+
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (appointment == null)
+                return NotFound();
+
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> PendingAppointments()
         {
             var userId = Int32.Parse(User.Identity.GetUserId());
 
-            var appointments = await _context.Appointments.Select(a => new AppoitmentViewModel
+            var appointments = await _context.Appointments.Select(a => new AppointmentViewModel
             {
                 Id = a.Id,
                 CustomerId = a.CustomerId,
@@ -162,8 +209,9 @@ namespace PresentationLayer.Controllers
 
         [Authorize(Roles = "Employee")]
         [HttpPost]
-        //[Route("Home/reject/{id}")]
-        public async Task<IActionResult> Approve(int? id)
+        [Route("home/approve")]
+        //[Route("Home/Approve/{id}")]
+        public async Task<IActionResult> Approve(int? id, string notes)
         {
             if (id == null)
                 return BadRequest();
@@ -175,6 +223,7 @@ namespace PresentationLayer.Controllers
 
             appointment.Status = "Approved";
             appointment.EmployeeId = Int32.Parse(User.Identity.GetUserId());
+            appointment.Notes = notes;
 
             _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
@@ -184,6 +233,7 @@ namespace PresentationLayer.Controllers
 
         [Authorize(Roles = "Employee")]
         [HttpPost]
+        //[Route("home/reject")]
         public async Task<IActionResult> Reject(int? id)
         {
             if (id == null)
@@ -201,10 +251,11 @@ namespace PresentationLayer.Controllers
 
             return Ok();
         }
-        
-        
+
+
         [Authorize(Roles = "Employee")]
         [HttpPost]
+        [Route("complete")]
         public async Task<IActionResult> Complete(int? id, string notes)
         {
             if (id == null)
