@@ -138,6 +138,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     FullName = Input.FirstName + " " + Input.LastName,
                     CreatedAt = DateTime.Now,
+                    LastActivityDate = DateTime.Now,
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
