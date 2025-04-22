@@ -1,3 +1,5 @@
+using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.ViewModel;
@@ -12,72 +14,41 @@ namespace PresentationLayer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
-        private readonly Microsoft.AspNetCore.Identity.UserManager<User> _userManager;
+        private readonly IManageUsers _manageUsers;
+        private readonly IManageServices _manageServices;
+        private readonly IManageAppointments _manageAppointments;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context,
-        Microsoft.AspNetCore.Identity.UserManager<User> userManager)
+        public HomeController(IManageUsers manageUsers,
+                              IManageServices manageServices,
+                              IManageAppointments manageappointments)
         {
-            _logger = logger;
-            _context = context;
-            _userManager = userManager;
+            _manageUsers= manageUsers;
+            _manageServices = manageServices;
+            _manageAppointments = manageappointments;
         }
 
         public async Task<IActionResult> Index()
         {
+
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
-            var userId = Int32.Parse(User.Identity.GetUserId());
-            var appointmentsQuery = _context.Appointments.AsQueryable();
-            if (User.IsInRole("Employee"))
-            {
-                appointmentsQuery = appointmentsQuery.Where(a => a.EmployeeId == userId);
-            }
-            else if (User.IsInRole("Customer"))
-            {
-                appointmentsQuery = appointmentsQuery.Where(a => a.CustomerId == userId);
-            }
+            await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var appointments = await appointmentsQuery.Select(a => new AppointmentViewModel
-            {
-                Id = a.Id,
-                CustomerId = a.CustomerId,
-                CustomerName = a.Customer.FullName,
-                EmployeeId = a.EmployeeId,
-                Name = a.Name,
-                Date = a.Date,
-                Notes = a.Notes,
-                Status = a.Status,
-                CreatedAt = a.CreatedAt,
-            }).ToListAsync();
+            var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
+
             return View(appointments);
         }
 
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Add()
         {
-            var services = await _context.Services.Select(s => new ServiceViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Duration = s.Duration,
-                Price = s.Price,
-                Description = s.Description,
-                DateTimeSlotGroups = s.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
-                {
-                    Date = d.Date.ToString(),
-                    TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
-                }).ToList()
-            }).ToListAsync();
+            await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var viewModel = new BookAppointmentViewModel
-            {
-                Services = services,
-            };
+            var viewModel = await _manageAppointments.ViewAddAppointment();
+
             return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects PostFormViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
 
         }
@@ -86,24 +57,14 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetServiceDetails(int serviceId)
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var service = await _context.Services.Include(p => p.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).SingleOrDefaultAsync(m => m.Id == serviceId);
+            var service = await _manageServices.getService(serviceId);
 
             if (service == null)
                 return NotFound();
 
-            var serviceViewModel = new ServiceViewModel
-            {
-                Id = service.Id,
-                Name = service.Name,
-                Price = service.Price,
-                Description = service.Description,
-                DateTimeSlotGroups = service.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
-                {
-                    Date = d.Date.ToString(),
-                    TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
-                }).ToList()
-            };
+            var serviceViewModel = _manageServices.getSelectedServiceDetails(service);
 
             return Json(serviceViewModel);
         }
@@ -118,25 +79,7 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
-            // create Service
-            var appointment = new Appointment
-            {
-
-                CustomerId = Int32.Parse(User.Identity.GetUserId()),
-                EmployeeId = 1, // had to set the employee Id to 1, so that i dont get a FOREIGN KEY constraint error.. couldnt either set it nullable
-                ServiceId = model.ServiceId,
-                Name = model.ServiceName,
-                Date = model.Date,
-                Status = "Pending",
-                CreatedAt = DateTime.Now,
-                //AppointmentServices = new List<AppointmentService>()
-                Notes = "",
-            };
-
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
+            await _manageAppointments.addAppointment(model, User);
 
             return RedirectToAction("Index");
         }
@@ -144,22 +87,12 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Employee, Customer")]
         public async Task<IActionResult> Details(int? id)
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _context.Appointments.Where(a => a.Id == id).Select(a => new AppointmentViewModel
-                {
-                    Id = a.Id,
-                    CustomerId = a.CustomerId,
-                    Customer = a.Customer,
-                    EmployeeId = a.EmployeeId,
-                    Employee = a.Employee,
-                    Name = a.Name,
-                    Date = a.Date,
-                    Notes = a.Notes,
-                    Status = a.Status,
-                    CreatedAt = a.CreatedAt,
-                }).SingleOrDefaultAsync();
+            var appointment = await _manageAppointments.appointmentDetails(id);
 
             if (appointment == null)
                 return NotFound();
@@ -171,17 +104,17 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int? id)
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
 
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            var appointment = await _manageAppointments.getAppointmentById(id);
 
             if (appointment == null)
                 return NotFound();
 
-            _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
+            await _manageAppointments.deleteAppointment(appointment);
 
             return Ok();
         }
@@ -190,20 +123,10 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> PendingAppointments()
         {
-            var userId = Int32.Parse(User.Identity.GetUserId());
+            await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var appointments = await _context.Appointments.Select(a => new AppointmentViewModel
-            {
-                Id = a.Id,
-                CustomerId = a.CustomerId,
-                CustomerName = a.Customer.FullName,
-                EmployeeId = a.EmployeeId,
-                Name = a.Name,
-                Date = a.Date,
-                Notes = a.Notes,
-                Status = a.Status,
-                CreatedAt = a.CreatedAt,
-            }).ToListAsync();
+            var appointments = await _manageAppointments.getPendingAppointments(User);
+
             return View(appointments);
         }
 
@@ -216,7 +139,7 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _context.Appointments.SingleOrDefaultAsync(a => a.Id == id);
+            var appointment = await _manageAppointments.getAppointmentById(id);
 
             if (appointment == null)
                 return NotFound();
@@ -225,8 +148,7 @@ namespace PresentationLayer.Controllers
             appointment.EmployeeId = Int32.Parse(User.Identity.GetUserId());
             appointment.Notes = notes;
 
-            _context.Appointments.Update(appointment);
-            await _context.SaveChangesAsync();
+            await _manageAppointments.updateAppointment(appointment);
 
             return Ok();
         }
@@ -239,15 +161,14 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _context.Appointments.SingleOrDefaultAsync(a => a.Id == id);
+            var appointment = await _manageAppointments.getAppointmentById(id);
 
             if (appointment == null)
                 return NotFound();
 
             appointment.Status = "Rejected";
 
-            _context.Appointments.Update(appointment);
-            await _context.SaveChangesAsync();
+            await _manageAppointments.updateAppointment(appointment);
 
             return Ok();
         }
@@ -261,7 +182,7 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _context.Appointments.SingleOrDefaultAsync(a => a.Id == id);
+            var appointment = await _manageAppointments.getAppointmentById(id);
 
             if (appointment == null)
                 return NotFound();
@@ -269,8 +190,7 @@ namespace PresentationLayer.Controllers
             appointment.Status = "Completed";
             appointment.Notes = notes;
 
-            _context.Appointments.Update(appointment);
-            await _context.SaveChangesAsync();
+            await _manageAppointments.updateAppointment(appointment);
 
             return Ok();
         }

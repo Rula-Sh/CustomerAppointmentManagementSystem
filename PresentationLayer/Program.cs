@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
+using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Interfaces;
 //using DataAccessLayer.Repositories;
 //using DataAccessLayer.Repositories.Contracts;
 //using BusinessLogicLayer.Services;
@@ -28,6 +30,10 @@ builder.Services.AddIdentity<User, Role>() // was Services.AddDefaultIdentity<Id
     .AddDefaultTokenProviders();//added this with the AddIdentity update
 
 builder.Services.AddScoped<RoleManager<Role>>(); // Ensure RoleManager is properly registered
+
+builder.Services.AddScoped<IManageUsers,ManageUsers>();
+builder.Services.AddScoped<IManageServices, ManageServices>();
+builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
 
 
 
