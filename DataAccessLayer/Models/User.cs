@@ -21,6 +21,8 @@ namespace DataAccessLayer.Models
 
         public bool IsActive { get; set; } = true;
 
+        public DateTime LastActivityDate { get; set; }
+
         // Many-to-Many relationship (User and Role)
         public virtual ICollection<UserRole> UserRoles { get; set; }
 

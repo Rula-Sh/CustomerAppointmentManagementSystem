@@ -13,6 +13,8 @@ namespace DataAccessLayer.Models.ViewModel
         public string FullName { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
+        public DateTime LastActivityDate { get; set; }
+        public string LastActivity { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
     }
