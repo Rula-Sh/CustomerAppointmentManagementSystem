@@ -1,6 +1,9 @@
-﻿using DataAccessLayer.Data;
+﻿using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
+using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.ViewModel;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,47 +17,40 @@ namespace PresentationLayer.Controllers
 
     public class ServicesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly IManageUsers _manageUsers;
+        private readonly IManageServices _manageServices;
 
 
-        public ServicesController(ApplicationDbContext context, UserManager<User> userManager)
+        public ServicesController(IManageUsers manageUsers,IManageServices manageServices)
         {
-            _context = context;
-            _userManager = userManager;
+            _manageUsers = manageUsers;
+            _manageServices = manageServices;
         }
 
         public async Task<IActionResult> Index()
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
             /*var posts = await _context.Posts.OrderByDescending(m => m.DatePublished.Year).ToListAsync(); // this will get me the list of posts*/
             //var services = await _context.Services.ToListAsync(); // this will get me the list of services
 
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
             //return View(services);
 
-            var services = await _context.Services.Select(s => new ServiceViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Duration = s.Duration,
-                Price = s.Price,
-                Description = s.Description,
-                DateTimeSlotGroups = s.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
-                {
-                    Date = d.Date.ToString(),
-                    TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
-                }).ToList()
-            }).ToListAsync();
+            var services = await _manageServices.getServices();
 
             return View(services);
         }
 
         public async Task<IActionResult> Add()
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
             var viewModel = new ServiceViewModel { };
             return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects PostFormViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
 
         }
+
         [HttpPost]
         public async Task<IActionResult> Add(ServiceViewModel model)
         {
@@ -117,23 +113,42 @@ namespace PresentationLayer.Controllers
             }
 
             // update DB
-            _context.Services.Add(service);
-            await _context.SaveChangesAsync();
+            await _manageServices.addService(service);
 
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Details(int? id)
         {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
             if (id == null)
                 return BadRequest();
 
-            var service = await _context.Services.Include(p => p.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).SingleOrDefaultAsync(m => m.Id == id);
+            var service = await _manageServices.getService(id);
 
             if (service == null)
                 return NotFound();
 
             return View("Details", service);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
+            if (id == null)
+                return BadRequest();
+
+            var service = await _manageServices.getServiceById(id);
+
+            if (service == null)
+                return NotFound();
+
+            await _manageServices.DeleteService(service);
+
+            return Ok();
         }
     }
 }
