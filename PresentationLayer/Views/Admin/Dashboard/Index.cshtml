@@ -1,0 +1,44 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>General</h2>
+<canvas id="systemOverviewChart"></canvas>
+
+<h2>Users</h2>
+
+<h2>Services</h2>
+
+<h2>Appointments</h2>
+
+
+
+@section Scripts {
+
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('systemOverviewChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Users', 'Services', 'Appointments'],
+        datasets: [{
+          label: '# of System Overview',
+          data: [@Model.Users.Count(),@Model.Services.Count(),@Model.Appointments.Count()],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+</script>
