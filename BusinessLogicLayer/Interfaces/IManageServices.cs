@@ -17,5 +17,9 @@ namespace BusinessLogicLayer.Interfaces
         ServiceViewModel getSelectedServiceDetails(Service service);
         Task DeleteService(Service service);
         Task<Service> getServiceById(int? id);
+
+        string GetMostBookedServiceName();
+        Task<List<string>> GetServicesNames();
+        int GetTotalServices();
     }
 }

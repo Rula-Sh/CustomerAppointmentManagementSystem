@@ -69,5 +69,20 @@ namespace BusinessLogicLayer.Services
 
 
 
+
+
+
+
+
+
+
+
+        public int GetTotalUsers()
+        {
+            return _context.Users.Count();
+        }
+
+
+
     }
 }

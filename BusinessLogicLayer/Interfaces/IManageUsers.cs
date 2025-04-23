@@ -18,5 +18,8 @@ namespace BusinessLogicLayer.Interfaces
         Task changeRoleFromTo(User user, string oldRole, string NewRole);
         Task updateAsync(User user);
 
+
+        int GetTotalUsers();
+
     }
 }

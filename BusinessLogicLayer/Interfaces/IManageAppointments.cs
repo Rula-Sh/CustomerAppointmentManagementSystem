@@ -19,5 +19,17 @@ namespace BusinessLogicLayer.Interfaces
         Task deleteAppointment(Appointment appointment);
         Task<List<AppointmentViewModel>> getPendingAppointments(ClaimsPrincipal user);
         Task updateAppointment(Appointment appointment);
+
+        string getEmployeeNameWithMostCompleteAndApprovedAppointments();
+        double GetAverageAppointmentsPerEmployee();
+        List<DateTime> getLast7DaysDates();
+        List<string> getLast7Days();
+        Task<List<int>> getTotalAppointmentsFromPast7Days();
+        List<DateTime> getLast4WeeksDates();
+        List<int> getTotalApprovedAppointemntPerWeek();
+        List<int> GetAppointmentsStatusCount();
+        Task<List<int>> getTotalAppointmentsPerService();
+        Task<List<ActiveAppointmentViewModel>> getTodaysAppointments();
+        int GetTotalAppointments();
     }
 }

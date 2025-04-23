@@ -83,5 +83,40 @@ namespace BusinessLogicLayer.Services
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
         }
+
+
+
+
+
+
+
+
+
+        public string GetMostBookedServiceName()
+        {
+            var mostBookedService = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
+                                                    .GroupBy(a => a.ServiceId)
+                                                    .Select(group => new
+                                                    {
+                                                        ServiceId = group.Key,
+                                                        AppointmentCount = group.Count()
+                                                    })
+                                                    .OrderByDescending(g => g.AppointmentCount)
+                                                    .FirstOrDefault();
+
+            return _context.Services.Where(u => u.Id == mostBookedService.ServiceId).Select(e => e.Name).SingleOrDefault();
+
+        }
+
+
+        public async Task<List<string>> GetServicesNames()
+        {
+            return await _context.Services.Select(a => a.Name).ToListAsync();
+        }
+
+        public int GetTotalServices()
+        {
+            return _context.Services.Count();
+        }
     }
 }
