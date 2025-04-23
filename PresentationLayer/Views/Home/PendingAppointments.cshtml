@@ -56,6 +56,10 @@ else
         </table>
 
     </div>
+    <a asp-action="Index" class="btn btn-outline-secondary mt-4 ">
+        <i class="bi bi-arrow-left"></i>
+        Go Back
+    </a>
 }
 
 @section Scripts {
@@ -112,7 +116,7 @@ else
                     }, 1000);
 
 
-                        toastr.success('Appointment Rejected');
+                        toastr.error('Appointment Rejected');
                     },
                     error: function () {
                         toastr.error('Something went wrong!');

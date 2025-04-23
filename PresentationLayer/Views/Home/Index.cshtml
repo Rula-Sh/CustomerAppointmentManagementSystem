@@ -8,6 +8,8 @@
     <partial name="_CustomerAppointments" model="Model" />
 }
 
+@* OR(older syntax): @Html.Partial("_EmployeeAppointments", Model) *@
+@* or i could do it like this, but each will have a controller: @{ Html.RenderAction("_EmployeeAppointments"); } *@
 
 
 @section Scripts {
