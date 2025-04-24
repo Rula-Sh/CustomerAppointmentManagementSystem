@@ -24,7 +24,7 @@ namespace BusinessLogicLayer.Services
             _context = context;
         }
 
-        public async Task<List<User>> getUsers()
+        public async Task<List<User>> GetUsers()
         {
             return await _userManager.Users.ToListAsync();
         }

@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IManageUsers
     {
-        Task<List<User>> getUsers();
+        Task<List<User>> GetUsers();
         Task<List<string>> getRoles(User user);
         string GetUserId(ClaimsPrincipal user);
         Task<User> GetUserById(ClaimsPrincipal user);
