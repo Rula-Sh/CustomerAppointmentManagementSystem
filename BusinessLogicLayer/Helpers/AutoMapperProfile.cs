@@ -25,8 +25,8 @@ namespace BusinessLogicLayer.Helpers
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString()))
                 .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src.ServiceTimeSlots.Select(t => t.Time).ToList()));
 
-            CreateMap<Appointment, AppointmentViewModel>()
-                .ForMember(dest => dest.AppointmentServices, opt => opt.MapFrom(src => src.Service));
+            CreateMap<Appointment, AppointmentViewModel>();
+             
 
             CreateMap<Service, BookAppointmentViewModel>();
 
