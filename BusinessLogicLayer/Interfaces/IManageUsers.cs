@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Interfaces
     public interface IManageUsers
     {
         Task<List<User>> GetUsers();
-        Task<List<string>> GetRoles(User user);
+        Task<List<string>> getRoles(User user);
         string GetUserId(ClaimsPrincipal user);
         Task<User> GetUserById(ClaimsPrincipal user);
         Task UpdateUserLastActivityDate(ClaimsPrincipal user);

@@ -17,7 +17,7 @@ namespace BusinessLogicLayer.Helpers
             CreateMap<User, UserViewModel>()
                 .ForMember(dest => dest.LastActivity, opt => opt.MapFrom(src => TimeDifferenceHelper.getTimeDifference(src.LastActivityDate)))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore());
-                //Why did ignore Roles? Because GetRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
+                //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
 
             CreateMap<Service, ServiceViewModel>()
                 .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Helpers
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString()))
                 .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src.ServiceTimeSlots.Select(t => t.Time).ToList()));
 
-            CreateMap<Appointment, AppointmentViewModel>();          
+            CreateMap<Appointment, AppointmentViewModel>();
 
             CreateMap<Service, BookAppointmentViewModel>();
 
