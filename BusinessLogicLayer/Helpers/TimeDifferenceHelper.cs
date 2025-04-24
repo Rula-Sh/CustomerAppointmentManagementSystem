@@ -16,7 +16,7 @@ namespace BusinessLogicLayer.Helpers
         const int DAY = 24 * HOUR;
         const int MONTH = 30 * DAY;
 
-        public string getTimeDifference(DateTime lastDate)
+        public static string getTimeDifference(DateTime lastDate)
         {
             var td = new TimeSpan(DateTime.Now.Ticks - lastDate.Ticks);
             double delta = Math.Abs(td.TotalSeconds);
