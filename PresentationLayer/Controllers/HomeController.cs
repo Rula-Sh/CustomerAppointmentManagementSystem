@@ -19,7 +19,7 @@ namespace PresentationLayer.Controllers
                               IManageServices manageServices,
                               IManageAppointments manageappointments)
         {
-            _manageUsers= manageUsers;
+            _manageUsers = manageUsers;
             _manageServices = manageServices;
             _manageAppointments = manageappointments;
         }
@@ -99,7 +99,7 @@ namespace PresentationLayer.Controllers
             return View("Details", appointment);
         }
 
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int? id)
         {
