@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 
 
@@ -147,6 +148,8 @@ namespace PresentationLayer.Controllers
             appointment.Status = "Approved";
             appointment.EmployeeId = Int32.Parse(User.Identity.GetUserId());
             appointment.Notes = notes;
+            //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
+            // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
 
             await _manageAppointments.updateAppointment(appointment);
 

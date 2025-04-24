@@ -1,4 +1,6 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.ViewModel;
@@ -19,12 +21,14 @@ namespace BusinessLogicLayer.Services
         private readonly ApplicationDbContext _context;
         private readonly IManageUsers _manageUsers;
         private readonly IManageServices _manageServices;
+        private readonly IMapper _mapper;
 
-        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IManageServices manageServices)
+        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IManageServices manageServices, IMapper mapper)
         {
             _context = context;
             _manageUsers = manageUsers;
             _manageServices = manageServices;
+            _mapper = mapper;
         }
 
         public async Task<List<AppointmentViewModel>> getAppointmentsBasedOnRole(ClaimsPrincipal user)
@@ -42,7 +46,7 @@ namespace BusinessLogicLayer.Services
                 appointmentsQuery = appointmentsQuery.Where(a => a.CustomerId == Int32.Parse(userId));
             }
 
-            var appointments = await appointmentsQuery.Select(a => new AppointmentViewModel
+            /*var appointments = await appointmentsQuery.Select(a => new AppointmentViewModel
             {
                 Id = a.Id,
                 CustomerId = a.CustomerId,
@@ -53,25 +57,29 @@ namespace BusinessLogicLayer.Services
                 Notes = a.Notes,
                 Status = a.Status,
                 CreatedAt = a.CreatedAt,
-            }).ToListAsync();
+            }).ToListAsync();*/
+            var appointmentList = await appointmentsQuery.ToListAsync();
+            var appointments = _mapper.Map<List<AppointmentViewModel>>(appointmentList);
 
             return appointments;
         }
 
         public async Task<BookAppointmentViewModel> ViewAddAppointment()
         {
-            var services = await _manageServices.getServices();
+            var services = await _manageServices.GetServices();
 
             var viewModel = new BookAppointmentViewModel
             {
                 Services = services,
             };
+
             return viewModel;
+            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
         }
 
         public async Task addAppointment(BookAppointmentViewModel model, ClaimsPrincipal user)
         {
-            var appointment = new Appointment
+            /*var appointment = new Appointment
             {
 
                 CustomerId = Int32.Parse(_manageUsers.GetUserId(user)),
@@ -83,7 +91,11 @@ namespace BusinessLogicLayer.Services
                 CreatedAt = DateTime.Now,
                 //AppointmentServices = new List<AppointmentService>()
                 Notes = "",
-            };
+            };*/
+            // using AutoMapper
+            var appointment = _mapper.Map<Appointment>(model);
+            appointment.CustomerId = Int32.Parse(_manageUsers.GetUserId(user));
+            appointment.EmployeeId = 1; // again hardcod because of FK issues
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
@@ -91,7 +103,8 @@ namespace BusinessLogicLayer.Services
 
         public async Task<AppointmentViewModel> appointmentDetails(int? id)
         {
-            var appointment = await _context.Appointments.Where(a => a.Id == id).Select(a => new AppointmentViewModel
+
+            /*var appointment = await _context.Appointments.Where(a => a.Id == id).Select(a => new AppointmentViewModel
             {
                 Id = a.Id,
                 CustomerId = a.CustomerId,
@@ -104,8 +117,12 @@ namespace BusinessLogicLayer.Services
                 Status = a.Status,
                 CreatedAt = a.CreatedAt,
             }).SingleOrDefaultAsync();
+            return appointment;*/
+            // using AutoMapper
+            var appointment = await _context.Appointments.Where(a => a.Id == id).SingleOrDefaultAsync(); //.Include(a => a.Service) convo 12
+            var appointmentViewModel = _mapper.Map<AppointmentViewModel>(appointment);
 
-            return appointment;
+            return appointmentViewModel;
         }
 
         public async Task<Appointment> getAppointmentById(int? id)
@@ -122,7 +139,7 @@ namespace BusinessLogicLayer.Services
 
         public async Task<List<AppointmentViewModel>> getPendingAppointments(ClaimsPrincipal user)
         {
-            var appointments = await _context.Appointments.Select(a => new AppointmentViewModel
+            /*var appointments = await _context.Appointments.Where(a => a.Status == "Pending").Select(a => new AppointmentViewModel
             {
                 Id = a.Id,
                 CustomerId = a.CustomerId,
@@ -134,8 +151,12 @@ namespace BusinessLogicLayer.Services
                 Status = a.Status,
                 CreatedAt = a.CreatedAt,
             }).ToListAsync();
+            return appointments;*/
+            // using AutoMapper
+            var appointments = await _context.Appointments.Where(a => a.Status == "Pending").ToListAsync();
+            var appointmentsViewModel = _mapper.Map<List<AppointmentViewModel>>(appointments);
 
-            return appointments;
+            return appointmentsViewModel;
         }
 
         public async Task updateAppointment(Appointment appointment)
@@ -143,9 +164,6 @@ namespace BusinessLogicLayer.Services
             _context.Appointments.Update(appointment);
             await _context.SaveChangesAsync();
         }
-
-
-
 
         public string getEmployeeNameWithMostCompleteAndApprovedAppointments()
         {
@@ -287,7 +305,7 @@ namespace BusinessLogicLayer.Services
         {
             var today = DateTime.Today.ToString("M/d/yyyy");
 
-            return await _context.Appointments
+            /*return await _context.Appointments
                 .Where(a =>
                     a.Date.StartsWith(today) && a.Status == "Approved")
                 .Include(a => a.Customer)
@@ -299,7 +317,26 @@ namespace BusinessLogicLayer.Services
                     ServiceName = a.Service.Name
                 })
                 .OrderBy(a => a.AppointmentDate)
+                .ToListAsync();*/
+            //using AutoMapper
+            return await _context.Appointments
+                .Where(a =>
+                    a.Date.StartsWith(today) && a.Status == "Approved")
+                .ProjectTo<ActiveAppointmentViewModel>(_mapper.ConfigurationProvider)
+                .OrderBy(a => a.AppointmentDate)
                 .ToListAsync();
+            // ProjectTo<T>() is an AutoMapper method that allows you to map entities directly to DTOs or view models in the database query (e.g., LINQ to Entities), rather than loading the full entity into memory and then mapping it.
+            // ProjectTo() builds the SQL query that fetches only the fields needed for the view model — it’s efficient and runs completely on the database side.
+            // or
+            var appointments = await _context.Appointments
+                .Where(a => a.Date.StartsWith(today) && a.Status == "Approved")
+                .Include(a => a.Customer)
+                .Include(a => a.Service)
+                .OrderBy(a => a.Date)
+                .ToListAsync();
+
+            return _mapper.Map<List<ActiveAppointmentViewModel>>(appointments);
+
         }
         public int GetTotalAppointments()
         {

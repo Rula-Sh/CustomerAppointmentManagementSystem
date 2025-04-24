@@ -5,6 +5,7 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Helpers;
 //using DataAccessLayer.Repositories;
 //using DataAccessLayer.Repositories.Contracts;
 //using BusinessLogicLayer.Services;
@@ -34,6 +35,8 @@ builder.Services.AddScoped<RoleManager<Role>>(); // Ensure RoleManager is proper
 builder.Services.AddScoped<IManageUsers,ManageUsers>();
 builder.Services.AddScoped<IManageServices, ManageServices>();
 builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
 

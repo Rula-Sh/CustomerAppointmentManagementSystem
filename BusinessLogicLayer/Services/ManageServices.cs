@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.ViewModel;
@@ -14,15 +15,17 @@ namespace BusinessLogicLayer.Services
     public class ManageServices : IManageServices
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;    
 
-        public ManageServices(ApplicationDbContext context)
+        public ManageServices(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<List<ServiceViewModel>> getServices()
+        public async Task<List<ServiceViewModel>> GetServices()
         {
-            var services = await _context.Services.Select(s => new ServiceViewModel
+            /*var services = await _context.Services.Select(s => new ServiceViewModel
             {
                 Id = s.Id,
                 Name = s.Name,
@@ -34,9 +37,14 @@ namespace BusinessLogicLayer.Services
                     Date = d.Date.ToString(),
                     TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
                 }).ToList()
-            }).ToListAsync();
+            }).ToListAsync();*/
+            // using AutoMapper
+            var servcies = await _context.Services.Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
 
-            return services;
+            var servicesViewModel = _mapper.Map<List<ServiceViewModel>>(servcies);
+
+
+            return servicesViewModel;
         }
 
         public async Task addService(Service service)
@@ -56,7 +64,7 @@ namespace BusinessLogicLayer.Services
         }
         public ServiceViewModel getSelectedServiceDetails(Service service)
         {
-            var serviceViewModel = new ServiceViewModel
+            /*var serviceViewModel = new ServiceViewModel
             {
                 Id = service.Id,
                 Name = service.Name,
@@ -67,7 +75,9 @@ namespace BusinessLogicLayer.Services
                     Date = d.Date.ToString(),
                     TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
                 }).ToList()
-            };
+            };*/
+            // using AutoMapper
+            var serviceViewModel = _mapper.Map<ServiceViewModel>(service);
 
             return serviceViewModel;
         }
@@ -84,14 +94,6 @@ namespace BusinessLogicLayer.Services
             await _context.SaveChangesAsync();
         }
 
-
-
-
-
-
-
-
-
         public string GetMostBookedServiceName()
         {
             var mostBookedService = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
@@ -105,7 +107,13 @@ namespace BusinessLogicLayer.Services
                                                     .FirstOrDefault();
 
             return _context.Services.Where(u => u.Id == mostBookedService.ServiceId).Select(e => e.Name).SingleOrDefault();
+            // no auto mapper is used here becaause: 
+            // 1- i am not mapping entities to DTOs or view models.
+            // 2- i am only retrieving a string (the service name) here after some LINQ-based aggregation.
 
+            //AutoMapper is typically used to convert between objects, like:
+            // Entity → ViewModel //ViewModel → DTO //DTO → Entity
+            //But in this case, i am using pure LINQ projection and ending up with a string result — no complex object mapping involved.
         }
 
 

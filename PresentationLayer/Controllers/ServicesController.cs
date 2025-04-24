@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
@@ -19,12 +20,14 @@ namespace PresentationLayer.Controllers
     {
         private readonly IManageUsers _manageUsers;
         private readonly IManageServices _manageServices;
+        private readonly IMapper _mapper;
 
 
-        public ServicesController(IManageUsers manageUsers,IManageServices manageServices)
+        public ServicesController(IManageUsers manageUsers,IManageServices manageServices, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -37,7 +40,7 @@ namespace PresentationLayer.Controllers
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
             //return View(services);
 
-            var services = await _manageServices.getServices();
+            var services = await _manageServices.GetServices();
 
             return View(services);
         }
@@ -71,14 +74,16 @@ namespace PresentationLayer.Controllers
             }
 
             // create Service
-            var service = new Service
+            /*var service = new Service
             {
                 Name = model.Name,
                 Description = model.Description,
                 Duration = model.Duration,
                 Price = model.Price,
                 ServiceDates = new List<ServiceDate>()
-            };
+            };*/
+            // using AutoMapper
+            var service = _mapper.Map<Service>(model);
 
             // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
             foreach (var group in model.DateTimeSlotGroups)
@@ -92,21 +97,33 @@ namespace PresentationLayer.Controllers
                 }
 
                 // create ServiceDate
-                var serviceDate = new ServiceDate
+                /*var serviceDate = new ServiceDate
                 {
                     ServiceId = service.Id, // to link it to Services Table
                     Date = date,
                     ServiceTimeSlots = new List<ServiceTimeSlot>()
-                };
+                };*/
+                // using AutoMapper
+                var serviceDate = _mapper.Map<ServiceDate>(group);
+                serviceDate.Date = date;
 
                 foreach (var time in group.TimeSlots)
                 {
                     // create ServiceTimeSlot
-                    serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    /*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
                     {
                         ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
                         Time = time
-                    });
+                    });*/
+                    // using AutoMapper
+                    var serviceTimeSlot = new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    };
+
+                    serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
+
                 }
 
                 service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table

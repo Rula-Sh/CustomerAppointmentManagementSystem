@@ -8,6 +8,7 @@ using System.Data;
 using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
 using Microsoft.AspNet.Identity;
+using AutoMapper;
 
 namespace PresentationLayer.Controllers
 {
@@ -15,29 +16,32 @@ namespace PresentationLayer.Controllers
     public class UsersController : Controller
     {
         private readonly IManageUsers _manageUsers;
+        private readonly IMapper _mapper;
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsers manageUsers)
+        public UsersController(IManageUsers manageUsers, IMapper mapper)
         {
             _manageUsers = manageUsers;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var users = await _manageUsers.getUsers();
+            var users = await _manageUsers.GetUsers();
 
-            var userViewModels = new List<UserViewModel>();
+            var usersViewModels = new List<UserViewModel>();
 
             foreach (var user in users)
             {
-                var roles = await _manageUsers.getRoles(user); // Await roles asynchronously
-
+                /*
+                // before making the getTimeDifference method to static 
                 TimeDifferenceHelper tdh = new TimeDifferenceHelper();
                 var test = tdh.getTimeDifference(user.LastActivityDate);
 
+                var roles = await _manageUsers.getRoles(user); // Await roles asynchronously
                 userViewModels.Add(new UserViewModel
                 {
                     Id = user.Id,
@@ -48,10 +52,15 @@ namespace PresentationLayer.Controllers
                     LastActivityDate = user.LastActivityDate,
                     LastActivity = tdh.getTimeDifference(user.LastActivityDate),
                     Roles = roles
-                });
+                });*/
+                // using AutoMapper
+                var userViewModel = _mapper.Map<UserViewModel>(user);
+                userViewModel.LastActivity = TimeDifferenceHelper.getTimeDifference(user.LastActivityDate);
+                userViewModel.Roles = await _manageUsers.getRoles(user);// Await roles asynchronously
+                usersViewModels.Add(userViewModel);
             }
 
-            return View(usersPath, userViewModels);
+            return View(usersPath, usersViewModels);
 
         }
 
