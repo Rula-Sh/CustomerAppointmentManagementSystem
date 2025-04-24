@@ -41,7 +41,7 @@ namespace PresentationLayer.Controllers
                 TimeDifferenceHelper tdh = new TimeDifferenceHelper();
                 var test = tdh.getTimeDifference(user.LastActivityDate);
 
-                var roles = await _manageUsers.GetRoles(user); // Await roles asynchronously
+                var roles = await _manageUsers.getRoles(user); // Await roles asynchronously
                 userViewModels.Add(new UserViewModel
                 {
                     Id = user.Id,
@@ -56,7 +56,7 @@ namespace PresentationLayer.Controllers
                 // using AutoMapper
                 var userViewModel = _mapper.Map<UserViewModel>(user);
                 userViewModel.LastActivity = TimeDifferenceHelper.getTimeDifference(user.LastActivityDate);
-                userViewModel.Roles = await _manageUsers.GetRoles(user);// Await roles asynchronously
+                userViewModel.Roles = await _manageUsers.getRoles(user);// Await roles asynchronously
                 usersViewModels.Add(userViewModel);
             }
 

@@ -1,9 +1,13 @@
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
+using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.ViewModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 
 
@@ -26,7 +30,8 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (!User.Identity.IsAuthenticated) // check if the user is looged in or not
+
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
@@ -45,7 +50,7 @@ namespace PresentationLayer.Controllers
 
             var viewModel = await _manageAppointments.ViewAddAppointment();
 
-            return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects BookAppointmentViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
+            return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects PostFormViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
 
         }
 
@@ -63,16 +68,13 @@ namespace PresentationLayer.Controllers
             var serviceViewModel = _manageServices.getSelectedServiceDetails(service);
 
             return Json(serviceViewModel);
-            // this returns a the serviceViewModel as a JSON object... wraps it in an HTTP response... then sends it to the client browser
-            // from the client side: i gets the JSON-formatted string and  convert it again to JavaScript object
-            // summary: C# Object ? JSON string ? HTTP ? JSON string ? JavaScript Object
         }
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Add(BookAppointmentViewModel model)
         {
-            ModelState.Remove("Services"); // i no longer need it, i got the selected appointment date
+            ModelState.Remove("Services");
             if (!ModelState.IsValid)
             {
                 return View(model);
