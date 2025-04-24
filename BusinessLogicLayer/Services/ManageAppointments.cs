@@ -58,7 +58,7 @@ namespace BusinessLogicLayer.Services
                 Status = a.Status,
                 CreatedAt = a.CreatedAt,
             }).ToListAsync();*/
-            var appointmentList = await appointmentsQuery.ToListAsync();
+            var appointmentList = await appointmentsQuery.Include(a => a.Customer).Include(a => a.Employee).ToListAsync();
             var appointments = _mapper.Map<List<AppointmentViewModel>>(appointmentList);
 
             return appointments;
@@ -119,10 +119,14 @@ namespace BusinessLogicLayer.Services
             }).SingleOrDefaultAsync();
             return appointment;*/
             // using AutoMapper
-            var appointment = await _context.Appointments.Where(a => a.Id == id).SingleOrDefaultAsync(); //.Include(a => a.Service) convo 12
-            var appointmentViewModel = _mapper.Map<AppointmentViewModel>(appointment);
+            var appointment = await _context.Appointments
+                .Where(a => a.Id == id)
+                .ProjectTo<AppointmentViewModel>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            // ProjectTo<T>() is an AutoMapper method that allows you to map entities directly to DTOs or view models in the database query (e.g., LINQ to Entities), rather than loading the full entity into memory and then mapping it.
+            // ProjectTo() builds the SQL query that fetches only the fields needed for the view model — it’s efficient and runs completely on the database side.
 
-            return appointmentViewModel;
+            return appointment;
         }
 
         public async Task<Appointment> getAppointmentById(int? id)
