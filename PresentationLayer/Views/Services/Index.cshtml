@@ -37,7 +37,7 @@ else
                                 </div>
                                 <div class="mb-2">
                                     <strong>Available in:</strong>
-                                    @string.Join(" \\ ", service.DateTimeSlotGroups.Select(a => a.Date))
+                                    @string.Join(" - ", service.DateTimeSlotGroups.Select(a => a.Date))
                                     @* @foreach (var availability in service.DateTimeSlotGroups) *@
                                     @* { *@
                                     @*     <span>@availability.Date -- </span> *@
