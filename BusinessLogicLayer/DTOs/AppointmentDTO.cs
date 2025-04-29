@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataAccessLayer.Models.ViewModel
+﻿namespace BusinessLogicLayer.DTOs
 {
     public class AppointmentDTO
     {
@@ -22,10 +16,10 @@ namespace DataAccessLayer.Models.ViewModel
 
         // Navigation properties
         // One-to-Many relationship (User[Employee/Customer] and Appointment) *** Foreign keys included on top
-        public virtual User Customer { get; set; }
-        public virtual User Employee { get; set; }
+        public virtual UserDTO Customer { get; set; }
+        public virtual UserDTO Employee { get; set; }
 
         // Many-to-Many relationship (Appointment and Service)
-        public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        public virtual ICollection<AppointmentServiceDTO> AppointmentServices { get; set; }
     }
 }
