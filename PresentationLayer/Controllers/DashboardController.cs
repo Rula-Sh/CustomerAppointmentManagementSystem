@@ -1,10 +1,10 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PresentationLayer.ViewModel;
 using System.Globalization;
 
 namespace PresentationLayer.Controllers

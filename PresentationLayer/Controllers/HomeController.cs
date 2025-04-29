@@ -1,9 +1,9 @@
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PresentationLayer.ViewModel;
 using System.Diagnostics;
 
 

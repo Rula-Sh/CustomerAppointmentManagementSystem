@@ -1,14 +1,9 @@
-﻿using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
 using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
-using Microsoft.AspNet.Identity;
 using AutoMapper;
+using PresentationLayer.ViewModel;
 
 namespace PresentationLayer.Controllers
 {
