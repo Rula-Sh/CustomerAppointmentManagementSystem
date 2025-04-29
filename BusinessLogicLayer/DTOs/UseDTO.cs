@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataAccessLayer.Models.ViewModel
+{
+    public class UseDTO
+    {
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string FullName { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime LastActivityDate { get; set; }
+        public string LastActivity { get; set; }
+
+        public IEnumerable<string> Roles { get; set; }
+    }
+
+}
