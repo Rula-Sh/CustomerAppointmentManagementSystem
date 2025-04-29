@@ -14,35 +14,35 @@ namespace BusinessLogicLayer.Helpers
         public AutoMapperProfile()
         {
             // -------------------- GET --------------------
-            CreateMap<User, UserViewModel>()
+            CreateMap<User, UseDTO>()
                 .ForMember(dest => dest.LastActivity, opt => opt.MapFrom(src => TimeDifferenceHelper.getTimeDifference(src.LastActivityDate)))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore());
                 //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
 
-            CreateMap<Service, ServiceViewModel>()
+            CreateMap<Service, ServiceDTO>()
                 .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
-            CreateMap<ServiceDate, DateTimeSlotGroupViewModel>()
+            CreateMap<ServiceDate, DateTimeSlotGroupDTO>()
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString()))
                 .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src.ServiceTimeSlots.Select(t => t.Time).ToList()));
 
-            CreateMap<Appointment, AppointmentViewModel>();
+            CreateMap<Appointment, AppointmentDTO>();
 
-            CreateMap<Service, BookAppointmentViewModel>();
+            CreateMap<Service, BookAppointmentDTO>();
 
-            CreateMap<Appointment, ActiveAppointmentViewModel>()
+            CreateMap<Appointment, ActiveAppointmentDTO>()
             .ForMember(dest => dest.CustomerName,opt => opt.MapFrom(src => src.Customer.FullName)) 
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Date))
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name));
 
             // -------------------- POST --------------------
             // create a service
-            CreateMap<ServiceViewModel, Service >()
+            CreateMap<ServiceDTO, Service >()
                 .ForMember(dest => dest.ServiceDates, opt => opt.MapFrom(src => src.DateTimeSlotGroups));
-            CreateMap<DateTimeSlotGroupViewModel, ServiceDate>()
+            CreateMap<DateTimeSlotGroupDTO, ServiceDate>()
                 .ForMember(dest => dest.Date, opt => opt.MapFrom<DateOnlyResolver>())
                 .ForMember(dest => dest.ServiceTimeSlots, opt => opt.MapFrom(src => src.TimeSlots.Select(t => new ServiceTimeSlot { Time = t }).ToList()));
             //create an appointment
-            CreateMap<BookAppointmentViewModel, Appointment>()
+            CreateMap<BookAppointmentDTO, Appointment>()
             .ForMember(dest => dest.CustomerId, opt => opt.Ignore())
             .ForMember(dest => dest.EmployeeId, opt => opt.Ignore())
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ServiceName))

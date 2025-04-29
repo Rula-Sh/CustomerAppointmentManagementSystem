@@ -11,13 +11,13 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IManageAppointments
     {
-        Task<List<AppointmentViewModel>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
-        Task<BookAppointmentViewModel> ViewAddAppointment();
-        Task addAppointment(BookAppointmentViewModel model, ClaimsPrincipal user);
-        Task<AppointmentViewModel> appointmentDetails(int? id);
+        Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
+        Task<BookAppointmentDTO> ViewAddAppointment();
+        Task addAppointment(BookAppointmentDTO model, ClaimsPrincipal user);
+        Task<AppointmentDTO> appointmentDetails(int? id);
         Task<Appointment> getAppointmentById(int? id);
         Task deleteAppointment(Appointment appointment);
-        Task<List<AppointmentViewModel>> getPendingAppointments(ClaimsPrincipal user);
+        Task<List<AppointmentDTO>> getPendingAppointments(ClaimsPrincipal user);
         Task updateAppointment(Appointment appointment);
 
         string getEmployeeNameWithMostCompleteAndApprovedAppointments();
@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.Interfaces
         List<int> getTotalApprovedAppointemntPerWeek();
         List<int> GetAppointmentsStatusCount();
         Task<List<int>> getTotalAppointmentsPerService();
-        Task<List<ActiveAppointmentViewModel>> getTodaysAppointments();
+        Task<List<ActiveAppointmentDTO>> getTodaysAppointments();
         int GetTotalAppointments();
     }
 }

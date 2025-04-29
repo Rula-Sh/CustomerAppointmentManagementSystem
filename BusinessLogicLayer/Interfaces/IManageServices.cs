@@ -11,10 +11,10 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IManageServices
     {
-        Task<List<ServiceViewModel>> GetServices();
+        Task<List<ServiceDTO>> GetServices();
         Task addService(Service service);
         Task<Service> getService(int? id);
-        ServiceViewModel getSelectedServiceDetails(Service service);
+        ServiceDTO getSelectedServiceDetails(Service service);
         Task DeleteService(Service service);
         Task<Service> getServiceById(int? id);
 

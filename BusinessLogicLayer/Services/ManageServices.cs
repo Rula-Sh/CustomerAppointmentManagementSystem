@@ -23,7 +23,7 @@ namespace BusinessLogicLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ServiceViewModel>> GetServices()
+        public async Task<List<ServiceDTO>> GetServices()
         {
             /*var services = await _context.Services.Select(s => new ServiceViewModel
             {
@@ -41,7 +41,7 @@ namespace BusinessLogicLayer.Services
             // using AutoMapper
             var servcies = await _context.Services.Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
 
-            var servicesViewModel = _mapper.Map<List<ServiceViewModel>>(servcies);
+            var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
 
 
             return servicesViewModel;
@@ -62,7 +62,7 @@ namespace BusinessLogicLayer.Services
 
             return service;
         }
-        public ServiceViewModel getSelectedServiceDetails(Service service)
+        public ServiceDTO getSelectedServiceDetails(Service service)
         {
             /*var serviceViewModel = new ServiceViewModel
             {
@@ -77,7 +77,7 @@ namespace BusinessLogicLayer.Services
                 }).ToList()
             };*/
             // using AutoMapper
-            var serviceViewModel = _mapper.Map<ServiceViewModel>(service);
+            var serviceViewModel = _mapper.Map<ServiceDTO>(service);
 
             return serviceViewModel;
         }
