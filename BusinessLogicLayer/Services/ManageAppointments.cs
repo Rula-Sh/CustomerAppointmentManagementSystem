@@ -1,19 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using static Azure.Core.HttpHeader;
-
 namespace BusinessLogicLayer.Services
 {
     public class ManageAppointments : IManageAppointments

@@ -1,11 +1,6 @@
-﻿using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BusinessLogicLayer.DTOs;
+using DataAccessLayer.Models;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Interfaces
 {
