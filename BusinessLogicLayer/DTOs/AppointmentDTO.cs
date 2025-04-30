@@ -1,4 +1,6 @@
-﻿namespace BusinessLogicLayer.DTOs
+﻿using DataAccessLayer.Models;
+
+namespace BusinessLogicLayer.DTOs
 {
     public class AppointmentDTO
     {
@@ -16,10 +18,10 @@
 
         // Navigation properties
         // One-to-Many relationship (User[Employee/Customer] and Appointment) *** Foreign keys included on top
-        public virtual UserDTO Customer { get; set; }
-        public virtual UserDTO Employee { get; set; }
+        public virtual User Customer { get; set; }
+        public virtual User Employee { get; set; }
 
         // Many-to-Many relationship (Appointment and Service)
-        public virtual ICollection<AppointmentServiceDTO> AppointmentServices { get; set; }
+        public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
     }
 }
