@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
 using AutoMapper;
-using PresentationLayer.ViewModel;
+using PresentationLayer.ViewModels;
 
 namespace PresentationLayer.Controllers
 {

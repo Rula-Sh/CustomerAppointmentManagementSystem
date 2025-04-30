@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.Models;
 
-namespace PresentationLayer.ViewModel
+namespace PresentationLayer.ViewModels
 {
     public class AppointmentViewModel
     {

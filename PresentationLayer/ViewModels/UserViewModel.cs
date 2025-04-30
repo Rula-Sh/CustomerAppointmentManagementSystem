@@ -1,5 +1,5 @@
-﻿namespace PresentationLayer.ViewModel
-{
+﻿namespace PresentationLayer.ViewModels
+{   
     public class UserViewModel
     {
         public int Id { get; set; }

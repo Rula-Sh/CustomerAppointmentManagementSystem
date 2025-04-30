@@ -1,4 +1,4 @@
-﻿namespace PresentationLayer.ViewModel
+﻿namespace PresentationLayer.ViewModels
 {
     public class DateTimeSlotGroupViewModel
     {
