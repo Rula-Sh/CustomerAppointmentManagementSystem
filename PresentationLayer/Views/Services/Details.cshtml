@@ -1,4 +1,4 @@
-﻿@model Service
+﻿@model ServiceViewModel
 
 @{
     ViewData["Title"] = "@Model.Name  Details";
@@ -8,9 +8,9 @@
     <span><strong>Price: </strong>@Model.Price JD</span>
     <p>
         Available in:
-        @foreach (var availability in Model.ServiceDates)
+        @foreach (var DateTimeSlotGroup in Model.DateTimeSlotGroups)
         {
-            <span>@availability.Date -- </span>
+            <span>@DateTimeSlotGroup.Date -- </span>
         }
     </p>
     <div>
