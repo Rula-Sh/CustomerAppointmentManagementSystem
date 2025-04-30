@@ -5,6 +5,7 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Interfaces;
+using PresentationLayer.Mapper;
 using BusinessLogicLayer.Helpers;
 //using DataAccessLayer.Repositories;
 //using DataAccessLayer.Repositories.Contracts;
@@ -36,7 +37,8 @@ builder.Services.AddScoped<IManageUsers,ManageUsers>();
 builder.Services.AddScoped<IManageServices, ManageServices>();
 builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
 
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddAutoMapper(typeof(BLLAutoMapperProfile));
+builder.Services.AddAutoMapper(typeof(PLAutoMapperProfile));
 
 
 
