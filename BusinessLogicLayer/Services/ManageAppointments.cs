@@ -69,7 +69,7 @@ namespace BusinessLogicLayer.Services
             // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
         }
 
-        public async Task addAppointment(BookAppointmentDTO model, ClaimsPrincipal user)
+        public async Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user)
         {
             /*var appointment = new Appointment
             {
@@ -85,7 +85,7 @@ namespace BusinessLogicLayer.Services
                 Notes = "",
             };*/
             // using AutoMapper
-            var appointment = _mapper.Map<Appointment>(model);
+            var appointment = _mapper.Map<Appointment>(bookAppointmentDTO);
             appointment.CustomerId = Int32.Parse(_manageUsers.GetUserId(user));
             appointment.EmployeeId = 1; // again hardcod because of FK issues
 
@@ -123,7 +123,8 @@ namespace BusinessLogicLayer.Services
 
         public async Task<Appointment> getAppointmentById(int? id)
         {
-            return await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            var appointment =  await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            return _mapper.Map<Appointment>(appointment);
             // in other codes it was SingleOrDefaultAsync
         }
 
@@ -149,7 +150,7 @@ namespace BusinessLogicLayer.Services
             }).ToListAsync();
             return appointments;*/
             // using AutoMapper
-            var appointments = await _context.Appointments.Where(a => a.Status == "Pending").ToListAsync();
+            var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Employee).Where(a => a.Status == "Pending").ToListAsync();
             var appointmentsViewModel = _mapper.Map<List<AppointmentDTO>>(appointments);
 
             return appointmentsViewModel;
