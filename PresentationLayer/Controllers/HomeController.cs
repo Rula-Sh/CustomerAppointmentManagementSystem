@@ -1,9 +1,11 @@
+using AutoMapper;
+using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PresentationLayer.ViewModel;
+using PresentationLayer.ViewModels;
 using System.Diagnostics;
 
 
@@ -14,14 +16,17 @@ namespace PresentationLayer.Controllers
         private readonly IManageUsers _manageUsers;
         private readonly IManageServices _manageServices;
         private readonly IManageAppointments _manageAppointments;
+        private readonly IMapper _mapper;
 
         public HomeController(IManageUsers manageUsers,
                               IManageServices manageServices,
-                              IManageAppointments manageappointments)
+                              IManageAppointments manageappointments,
+                              IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
             _manageAppointments = manageappointments;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -33,7 +38,8 @@ namespace PresentationLayer.Controllers
 
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
+            var appointmentsDTOs = await _manageAppointments.getAppointmentsBasedOnRole(User);
+            var appointments = _mapper.Map<List<AppointmentViewModel>>(appointmentsDTOs);
 
             return View(appointments);
         }
@@ -43,9 +49,11 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var viewModel = await _manageAppointments.ViewAddAppointment();
+            var appointmentDTO = await _manageAppointments.ViewAddAppointment();
 
-            return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects BookAppointmentViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
+            var bookAppointmentViewModel = _mapper.Map<BookAppointmentViewModel>(appointmentDTO);
+
+            return View(bookAppointmentViewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects BookAppointmentViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
 
         }
 
@@ -56,11 +64,12 @@ namespace PresentationLayer.Controllers
             await _manageUsers.UpdateUserLastActivityDate(User);
 
             var service = await _manageServices.getService(serviceId);
+            var serviceViewModel = _mapper.Map<ServiceViewModel>(service);
 
             if (service == null)
                 return NotFound();
 
-            var serviceViewModel = _manageServices.getSelectedServiceDetails(service);
+            //var serviceViewModel = _manageServices.getSelectedServiceDetails(service);
 
             return Json(serviceViewModel);
             // this returns a the serviceViewModel as a JSON object... wraps it in an HTTP response... then sends it to the client browser
@@ -77,8 +86,9 @@ namespace PresentationLayer.Controllers
             {
                 return View(model);
             }
+            var bookAppointmentDTO = _mapper.Map<BookAppointmentDTO>(model);
 
-            await _manageAppointments.addAppointment(model, User);
+            await _manageAppointments.addAppointment(bookAppointmentDTO, User);
 
             return RedirectToAction("Index");
         }
@@ -91,10 +101,12 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var appointment = await _manageAppointments.appointmentDetails(id);
+            var appointmentDTO = await _manageAppointments.appointmentDetails(id);
 
-            if (appointment == null)
+            if (appointmentDTO == null)
                 return NotFound();
+
+            var appointment = _mapper.Map<AppointmentViewModel>(appointmentDTO);
 
             return View("Details", appointment);
         }
@@ -124,7 +136,8 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var appointments = await _manageAppointments.getPendingAppointments(User);
+            var appointmentsDTO = await _manageAppointments.getPendingAppointments(User);
+            var appointments = _mapper.Map<List<AppointmentViewModel>>(appointmentsDTO);
 
             return View(appointments);
         }
