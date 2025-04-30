@@ -8,7 +8,7 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
         Task<BookAppointmentDTO> ViewAddAppointment();
-        Task addAppointment(BookAppointmentDTO model, ClaimsPrincipal user);
+        Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user);
         Task<AppointmentDTO> appointmentDetails(int? id);
         Task<Appointment> getAppointmentById(int? id);
         Task deleteAppointment(Appointment appointment);
