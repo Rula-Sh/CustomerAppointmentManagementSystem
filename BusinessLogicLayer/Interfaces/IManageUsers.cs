@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Models;
+﻿using BusinessLogicLayer.DTOs;
+using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IManageUsers
     {
-        Task<List<User>> GetUsers();
-        Task<List<string>> GetRoles(User user);
+        Task<List<UserDTO>> GetUsers();
+        Task<List<string>> GetRoles(UserDTO userDTO);
         string GetUserId(ClaimsPrincipal user);
         Task<User> GetUserById(ClaimsPrincipal user);
         Task UpdateUserLastActivityDate(ClaimsPrincipal user);
