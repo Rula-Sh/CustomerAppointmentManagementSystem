@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
-using DataAccessLayer.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -47,24 +47,81 @@ namespace BusinessLogicLayer.Services
             return servicesViewModel;
         }
 
-        public async Task addService(Service service)
+        public async Task addService(ServiceDTO serviceDTO)
         {
+
+            // create Service
+            /*var service = new Service
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Duration = model.Duration,
+                Price = model.Price,
+                ServiceDates = new List<ServiceDate>()
+            };*/
+            // using AutoMapper
+            var service = _mapper.Map<Service>(serviceDTO);
+
+            // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
+            foreach (var group in serviceDTO.DateTimeSlotGroups)
+            {
+                // parse the date string into DateOnly for Date prop in ServiceDate
+                if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
+                {
+                    // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
+                    //ModelState.AddModelError("", $"Invalid date format: {group.Date}");
+                    return;
+                }
+
+                // create ServiceDate
+                /*var serviceDate = new ServiceDate
+                {
+                    ServiceId = service.Id, // to link it to Services Table
+                    Date = date,
+                    ServiceTimeSlots = new List<ServiceTimeSlot>()
+                };*/
+                // using AutoMapper
+                var serviceDate = _mapper.Map<ServiceDate>(group);
+                serviceDate.Date = date;
+
+                foreach (var time in group.TimeSlots)
+                {
+                    // create ServiceTimeSlot
+                    /*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    });*/
+                    // using AutoMapper
+                    var serviceTimeSlot = new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    };
+
+                    serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
+
+                }
+
+                service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
+            }
+
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Service> getService(int? id)
+        public async Task<ServiceDTO> getService(int? id)
         {
             var service = await _context.Services
                 .Include(p => p.ServiceDates)
                 .ThenInclude(d => d.ServiceTimeSlots)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
-            return service;
+            return _mapper.Map<ServiceDTO>(service);
         }
-        public ServiceDTO getSelectedServiceDetails(Service service)
+/*        public ServiceDTO getSelectedServiceDetails(Service service)
         {
-            /*var serviceViewModel = new ServiceViewModel
+            *//*var serviceViewModel = new ServiceViewModel
             {
                 Id = service.Id,
                 Name = service.Name,
@@ -75,23 +132,32 @@ namespace BusinessLogicLayer.Services
                     Date = d.Date.ToString(),
                     TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
                 }).ToList()
-            };*/
+            };*//*
             // using AutoMapper
             var serviceViewModel = _mapper.Map<ServiceDTO>(service);
 
             return serviceViewModel;
-        }
+        }*/
 
-        public async Task<Service> getServiceById(int? id)
+        public async Task<ServiceDTO> getServiceById(int? id)
         {
-            return await _context.Services.FirstOrDefaultAsync(a => a.Id == id);
+            var service = await _context.Services.FirstOrDefaultAsync(a => a.Id == id);
             // in other codes it was SingleOrDefaultAsync
+            return _mapper.Map<ServiceDTO>(service);
         }
 
-        public async Task DeleteService(Service service)
+        public async Task DeleteService(ServiceDTO serviceDTO)
         {
-            _context.Services.Remove(service);
-            await _context.SaveChangesAsync();
+            var existingService = await _context.Services.FindAsync(serviceDTO.Id);
+            if (existingService != null)
+            {
+                _context.Services.Remove(existingService);
+                await _context.SaveChangesAsync();
+            }
+
+            //var service = _mapper.Map<Service>(serviceDTO);
+            //_context.Services.Remove(service);
+            //await _context.SaveChangesAsync();
         }
 
         public string GetMostBookedServiceName()
