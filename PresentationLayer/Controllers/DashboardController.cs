@@ -1,10 +1,11 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PresentationLayer.ViewModel;
+using PresentationLayer.ViewModels;
 using System.Globalization;
 
 namespace PresentationLayer.Controllers
@@ -15,13 +16,15 @@ namespace PresentationLayer.Controllers
         private readonly IManageUsers _manageUsers;
         private readonly IManageServices _manageServices;
         private readonly IManageAppointments _manageAppointments;
+        private readonly IMapper _mapper;
         const string usersPath = "~/Views/Admin/Dashboard/Index.cshtml";
 
-        public DashboardController(IManageUsers manageUsers, IManageServices manageServices, IManageAppointments manageAppointments)
+        public DashboardController(IManageUsers manageUsers, IManageServices manageServices, IManageAppointments manageAppointments, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
             _manageAppointments = manageAppointments;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -61,8 +64,8 @@ namespace PresentationLayer.Controllers
 
             // --------------------- Active Customers ---------------------
 
-            var activeAppointments = await _manageAppointments.getTodaysAppointments();
-
+            var activeAppointmentsDTOs = await _manageAppointments.getTodaysAppointments();
+            var activeAppointments = _mapper.Map<List<ActiveAppointmentViewModel>>(activeAppointmentsDTOs);
 
             var model = new DashboardViewModel
             {
