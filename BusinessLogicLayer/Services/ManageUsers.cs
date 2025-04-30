@@ -1,4 +1,6 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLogicLayer.DTOs;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -11,20 +13,24 @@ namespace BusinessLogicLayer.Services
     {
         private readonly UserManager<User> _userManager; // UserManager<User> is a class that provides APIs for managing users in an application. It is part of the ASP.NET Identity system, which is used to handle authentication, authorization, and user management.
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ManageUsers(UserManager<User> userManager, ApplicationDbContext context)
+        public ManageUsers(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<UserDTO>> GetUsers()
         {
-            return await _userManager.Users.ToListAsync();
+            var user = await _userManager.Users.ToListAsync();
+            return _mapper.Map<List<UserDTO>>(user);
         }
 
-        public async Task<List<string>> GetRoles(User user)
+        public async Task<List<string>> GetRoles(UserDTO userDTO)
         {
+            var user = _mapper.Map<User>(userDTO);
             return (List<string>)await _userManager.GetRolesAsync(user);
         }
 
@@ -38,6 +44,7 @@ namespace BusinessLogicLayer.Services
         {
             return await _userManager.FindByIdAsync(GetUserId(user));
             // OR:  _context.Users.SingleOrDefault(a => a.Id == userId);
+            //return _mapper.Map<UserDTO>(gottenUser);
 
         }
 
@@ -46,8 +53,18 @@ namespace BusinessLogicLayer.Services
             var currentUser = await GetUserById(user);
             if (currentUser != null)
             {
-                currentUser.LastActivityDate = DateTime.Now; //.UtcNow
-                _context.SaveChanges();
+                currentUser.LastActivityDate = DateTime.Now; // or DateTime.UtcNow if needed
+
+                // Ensure the entity is tracked
+                var entry = _context.Entry(currentUser);
+                if (entry.State == EntityState.Detached)
+                {
+                    _context.Attach(currentUser);  // Attach if it's detached
+                    // Mark the entity as modified if necessary
+                    _context.Entry(currentUser).State = EntityState.Modified;
+
+                    await _context.SaveChangesAsync();
+                }
             }
         }
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
