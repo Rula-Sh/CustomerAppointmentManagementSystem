@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PresentationLayer.ViewModel;
+using PresentationLayer.ViewModels;
 
 namespace PresentationLayer.Controllers
 {
@@ -33,7 +34,8 @@ namespace PresentationLayer.Controllers
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
             //return View(services);
 
-            var services = await _manageServices.GetServices();
+            var servicesDTO = await _manageServices.GetServices();
+            var services = _mapper.Map<List<ServiceViewModel>>(servicesDTO);
 
             return View(services);
         }
@@ -66,15 +68,16 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
-            // create Service
-            /*var service = new Service
+            var service = _mapper.Map<ServiceDTO>(model);
+            /*// create Service
+            *//*var service = new Service
             {
                 Name = model.Name,
                 Description = model.Description,
                 Duration = model.Duration,
                 Price = model.Price,
                 ServiceDates = new List<ServiceDate>()
-            };*/
+            };*//*
             // using AutoMapper
             var service = _mapper.Map<Service>(model);
 
@@ -90,12 +93,12 @@ namespace PresentationLayer.Controllers
                 }
 
                 // create ServiceDate
-                /*var serviceDate = new ServiceDate
+                *//*var serviceDate = new ServiceDate
                 {
                     ServiceId = service.Id, // to link it to Services Table
                     Date = date,
                     ServiceTimeSlots = new List<ServiceTimeSlot>()
-                };*/
+                };*//*
                 // using AutoMapper
                 var serviceDate = _mapper.Map<ServiceDate>(group);
                 serviceDate.Date = date;
@@ -103,11 +106,11 @@ namespace PresentationLayer.Controllers
                 foreach (var time in group.TimeSlots)
                 {
                     // create ServiceTimeSlot
-                    /*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    *//*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
                     {
                         ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
                         Time = time
-                    });*/
+                    });*//*
                     // using AutoMapper
                     var serviceTimeSlot = new ServiceTimeSlot
                     {
@@ -120,7 +123,7 @@ namespace PresentationLayer.Controllers
                 }
 
                 service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
-            }
+            }*/
 
             // update DB
             await _manageServices.addService(service);
@@ -135,10 +138,12 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var service = await _manageServices.getService(id);
+            var serviceDTO = await _manageServices.getService(id);
 
-            if (service == null)
+            if (serviceDTO == null)
                 return NotFound();
+
+            var service = _mapper.Map<ServiceViewModel>(serviceDTO);
 
             return View("Details", service);
         }
