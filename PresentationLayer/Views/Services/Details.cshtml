@@ -19,7 +19,7 @@
     </div>
     <div class="column col-6">
         <div class="row">
-            <div class="tab column col-sm-4  ps-0 pe-0">
+            <div class="tab column col-sm-4  ps-0 pe-0 rounded-start">
                 <p class="w-100 text-center m-0 mt-1"><strong>Date</strong></p>
                 @foreach (var date in Model.DateTimeSlotGroups)
                 {
@@ -31,7 +31,7 @@
                 @foreach (var date in Model.DateTimeSlotGroups)
                 {
                     var formattedDate = FormatDate(date.Date);
-                    <div id="@formattedDate" class="tabcontent h-100">
+                    <div id="@formattedDate" class="tabcontent h-100 rounded-end">
                         <p class="w-100 text-center m-0 mt-1"><strong>Times Available</strong></p>
                         <div class="p-3 text-center ">
                         @foreach (var timeSlot in date.TimeSlots)
