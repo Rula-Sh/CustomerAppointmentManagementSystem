@@ -88,7 +88,10 @@
                 const dateDropdown = document.getElementById('serviceDatesList'); 
                 dateDropdown.innerHTML = '<option value="">-- Select a Date --</option>';
                 data.dateTimeSlotGroups.forEach(group => {
-                    const dateStr = new Date(group.date).toLocaleDateString(); 
+                    // const dateStr = new Date(group.date).toLocaleDateString(); 
+                    const [day, month, year] = group.date.split('/');
+                    const validDate = new Date(`${year}-${month}-${day}`); // Convert to yyyy-MM-dd format
+                    const dateStr = new Intl.DateTimeFormat('en-GB').format(validDate); // en-GB uses dd/MM/yyyy format
                     group.timeSlots.forEach(time => { 
                         const option = document.createElement('option');
                         //  option.value = group.date;

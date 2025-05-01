@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTOs;
 using DataAccessLayer.Models;
+using System.Globalization;
 
 namespace BusinessLogicLayer.Helpers
 {
@@ -18,7 +19,7 @@ namespace BusinessLogicLayer.Helpers
             CreateMap<Service, ServiceDTO>()
                 .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
             CreateMap<ServiceDate, DateTimeSlotGroupDTO>()
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString()))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)))
                 .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src.ServiceTimeSlots.Select(t => t.Time).ToList()));
 
             CreateMap<Appointment, AppointmentDTO>();
