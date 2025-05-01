@@ -51,7 +51,7 @@
         $(function () {
 
         var modelDate= "@Model.Date.Split(" - ")[0]";
-         var dateParts = modelDate.split('/');
+        var dateParts = modelDate.split('/');
         var appointmentDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]); // yyyy, mm-1, dd
 
             $("#DatePicker").datepicker({
