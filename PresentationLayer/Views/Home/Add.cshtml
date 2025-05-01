@@ -23,7 +23,8 @@
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <input id="serviceId" type="hidden" asp-for="ServiceId" />
-                <select class="form-control" id="servicesList" asp-for="ServiceName">
+                <input id="ServiceName" type="hidden" asp-for="ServiceName" />
+                <select class="form-control" id="servicesList">
                     <option value="">-- Select a Service --</option>
                     @foreach(var service in Model.Services)
                     {
@@ -84,6 +85,7 @@
                 document.getElementById('serviceDescription').textContent = `${data.description}`;
                     $('#priceInput').val(data.price);
                     $('#serviceId').val(serviceId);
+                    $('#ServiceName').val(`${data.name}`);
 
                 const dateDropdown = document.getElementById('serviceDatesList'); 
                 dateDropdown.innerHTML = '<option value="">-- Select a Date --</option>';
@@ -96,9 +98,9 @@
                         const option = document.createElement('option');
                         //  option.value = group.date;
                         // option.textContent = new Date(group.date).toLocaleDateString();
-                        option.value = `${group.date} - ${time}`; 
+                        option.value = `${dateStr} - ${time}`;
                         option.textContent = `${dateStr} ${time}`; 
-                        dateDropdown.appendChild(option); 
+                        dateDropdown.appendChild(option);
                     }); 
                 }); 
                 }).catch(err => console.error('Error loading service details:', err)); 
