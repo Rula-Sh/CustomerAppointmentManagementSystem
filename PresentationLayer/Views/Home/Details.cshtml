@@ -3,19 +3,71 @@
 @{
     ViewData["Title"] = "Appointment";
 }
+<div class="row border border-2 rounded-5 mt-4 p-4 border-opacity-10">
+    <div class="column col-6 card-body d-flex flex-column justify-content-between">
 
-<div class="card-body d-flex flex-column justify-content-between">
-    <h5 class="card-title">@Model.Name Service</h5>
-    <span><strong>Customer: </strong>@Model.Customer.FullName</span>
-    <span><strong>Employee: </strong>@Model.Employee.FullName</span>
-    <span><strong>Date: </strong>@Model.Date</span>
-    <span><strong>Status: </strong>@Model.Status</span>
-    <span><strong>Notes: </strong>@Model.Notes</span>
+        <h2 class="card-title mb-4">@Model.Name Service</h2>
 
-    <div>
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i>
-            Go Back
-        </a>
+        <p><strong>Customer: </strong>@Model.Customer.FullName</p>
+        <p><strong>Employee: </strong>@Model.Employee.FullName</p>
+        <p><strong>Date: </strong>@Model.Date</p>
+        <p>
+            <strong>Status: </strong>
+
+            @if (Model.Status == "Approved")
+            {
+                <span>🔵</span>
+            }
+            else if (Model.Status == "Completed")
+            {
+                <span>🟢</span>
+            }
+            @* I know that there Pending and Rejected Appointments can be viewed but i placed it there incase if i wanted to show them later*@
+            else if (Model.Status == "Pending")
+            {
+                <span>🟠</span>
+            }
+            else if (Model.Status == "Rejected")
+            {
+                <span>🔴</span>
+            }
+            @Model.Status
+        </p>
+        <p><strong>Notes: </strong>@Model.Notes</p>
+    </div>
+    <div class="column col-6 datepicker" id="DatePicker">
     </div>
 </div>
+<div>
+    <a asp-action="Index" class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left"></i>
+        Go Back
+    </a>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(function () {
+
+        var modelDate= "@Model.Date.Split(" - ")[0]";
+         var dateParts = modelDate.split('/');
+        var appointmentDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]); // yyyy, mm-1, dd
+
+            $("#DatePicker").datepicker({
+                dateFormat: "dd/MM/yyyy",
+                defaultDate: appointmentDate,
+                beforeShowDay: function (date) {
+                    // disable all dates but the appointment date
+                    if (date.getFullYear() === appointmentDate.getFullYear() &&
+                        date.getMonth() === appointmentDate.getMonth() &&
+                        date.getDate() === appointmentDate.getDate()) {
+                        return [true, '']; // enable only the appointment date
+                    }
+                    return [false, '']; // disable all other dates
+                }
+            });
+
+        });
+    </script>
+}
