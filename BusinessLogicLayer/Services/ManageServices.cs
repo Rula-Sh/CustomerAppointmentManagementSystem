@@ -49,16 +49,16 @@ namespace BusinessLogicLayer.Services
 
         public async Task addService(ServiceDTO serviceDTO)
         {
-
+/*
             // create Service
-            /*var service = new Service
+            *//*var service = new Service
             {
                 Name = model.Name,
                 Description = model.Description,
                 Duration = model.Duration,
                 Price = model.Price,
                 ServiceDates = new List<ServiceDate>()
-            };*/
+            };*//*
             // using AutoMapper
             var service = _mapper.Map<Service>(serviceDTO);
 
@@ -74,12 +74,12 @@ namespace BusinessLogicLayer.Services
                 }
 
                 // create ServiceDate
-                /*var serviceDate = new ServiceDate
+                *//*var serviceDate = new ServiceDate
                 {
                     ServiceId = service.Id, // to link it to Services Table
                     Date = date,
                     ServiceTimeSlots = new List<ServiceTimeSlot>()
-                };*/
+                };*//*
                 // using AutoMapper
                 var serviceDate = _mapper.Map<ServiceDate>(group);
                 serviceDate.Date = date;
@@ -87,11 +87,11 @@ namespace BusinessLogicLayer.Services
                 foreach (var time in group.TimeSlots)
                 {
                     // create ServiceTimeSlot
-                    /*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    *//*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
                     {
                         ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
                         Time = time
-                    });*/
+                    });*//*
                     // using AutoMapper
                     var serviceTimeSlot = new ServiceTimeSlot
                     {
@@ -104,7 +104,8 @@ namespace BusinessLogicLayer.Services
                 }
 
                 service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
-            }
+            }*/
+            var service = _mapper.Map<Service>(serviceDTO);
 
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
