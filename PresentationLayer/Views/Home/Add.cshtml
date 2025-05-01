@@ -10,7 +10,7 @@
 
 <form method="post" asp-action="Add" enctype="multipart/form-data">
 
-    <div class="row justify-content-between">
+    <div class="row justify-content-around">
         <div class="col-md-6">
             @* columns medium 4 *@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
@@ -19,7 +19,7 @@
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
 
             <div class="form-group">
-                <label class="text-muted" asp-for="Services"></label>
+                <label class="text-muted" asp-for="Services"><strong>Service</strong></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <input id="serviceId" type="hidden" asp-for="ServiceId" />
@@ -36,13 +36,13 @@
             </div>
 
             <div class="form-group mt-3">
-                <p>Price: <span id="servicePrice" asp-for="ServicePrice"></span></p>
+                <p><strong>Price: </strong> <span id="servicePrice" asp-for="ServicePrice"></span></p>
                 <input id="priceInput" type="hidden" asp-for="ServicePrice" />
-                <p>Description:  <span id="serviceDescription"></span></p>
+                <p><strong>Description: </strong> <span id="serviceDescription"></span></p>
             </div>
 
             <div class="form-group">
-                <label class="text-muted" asp-for="Date"></label>
+                <label class="text-muted" asp-for="Date"><strong>Date</strong></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <select class="form-control" id="serviceDatesList" asp-for="Date">
@@ -52,20 +52,26 @@
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-4">
-                <i class="bi bi-check"></i>
-                Submit
-            </button>
-            <a asp-action="Index" class="btn btn-outline-secondary mt-4">
-                <i class="bi bi-x"></i>
-                Cancel
-            </a>
+            <div class="mb-4">
+                <button type="submit" class="btn btn-primary mt-4">
+                    <i class="bi bi-check"></i>
+                    Submit
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary mt-4">
+                    <i class="bi bi-x"></i>
+                    Cancel
+                </a>
+            </div>
         </div>
-        <div class="col-md-5 m-2">
-            <div id="selectedServicesContainer" class="mt-3"></div>
+
+        <div class="col-5 datepicker" id="selectedDatePicker">
         </div>
+        @* <div class="col-md-5 m-2"> *@
+        @*     <div id="selectedServicesContainer" class="mt-3"></div> *@
+        @* </div> *@
     </div>
 </form>
+
 
 
 @section Scripts {
@@ -130,10 +136,11 @@
             });
 
 
-            // hide alert when user selects a service
+            // hide alert when user selects a date
             dateSelect.addEventListener("change", function () {
                 if (dateSelect.value) {
                     selectDateAlert.style.display = "none";
+                    onDateSelect(dateSelect.value);
                 }
             });
 
@@ -162,6 +169,35 @@
                 }
             });
         });
+
+        function onDateSelect(date) {
+
+                var modelDate= date.split(" ")[0];
+                var dateParts = modelDate.split('/');
+                var selectedAppointmentDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+
+                console.log(modelDate);
+                console.log(dateParts);
+                console.log(selectedAppointmentDate);
+
+
+                // destroy datepicker if existed
+                $("#selectedDatePicker").datepicker("destroy");
+
+                $("#selectedDatePicker").datepicker({
+                    dateFormat: "dd/MM/yyyy",
+                    defaultDate: selectedAppointmentDate,
+                    beforeShowDay: function (date) {
+                        // disable all dates but the appointment date
+                        if (date.getFullYear() === selectedAppointmentDate.getFullYear() &&
+                            date.getMonth() === selectedAppointmentDate.getMonth() &&
+                            date.getDate() === selectedAppointmentDate.getDate()) {
+                            return [true, '']; // enable only the appointment date
+                        }
+                        return [false, '']; // disable all other dates
+                    }
+                });
+            };
 
 
     </script>
