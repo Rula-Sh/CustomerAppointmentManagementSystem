@@ -30,7 +30,7 @@ body {
   text-align: start;
 }
 
-/* project cutomization */
+/* ===================================== project cutomization ===================================== */
 
 .profile-picutre {
     height: 295px;
@@ -60,7 +60,7 @@ body {
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: #cce0ff;
 }
 
 /* style dates buttons that are used to open Times Available content */
@@ -73,17 +73,20 @@ body {
 
 /* change background color of buttons on hover */
 .tab button:hover {
-    background-color: #ddd;
+    background-color: #99c2ff;
 }
 
 /* create an active/current tablink class */
-.tab button.active {
-    background-color: #ccc;
-}
+    .tab button.active {
+        background-color: #4d94ff;
+        color: white;
+        border-radius: 5px;
+    }
 
 /* style Times Available content */
 .tabcontent {
     display: none;
     border: 1px solid #ccc;
     border-left: none;
+    background-color: #e6f0ff;
 }
