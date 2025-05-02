@@ -31,6 +31,9 @@ namespace BusinessLogicLayer.Helpers
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Date))
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name));
 
+
+            CreateMap<Notification, NotificationDTO>();
+
             // -------------------- POST --------------------
             // create a service
             CreateMap<ServiceDTO, Service >()
@@ -49,6 +52,10 @@ namespace BusinessLogicLayer.Helpers
 
 
             CreateMap<AppointmentDTO, Appointment>();
+
+            CreateMap<NotificationDTO, Notification>()
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now))
+            .ForMember(dest => dest.IsRead, opt => opt.MapFrom(_ => false));
 
 
             /*// -------------------- GET --------------------
