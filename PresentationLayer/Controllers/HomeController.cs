@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -51,12 +51,16 @@ namespace PresentationLayer.Controllers
 
             //var appointmentDTO = await _manageAppointments.ViewAddAppointment();
 
+            // Note: ManageAppointments was calling IManageServices.GetServices(), which caused: ManageAppointments → ManageServices → ManageAppointments (circular reference).
+            // to fix this, I moved ViewAddAppointment code here (in home controller) to keep the business logic layers independent and preventing InvalidOperationException from DI container.
+            // this svoided circular dependency between ManageAppointments and ManageServices
+
             var services = await _manageServices.GetServices();
             var appointmentDTO = new BookAppointmentDTO
             {
                 Services = services,
             };
-            // i  don�t need AutoMapper here because I'm not really mapping anything � just assigning a list to a property. 
+            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
 
             var bookAppointmentViewModel = _mapper.Map<BookAppointmentViewModel>(appointmentDTO);
 
@@ -166,7 +170,7 @@ namespace PresentationLayer.Controllers
             appointment.Status = "Approved";
             appointment.EmployeeId = Int32.Parse(User.Identity.GetUserId());
             appointment.Notes = notes;
-            //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally � so there's no real need to map it to a ViewModel:
+            //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
             // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
 
             await _manageAppointments.updateAppointment(appointment);
