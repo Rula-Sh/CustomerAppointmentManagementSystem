@@ -15,11 +15,13 @@ namespace BusinessLogicLayer.Services
     public class ManageServices : IManageServices
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationManager _notificationsManager;
         private readonly IMapper _mapper;    
 
-        public ManageServices(ApplicationDbContext context, IMapper mapper)
+        public ManageServices(ApplicationDbContext context, INotificationManager notificationsManager, IMapper mapper)
         {
             _context = context;
+            _notificationsManager = notificationsManager;
             _mapper = mapper;
         }
 
@@ -149,6 +151,8 @@ namespace BusinessLogicLayer.Services
 
         public async Task DeleteService(ServiceDTO serviceDTO)
         {
+            await _notificationsManager.CreateNotificationOnServiceDelete(serviceDTO.Id);
+
             var existingService = await _context.Services.FindAsync(serviceDTO.Id);
             if (existingService != null)
             {
