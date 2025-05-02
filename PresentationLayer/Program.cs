@@ -36,11 +36,16 @@ builder.Services.AddScoped<RoleManager<Role>>(); // Ensure RoleManager is proper
 builder.Services.AddScoped<IManageUsers,ManageUsers>();
 builder.Services.AddScoped<IManageServices, ManageServices>();
 builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
+builder.Services.AddScoped<INotificationManager, NotificationManager>();
 
 builder.Services.AddAutoMapper(typeof(BLLAutoMapperProfile));
 builder.Services.AddAutoMapper(typeof(PLAutoMapperProfile));
 
-
+//builder.Services.AddMvc()
+//    .AddJsonOptions(options => {
+//        options.SerializerSettings.ReferenceLoopHandling =
+//            Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+//    });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
