@@ -90,3 +90,28 @@ body {
     border-left: none;
     background-color: #e6f0ff;
 }
+
+
+/* -------------- Notification --------------*/
+
+/* notification */
+.notification {
+    cursor: pointer;
+}
+/* notifications count */
+.smallText {
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+}
+.notifAbove10 {
+    left: 5px;
+}
+.notifbelow10 {
+    left: 8px;
+}
+/* notifications list */
+.popover{
+    min-width: 300px;
+    cursor: pointer;
+}
