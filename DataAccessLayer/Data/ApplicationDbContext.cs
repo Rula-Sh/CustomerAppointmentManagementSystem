@@ -25,7 +25,7 @@ namespace DataAccessLayer.Data
         public DbSet<ServiceTimeSlot> ServiceTimeSlots { get; set; }
         //public DbSet<DateTimeSlotGroup> DateTimeSlotGroups { get; set; }
 
-        //public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         //public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
