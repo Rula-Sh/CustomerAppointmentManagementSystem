@@ -19,7 +19,7 @@
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
 
             <div class="form-group">
-                <label class="text-muted" asp-for="Services"><strong>Service</strong></label>
+                <label class="text-black" asp-for="Services"><strong>Service</strong></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <input id="serviceId" type="hidden" asp-for="ServiceId" />
@@ -42,7 +42,7 @@
             </div>
 
             <div class="form-group">
-                <label class="text-muted" asp-for="Date"><strong>Date</strong></label>
+                <label class="text-black" asp-for="Date"><strong>Date</strong></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <select class="form-control" id="serviceDatesList" asp-for="Date">

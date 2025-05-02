@@ -19,7 +19,7 @@
         @foreach (var user in Model)
         {
             <tr class="@(user.IsActive ? "" : "inactive-row")">
-                <td>@user.FullName</td>
+                <td class="@(user.Roles.Contains("Admin") ? "text-danger" : user.Roles.Contains("Customer")? "text-success" : "text-info" )">@user.FullName</td>
                 <td>@user.Email</td>
                 <td class="Role">@string.Join(" , ", user.Roles)</td> @*Join() is used to join a list of strings with a separator between them*@
                 <td>@user.LastActivity</td>

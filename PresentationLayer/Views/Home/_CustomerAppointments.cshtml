@@ -35,7 +35,7 @@ else
                         <tr>
                             <td>@appointment.Name</td>
                             <td>@appointment.Date</td>
-                            <td>@appointment.Status</td>
+                        <td class="@(appointment.Status.Contains("Approved") ? "text-primary" :appointment.Status.Contains("Completed") ? "text-success" : "text-danger" )">@appointment.Status</td>
                             <td>
                             @if (appointment.Status == "Completed" || appointment.Status == "Approved")
                                 {

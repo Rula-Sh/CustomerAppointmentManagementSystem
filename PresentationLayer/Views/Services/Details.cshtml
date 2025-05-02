@@ -5,10 +5,10 @@
     string FormatDate(string rawDate) => rawDate.Replace("/", "_");
 
 }
-<div class="row border border-2 rounded-5 mt-4 p-4 border-opacity-10">
+<div class="row border border-2 rounded-4 mt-4 p-4 border border-primary border-opacity-50">
     <div class="column col-6 card-body d-flex flex-column justify-content-between">
 
-        <h5 class="card-title">@Model.Name Service</h5>
+        <h2 class="card-title">@Model.Name Service</h2>
         <br />
         <p><strong>Price: </strong>@Model.Price JD</p>
         <p> <strong>Available in: </strong>@string.Join(" - ", Model.DateTimeSlotGroups.Select(a => a.Date))</p>
@@ -33,10 +33,10 @@
                     var formattedDate = FormatDate(date.Date);
                     <div id="@formattedDate" class="tabcontent h-100 rounded-end">
                         <p class="w-100 text-center m-0 mt-1"><strong>Times Available</strong></p>
-                        <div class="p-3 text-center ">
+                        <div class="ps-3 pe-3 pb-2 text-center ">
                         @foreach (var timeSlot in date.TimeSlots)
                         {
-                            <p>@timeSlot</p>
+                            <p class="mb-0 mt-2">@timeSlot</p>
                         }
                         </div>
                     </div>
