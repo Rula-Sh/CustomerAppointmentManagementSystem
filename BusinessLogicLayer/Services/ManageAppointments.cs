@@ -12,14 +12,12 @@ namespace BusinessLogicLayer.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IManageUsers _manageUsers;
-        private readonly IManageServices _manageServices;
         private readonly IMapper _mapper;
 
-        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IManageServices manageServices, IMapper mapper)
+        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IMapper mapper)
         {
             _context = context;
             _manageUsers = manageUsers;
-            _manageServices = manageServices;
             _mapper = mapper;
         }
 
@@ -56,7 +54,7 @@ namespace BusinessLogicLayer.Services
             return appointments;
         }
 
-        public async Task<BookAppointmentDTO> ViewAddAppointment()
+        /*public async Task<BookAppointmentDTO> ViewAddAppointment()
         {
             var services = await _manageServices.GetServices();
 
@@ -67,7 +65,7 @@ namespace BusinessLogicLayer.Services
 
             return viewModel;
             // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
-        }
+        }*/
 
         public async Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user)
         {
@@ -123,7 +121,7 @@ namespace BusinessLogicLayer.Services
 
         public async Task<Appointment> getAppointmentById(int? id)
         {
-            var appointment =  await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
             return _mapper.Map<Appointment>(appointment);
             // in other codes it was SingleOrDefaultAsync
         }
@@ -338,6 +336,12 @@ namespace BusinessLogicLayer.Services
         public int GetTotalAppointments()
         {
             return _context.Appointments.Count();
+        }
+
+        public async Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int id)
+        {
+            var appointments = await _context.Appointments.Where(a => a.ServiceId == id).ToListAsync();
+            return _mapper.Map<List<AppointmentDTO>>(appointments);
         }
 
     }

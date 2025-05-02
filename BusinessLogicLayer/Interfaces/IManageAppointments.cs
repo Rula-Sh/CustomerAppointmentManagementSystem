@@ -7,7 +7,7 @@ namespace BusinessLogicLayer.Interfaces
     public interface IManageAppointments
     {
         Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
-        Task<BookAppointmentDTO> ViewAddAppointment();
+        //Task<BookAppointmentDTO> ViewAddAppointment();
         Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user);
         Task<AppointmentDTO> appointmentDetails(int? id);
         Task<Appointment> getAppointmentById(int? id);
@@ -26,5 +26,6 @@ namespace BusinessLogicLayer.Interfaces
         Task<List<int>> getTotalAppointmentsPerService();
         Task<List<ActiveAppointmentDTO>> getTodaysAppointments();
         int GetTotalAppointments();
+        Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int id);
     }
 }

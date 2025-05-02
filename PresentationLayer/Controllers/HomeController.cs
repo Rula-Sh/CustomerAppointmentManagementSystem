@@ -49,7 +49,14 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var appointmentDTO = await _manageAppointments.ViewAddAppointment();
+            //var appointmentDTO = await _manageAppointments.ViewAddAppointment();
+
+            var services = await _manageServices.GetServices();
+            var appointmentDTO = new BookAppointmentDTO
+            {
+                Services = services,
+            };
+            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
 
             var bookAppointmentViewModel = _mapper.Map<BookAppointmentViewModel>(appointmentDTO);
 
