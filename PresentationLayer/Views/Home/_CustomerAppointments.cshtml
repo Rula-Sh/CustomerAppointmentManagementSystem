@@ -44,7 +44,7 @@ else
                                     <i class="bi bi-list-ul"></i>
                                 </a>
                             }
-                            @if (appointment.Status == "Pending" || appointment.Status == "Rejected")
+                            @if (appointment.Status == "Pending" || appointment.Status == "Rejected" || appointment.Status == "Approved")
                             {
                                 <a href="javascript:;" class="btn btn-danger js-delete ms-1" data-id="@appointment.Id">
                                     <i class="bi bi-trash"></i>
