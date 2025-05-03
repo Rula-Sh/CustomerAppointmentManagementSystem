@@ -13,12 +13,14 @@ namespace BusinessLogicLayer.Services
         private readonly ApplicationDbContext _context;
         private readonly IManageUsers _manageUsers;
         private readonly IMapper _mapper;
+        private readonly INotificationManager _notificationsManager;
 
-        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IMapper mapper)
+        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IMapper mapper, INotificationManager notificationsManager)
         {
             _context = context;
             _manageUsers = manageUsers;
             _mapper = mapper;
+            _notificationsManager = notificationsManager;
         }
 
         public async Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user)
@@ -128,6 +130,9 @@ namespace BusinessLogicLayer.Services
 
         public async Task deleteAppointment(Appointment appointment)
         {
+
+            await _notificationsManager.CreateNotificationOnAppointmentDelete(appointment.Id);
+
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
         }
