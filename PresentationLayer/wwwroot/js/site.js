@@ -79,5 +79,15 @@ $(function () {
             }
         })
     }
+
     getNotification();
+
+    // adding SignalR
+    let connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+    connection.on("displayNotification", () => {
+        getNotification();
+    });
+
+    connection.start();
+
 });

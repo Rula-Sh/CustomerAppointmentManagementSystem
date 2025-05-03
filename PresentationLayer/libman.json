@@ -51,12 +51,12 @@
       ]
     },
     {
-      "provider": "cdnjs",
-      "library": "toastr.js@2.1.4",
-      "destination": "wwwroot/toastr.js/",
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@8.0.7",
+      "destination": "wwwroot/microsoft/signalr/",
       "files": [
-        "toastr.min.js",
-        "toastr.min.css"
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
       ]
     }
   ]

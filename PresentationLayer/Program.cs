@@ -7,6 +7,8 @@ using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Interfaces;
 using PresentationLayer.Mapper;
 using BusinessLogicLayer.Helpers;
+using PresentationLayer.SignalR;
+
 //using DataAccessLayer.Repositories;
 //using DataAccessLayer.Repositories.Contracts;
 //using BusinessLogicLayer.Services;
@@ -37,9 +39,13 @@ builder.Services.AddScoped<IManageUsers,ManageUsers>();
 builder.Services.AddScoped<IManageServices, ManageServices>();
 builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
+builder.Services.AddScoped<ISignalRNotifier, SignalRNotifier>();
+builder.Services.AddScoped(typeof(Lazy<>), typeof(LazyResolver<>));
 
 builder.Services.AddAutoMapper(typeof(BLLAutoMapperProfile));
 builder.Services.AddAutoMapper(typeof(PLAutoMapperProfile));
+
+builder.Services.AddSignalR();
 
 //builder.Services.AddMvc()
 //    .AddJsonOptions(options => {
@@ -84,5 +90,7 @@ app.MapControllerRoute( // to open the home page on startup
 
 app.MapRazorPages()
    .WithStaticAssets();
+
+app.MapHub<NotificationHub>("notificationHub");
 
 app.Run();
