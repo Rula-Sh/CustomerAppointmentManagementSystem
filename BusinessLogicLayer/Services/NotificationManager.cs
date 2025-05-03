@@ -28,7 +28,7 @@ namespace BusinessLogicLayer.Services
         public async Task<List<Notification>> GetUserNotifications(ClaimsPrincipal user)
         {
             var userId = Int32.Parse(_manageUsers.GetUserId(user));
-            return await _context.Notifications.Where(n => n.UserId == userId).ToListAsync();
+            return await _context.Notifications.Where(n => n.UserId == userId && n.IsRead == false).ToListAsync();
         }
         public async Task CreateNotification(Notification notification)
         {
@@ -55,9 +55,9 @@ namespace BusinessLogicLayer.Services
             }
         }
 
-        public async Task ReadNotification(int id)
+        public async Task ReadNotification(int notificationId)
         {
-            var notification = _context.Notifications.FirstOrDefault(n => n.Id == id);
+            var notification = _context.Notifications.FirstOrDefault(n => n.Id == notificationId);
             notification.IsRead = true;
             _context.Notifications.Update(notification);
             await _context.SaveChangesAsync();
