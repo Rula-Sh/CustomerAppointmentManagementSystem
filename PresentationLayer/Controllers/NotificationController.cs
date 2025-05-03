@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,8 +18,8 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Index()
         {
             var notifications = await _notificationManager.GetUserNotifications(User);
-            return Ok(notifications);
-            //in v: return Ok(new (UserNotification = notifications, Count=notification.count));
+            //return Ok(notifications);
+            return Ok(new { notifs = notifications, notifscount = notifications.Count });
             //return View();
         }
 
