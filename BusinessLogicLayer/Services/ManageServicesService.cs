@@ -3,10 +3,12 @@ using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,16 +18,18 @@ namespace BusinessLogicLayer.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationManagerService _notificationsManager;
+        private readonly Lazy<IManageAppointmentsService> _manageAppointmentsService;
         private readonly IMapper _mapper;
 
-        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper)
+        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper, Lazy<IManageAppointmentsService> manageAppointmentsService)
         {
             _context = context;
             _notificationsManager = notificationsManager;
             _mapper = mapper;
+            _manageAppointmentsService = manageAppointmentsService;
         }
 
-        public async Task<List<ServiceDTO>> GetServices()
+        public async Task<List<ServiceDTO>> GetAllServices()
         {
             /*var services = await _context.Services.Select(s => new ServiceViewModel
             {
@@ -45,6 +49,17 @@ namespace BusinessLogicLayer.Services
 
             var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
 
+
+            return servicesViewModel;
+        }
+        public async Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user)
+        {
+            var servicesIds = _manageAppointmentsService.Value.getServicesIdsFromAppointments(user);
+
+
+            var servcies = await _context.Services.Where(s => !servicesIds.Contains(s.Id)).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
+
+            var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
 
             return servicesViewModel;
         }

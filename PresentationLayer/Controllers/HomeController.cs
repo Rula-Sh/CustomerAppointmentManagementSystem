@@ -30,6 +30,7 @@ namespace PresentationLayer.Controllers
             _manageServices = manageServices;
             _manageAppointments = manageappointments;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -62,8 +63,7 @@ namespace PresentationLayer.Controllers
             // 1- Stack overflow or infinite recursion.
             // 2- Difficulty in managing dependencies and testing.
             // 3- Problems during dependency injection, especially with frameworks like ASP.NET Core's built-in DI container.
-
-            var services = await _manageServices.GetServices();
+            var services = await _manageServices.GetAvailableServicesInAddAppointment(User);
             var appointmentDTO = new BookAppointmentDTO
             {
                 Services = services,

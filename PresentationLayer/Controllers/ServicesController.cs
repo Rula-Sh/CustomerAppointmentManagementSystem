@@ -34,7 +34,7 @@ namespace PresentationLayer.Controllers
             //OrderByDescending(m => m.DatePublished.Year).ToListAsync() will order the DatePublished of the posts from the top to the bottom
             //return View(services);
 
-            var servicesDTO = await _manageServices.GetServices();
+            var servicesDTO = await _manageServices.GetAllServices();
             var services = _mapper.Map<List<ServiceViewModel>>(servicesDTO);
 
             return View(services);

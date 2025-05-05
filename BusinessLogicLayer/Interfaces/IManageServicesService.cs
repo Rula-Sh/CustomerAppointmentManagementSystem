@@ -1,11 +1,13 @@
 ﻿using BusinessLogicLayer.DTOs;
 using DataAccessLayer.Models;
+using System.Security.Claims;
 
 namespace BusinessLogicLayer.Interfaces
 {
     public interface IManageServicesService
     {
-        Task<List<ServiceDTO>> GetServices();
+        Task<List<ServiceDTO>> GetAllServices();
+        Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user);
         Task addService(ServiceDTO serviceDTO);
         Task<ServiceDTO> getService(int? id);
         //ServiceDTO getSelectedServiceDetails(ServiceDTO service);
