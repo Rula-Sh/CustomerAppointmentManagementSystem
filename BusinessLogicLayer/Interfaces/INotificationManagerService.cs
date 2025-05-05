@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface INotificationManager
+    public interface INotificationManagerService
     {
         Task<List<Notification>> GetUserNotifications(ClaimsPrincipal user);
         Task CreateNotification(Notification notification);

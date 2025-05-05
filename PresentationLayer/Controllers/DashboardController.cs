@@ -13,13 +13,13 @@ namespace PresentationLayer.Controllers
     [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
-        private readonly IManageUsers _manageUsers;
-        private readonly IManageServices _manageServices;
-        private readonly IManageAppointments _manageAppointments;
+        private readonly IManageUsersService _manageUsers;
+        private readonly IManageServicesService _manageServices;
+        private readonly IManageAppointmentsService _manageAppointments;
         private readonly IMapper _mapper;
         const string usersPath = "~/Views/Admin/Dashboard/Index.cshtml";
 
-        public DashboardController(IManageUsers manageUsers, IManageServices manageServices, IManageAppointments manageAppointments, IMapper mapper)
+        public DashboardController(IManageUsersService manageUsers, IManageServicesService manageServices, IManageAppointmentsService manageAppointments, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;

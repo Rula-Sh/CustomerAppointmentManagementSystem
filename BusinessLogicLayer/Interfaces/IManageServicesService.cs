@@ -3,7 +3,7 @@ using DataAccessLayer.Models;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IManageServices
+    public interface IManageServicesService
     {
         Task<List<ServiceDTO>> GetServices();
         Task addService(ServiceDTO serviceDTO);

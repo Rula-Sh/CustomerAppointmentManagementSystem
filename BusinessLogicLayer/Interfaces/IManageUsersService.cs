@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IManageUsers
+    public interface IManageUsersService
     {
         Task<List<UserDTO>> GetUsers();
         Task<List<string>> GetRoles(UserDTO userDTO);

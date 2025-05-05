@@ -10,12 +10,12 @@ namespace PresentationLayer.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly IManageUsers _manageUsers;
+        private readonly IManageUsersService _manageUsers;
         private readonly IMapper _mapper;
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsers manageUsers, IMapper mapper)
+        public UsersController(IManageUsersService manageUsers, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _mapper = mapper;

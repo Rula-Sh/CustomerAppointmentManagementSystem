@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface ISignalRNotifier
+    public interface ISignalRNotifierService
     {
         Task SendNotificationAsync();
     }

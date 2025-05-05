@@ -8,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 namespace BusinessLogicLayer.Services
 {
-    public class ManageAppointments : IManageAppointments
+    public class ManageAppointmentsService : IManageAppointmentsService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IManageUsers _manageUsers;
+        private readonly IManageUsersService _manageUsers;
         private readonly IMapper _mapper;
-        private readonly INotificationManager _notificationsManager;
+        private readonly INotificationManagerService _notificationsManager;
 
-        public ManageAppointments(ApplicationDbContext context, IManageUsers manageUsers, IMapper mapper, INotificationManager notificationsManager)
+        public ManageAppointmentsService(ApplicationDbContext context, IManageUsersService manageUsers, IMapper mapper, INotificationManagerService notificationsManager)
         {
             _context = context;
             _manageUsers = manageUsers;

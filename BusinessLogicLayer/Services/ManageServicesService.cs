@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-    public class ManageServices : IManageServices
+    public class ManageServicesService : IManageServicesService
     {
         private readonly ApplicationDbContext _context;
-        private readonly INotificationManager _notificationsManager;
+        private readonly INotificationManagerService _notificationsManager;
         private readonly IMapper _mapper;    
 
-        public ManageServices(ApplicationDbContext context, INotificationManager notificationsManager, IMapper mapper)
+        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper)
         {
             _context = context;
             _notificationsManager = notificationsManager;

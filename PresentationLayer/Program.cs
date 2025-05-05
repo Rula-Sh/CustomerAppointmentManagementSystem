@@ -35,11 +35,11 @@ builder.Services.AddIdentity<User, Role>() // was Services.AddDefaultIdentity<Id
 
 builder.Services.AddScoped<RoleManager<Role>>(); // Ensure RoleManager is properly registered
 
-builder.Services.AddScoped<IManageUsers,ManageUsers>();
-builder.Services.AddScoped<IManageServices, ManageServices>();
-builder.Services.AddScoped<IManageAppointments, ManageAppointments>();
-builder.Services.AddScoped<INotificationManager, NotificationManager>();
-builder.Services.AddScoped<ISignalRNotifier, SignalRNotifier>();
+builder.Services.AddScoped<IManageUsersService,ManageUsersService>();
+builder.Services.AddScoped<IManageServicesService, ManageServicesService>();
+builder.Services.AddScoped<IManageAppointmentsService, ManageAppointmentsService>();
+builder.Services.AddScoped<INotificationManagerService, NotificationManagerService>();
+builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
 builder.Services.AddScoped(typeof(Lazy<>), typeof(LazyResolver<>));
 
 builder.Services.AddAutoMapper(typeof(BLLAutoMapperProfile));

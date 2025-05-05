@@ -10,19 +10,19 @@ using System.Security.Claims;
 
 namespace BusinessLogicLayer.Services
 {
-    public class NotificationManager : INotificationManager
+    public class NotificationManagerService : INotificationManagerService
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly IManageUsers _manageUsers;
-        private readonly Lazy<IManageAppointments> _manageAppointments; //Lazy<> preserves the architecture and breaks the cycle without redesigning everything (i had a circular dependency ManageServices → NotificationManager → ManageAppointments → NotificationManager)
-        //Using Lazy<>: 1-Breaks the circular dependency at runtime(by deferring resolution)
+        private readonly IManageUsersService _manageUsers;
+        private readonly Lazy<IManageAppointmentsService> _manageAppointments; //Lazy<> preserves the architecture and breaks the cycle without redesigning everything (i had a circular dependency ManageServices → NotificationManager → ManageAppointmentsService → NotificationManager)
+        //Using Lazy<>: 1- Breaks the circular dependency at runtime(by deferring resolution)
         //              2- Keeps your services' structure and separation of concerns intact
         //              3- Doesn’t require architectural overhaul or complex event systems
+        // Lazy<T> is a generic class in the .NET Framework that enables lazy initialization — meaning the object of type T is not created until it's actually needed.
         private readonly IMapper _mapper;
-        private readonly ISignalRNotifier _signalRNotifier;
-
-        public NotificationManager(ApplicationDbContext context, IManageUsers manageUsers, Lazy<IManageAppointments> manageAppointments, IMapper mapper, ISignalRNotifier signalRNotifier)
+        private readonly ISignalRNotifierService _signalRNotifier;
+        public NotificationManagerService(ApplicationDbContext context, IManageUsersService manageUsers, Lazy<IManageAppointmentsService> manageAppointments, IMapper mapper, ISignalRNotifierService signalRNotifier)
         {
             _context = context;
             _manageUsers = manageUsers;

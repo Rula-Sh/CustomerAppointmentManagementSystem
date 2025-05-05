@@ -5,6 +5,7 @@ using DataAccessLayer.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyModel;
 using PresentationLayer.ViewModels;
 using System.Diagnostics;
 
@@ -13,14 +14,14 @@ namespace PresentationLayer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IManageUsers _manageUsers;
-        private readonly IManageServices _manageServices;
-        private readonly IManageAppointments _manageAppointments;
+        private readonly IManageUsersService _manageUsers;
+        private readonly IManageServicesService _manageServices;
+        private readonly IManageAppointmentsService _manageAppointments;
         private readonly IMapper _mapper;
 
-        public HomeController(IManageUsers manageUsers,
-                              IManageServices manageServices,
-                              IManageAppointments manageappointments,
+        public HomeController(IManageUsersService manageUsers,
+                              IManageServicesService manageServices,
+                              IManageAppointmentsService manageappointments,
                               IMapper mapper)
         {
             _manageUsers = manageUsers;
@@ -51,9 +52,14 @@ namespace PresentationLayer.Controllers
 
             //var appointmentDTO = await _manageAppointments.ViewAddAppointment();
 
-            // Note: ManageAppointments was calling IManageServices.GetServices(), which caused: ManageAppointments → ManageServices → ManageAppointments (circular reference).
+            // Note: ManageAppointmentsService was calling IManageServices.GetServices(), which caused: ManageAppointmentsService → ManageServices → ManageAppointmentsService (circular reference).
             // to fix this, I moved ViewAddAppointment code here (in home controller) to keep the business logic layers independent and preventing InvalidOperationException from DI container.
-            // this svoided circular dependency between ManageAppointments and ManageServices
+            // this svoided circular dependency between ManageAppointmentsService and ManageServices
+
+            //Circular Dependency: occurs when two or more components (classes, modules, or services) depend on each other either directly or indirectly, creating a loop in the dependency chain. This can lead to issues like:
+            // 1- Stack overflow or infinite recursion.
+            // 2- Difficulty in managing dependencies and testing.
+            // 3- Problems during dependency injection, especially with frameworks like ASP.NET Core's built-in DI container.
 
             var services = await _manageServices.GetServices();
             var appointmentDTO = new BookAppointmentDTO

@@ -9,13 +9,13 @@ using System.Security.Claims;
 
 namespace BusinessLogicLayer.Services
 {
-    public class ManageUsers : IManageUsers
+    public class ManageUsersService : IManageUsersService
     {
         private readonly UserManager<User> _userManager; // UserManager<User> is a class that provides APIs for managing users in an application. It is part of the ASP.NET Identity system, which is used to handle authentication, authorization, and user management.
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public ManageUsers(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
+        public ManageUsersService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;

@@ -8,9 +8,9 @@ namespace PresentationLayer.Controllers
     [Authorize]
     public class NotificationController : Controller
     {
-        private readonly INotificationManager _notificationManager;
+        private readonly INotificationManagerService _notificationManager;
 
-        public NotificationController(INotificationManager notificationManager)
+        public NotificationController(INotificationManagerService notificationManager)
         {
             _notificationManager = notificationManager;
         }

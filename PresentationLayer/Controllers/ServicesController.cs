@@ -12,12 +12,12 @@ namespace PresentationLayer.Controllers
 
     public class ServicesController : Controller
     {
-        private readonly IManageUsers _manageUsers;
-        private readonly IManageServices _manageServices;
+        private readonly IManageUsersService _manageUsers;
+        private readonly IManageServicesService _manageServices;
         private readonly IMapper _mapper;
 
 
-        public ServicesController(IManageUsers manageUsers,IManageServices manageServices, IMapper mapper)
+        public ServicesController(IManageUsersService manageUsers,IManageServicesService manageServices, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;

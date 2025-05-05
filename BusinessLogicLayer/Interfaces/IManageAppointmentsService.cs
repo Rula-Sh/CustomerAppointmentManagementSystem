@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IManageAppointments
+    public interface IManageAppointmentsService
     {
         Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
         //Task<BookAppointmentDTO> ViewAddAppointment();

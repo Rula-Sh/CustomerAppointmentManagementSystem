@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-    public class SignalRNotifier : ISignalRNotifier
+    public class SignalRNotifierService : ISignalRNotifierService
     {
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        public SignalRNotifier(IHubContext<NotificationHub> hubContext)
+        public SignalRNotifierService(IHubContext<NotificationHub> hubContext)
         {
             _hubContext = hubContext;
         }
