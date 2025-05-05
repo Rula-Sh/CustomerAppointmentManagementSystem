@@ -2,7 +2,7 @@
 using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
-using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyModel;
@@ -18,11 +18,13 @@ namespace PresentationLayer.Controllers
         private readonly IManageServicesService _manageServices;
         private readonly IManageAppointmentsService _manageAppointments;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
         public HomeController(IManageUsersService manageUsers,
                               IManageServicesService manageServices,
                               IManageAppointmentsService manageappointments,
-                              IMapper mapper)
+                              IMapper mapper,
+                              UserManager<User> userManager)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
@@ -174,7 +176,8 @@ namespace PresentationLayer.Controllers
                 return NotFound();
 
             appointment.Status = "Approved";
-            appointment.EmployeeId = Int32.Parse(User.Identity.GetUserId());
+            appointment.EmployeeId = int.Parse(_userManager.GetUserId(User));
+            //was: appointment.EmployeeId = int.Parse(User.Identity.GetUserId()); before removing the import "using Microsoft.AspNet.Identity;"
             appointment.Notes = notes;
             //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
             // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
