@@ -145,7 +145,7 @@
         };*/
 
 
-        // -------------------------------------- when selecting a date, add itto selectedDates[] --------------------------------------
+        // -------------------------------------- when selecting a date, add it to selectedDates[] --------------------------------------
         function initializeDatePicker() {
             $("#multiDatePicker").datepicker({
                 dateFormat: "dd-mm-yy",
@@ -389,14 +389,34 @@
                 `);
                 container.append(section); // add the selctet time-slot to time-slots class
                 select.val(""); // reset select
+
+                //remove selected time from the list
+                select.find(`option[value="${time}"]`).remove();
+                // option[value="${time}"] => this is a CSS selector that targets <option> elements with a value attribute exactly equal to the value of time.
+
             }
         }
 
-        // -------------------------------------- remove selected time-slot --------------------------------------
+        // -------------------------------------- remove time-slot --------------------------------------
         function removeTimeSlot(date, time, button) {
             dateTimeData[date] = dateTimeData[date].filter(t => t !== time); // delete the time-slot from the date that it is refered to
             // (t => t !== time) filters dateTimeData[date] from the unwanted time-slot... meaning when the filter reaches t === time it skips it
             $(button).closest('.time-slot').remove();// remove the time-slot in the page
+
+            // sort time slot in the list`
+            const select = $(`#select-${date}`);
+            select.append(`<option value="${time}">${time}</option>`);
+            const options = select.find('option').toArray().sort((a, b) => {
+            // get all <option> elements in the <select> element with id select-${date}, convert the jQuery object 'select' to an array and sort it
+                return a.value.localeCompare(b.value, undefined, { numeric: true });
+                // compart the value attributes of <option> elements a and b.
+                // localeCompare() is a string comparison method that respects human-friendly ordering rules.
+                // undefined means use the default locale.
+                // { numeric: true } tells it to compare numbers within strings properly.
+                // Without { numeric: true } "10:00" comes before "2:00"
+                // With { numeric: true } "2:00" comes before "10:00"
+            });
+            select.empty().append(options); // re-attach <option> elements to the <select> tag
         }
 
         // -------------------------------------- remove selected date --------------------------------------
