@@ -56,6 +56,12 @@ namespace BusinessLogicLayer.Services
             return appointments;
         }
 
+        public List<int> getServicesIdsFromAppointments(ClaimsPrincipal user)
+        {
+            var userId = int.Parse(_manageUsers.GetUserId(user));
+            return _context.Appointments.Where(a => a.CustomerId == userId).Select(a => a.ServiceId).ToList();
+        }
+
         /*public async Task<BookAppointmentDTO> ViewAddAppointment()
         {
             var services = await _manageServices.GetServices();
