@@ -1,7 +1,6 @@
 ﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Write your JavaScript code.
 $(function () {
     $('[data-toggle="popover"]').popover({
         placement: 'bottom',
@@ -71,8 +70,18 @@ $(function () {
             method: 'GET',
             data: { notificationId: id },
             success: function (result) {
+                $(target).fadeOut('slow', function () {
+                    $(this).remove(); // remove from DOM after fadeOut
+
+                    // close popover after the last notification
+                    if ($('.popover .notification-message:visible').length === 0) {
+                        $('.popover').fadeOut('slow', function () {
+                            $('[data-toggle="popover"]').popover('hide');
+                            $('#newNotification').addClass('d-none');
+                        });
+                    }
+                });
                 getNotification();
-                $(target).fadeOut('slow');
             },
             error: function (err) {
                 console.log(err);
