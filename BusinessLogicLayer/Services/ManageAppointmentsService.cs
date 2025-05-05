@@ -178,8 +178,11 @@ namespace BusinessLogicLayer.Services
                                                     .OrderByDescending(g => g.AppointmentCount)
                                                     .FirstOrDefault();
 
+            if(bestEmployee == null)
+            {
+                return _context.Users.Where(u => u.Id == 1).Select(e => e.FullName).SingleOrDefault();
+            }
             return _context.Users.Where(u => u.Id == bestEmployee.EmployeeId).Select(e => e.FullName).SingleOrDefault();
-
         }
 
         public double GetAverageAppointmentsPerEmployee()

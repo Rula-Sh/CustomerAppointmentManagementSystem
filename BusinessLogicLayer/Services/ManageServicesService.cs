@@ -16,7 +16,7 @@ namespace BusinessLogicLayer.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationManagerService _notificationsManager;
-        private readonly IMapper _mapper;    
+        private readonly IMapper _mapper;
 
         public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper)
         {
@@ -51,62 +51,62 @@ namespace BusinessLogicLayer.Services
 
         public async Task addService(ServiceDTO serviceDTO)
         {
-/*
-            // create Service
-            *//*var service = new Service
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Duration = model.Duration,
-                Price = model.Price,
-                ServiceDates = new List<ServiceDate>()
-            };*//*
-            // using AutoMapper
-            var service = _mapper.Map<Service>(serviceDTO);
+            /*
+                        // create Service
+                        *//*var service = new Service
+                        {
+                            Name = model.Name,
+                            Description = model.Description,
+                            Duration = model.Duration,
+                            Price = model.Price,
+                            ServiceDates = new List<ServiceDate>()
+                        };*//*
+                        // using AutoMapper
+                        var service = _mapper.Map<Service>(serviceDTO);
 
-            // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
-            foreach (var group in serviceDTO.DateTimeSlotGroups)
-            {
-                // parse the date string into DateOnly for Date prop in ServiceDate
-                if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
-                {
-                    // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
-                    //ModelState.AddModelError("", $"Invalid date format: {group.Date}");
-                    return;
-                }
+                        // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
+                        foreach (var group in serviceDTO.DateTimeSlotGroups)
+                        {
+                            // parse the date string into DateOnly for Date prop in ServiceDate
+                            if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
+                            {
+                                // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
+                                //ModelState.AddModelError("", $"Invalid date format: {group.Date}");
+                                return;
+                            }
 
-                // create ServiceDate
-                *//*var serviceDate = new ServiceDate
-                {
-                    ServiceId = service.Id, // to link it to Services Table
-                    Date = date,
-                    ServiceTimeSlots = new List<ServiceTimeSlot>()
-                };*//*
-                // using AutoMapper
-                var serviceDate = _mapper.Map<ServiceDate>(group);
-                serviceDate.Date = date;
+                            // create ServiceDate
+                            *//*var serviceDate = new ServiceDate
+                            {
+                                ServiceId = service.Id, // to link it to Services Table
+                                Date = date,
+                                ServiceTimeSlots = new List<ServiceTimeSlot>()
+                            };*//*
+                            // using AutoMapper
+                            var serviceDate = _mapper.Map<ServiceDate>(group);
+                            serviceDate.Date = date;
 
-                foreach (var time in group.TimeSlots)
-                {
-                    // create ServiceTimeSlot
-                    *//*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
-                    {
-                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
-                        Time = time
-                    });*//*
-                    // using AutoMapper
-                    var serviceTimeSlot = new ServiceTimeSlot
-                    {
-                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
-                        Time = time
-                    };
+                            foreach (var time in group.TimeSlots)
+                            {
+                                // create ServiceTimeSlot
+                                *//*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                                {
+                                    ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                                    Time = time
+                                });*//*
+                                // using AutoMapper
+                                var serviceTimeSlot = new ServiceTimeSlot
+                                {
+                                    ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                                    Time = time
+                                };
 
-                    serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
+                                serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
 
-                }
+                            }
 
-                service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
-            }*/
+                            service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
+                        }*/
             var service = _mapper.Map<Service>(serviceDTO);
 
             _context.Services.Add(service);
@@ -122,25 +122,25 @@ namespace BusinessLogicLayer.Services
 
             return _mapper.Map<ServiceDTO>(service);
         }
-/*        public ServiceDTO getSelectedServiceDetails(Service service)
-        {
-            *//*var serviceViewModel = new ServiceViewModel
-            {
-                Id = service.Id,
-                Name = service.Name,
-                Price = service.Price,
-                Description = service.Description,
-                DateTimeSlotGroups = service.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
+        /*        public ServiceDTO getSelectedServiceDetails(Service service)
                 {
-                    Date = d.Date.ToString(),
-                    TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
-                }).ToList()
-            };*//*
-            // using AutoMapper
-            var serviceViewModel = _mapper.Map<ServiceDTO>(service);
+                    *//*var serviceViewModel = new ServiceViewModel
+                    {
+                        Id = service.Id,
+                        Name = service.Name,
+                        Price = service.Price,
+                        Description = service.Description,
+                        DateTimeSlotGroups = service.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
+                        {
+                            Date = d.Date.ToString(),
+                            TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
+                        }).ToList()
+                    };*//*
+                    // using AutoMapper
+                    var serviceViewModel = _mapper.Map<ServiceDTO>(service);
 
-            return serviceViewModel;
-        }*/
+                    return serviceViewModel;
+                }*/
 
         public async Task<ServiceDTO> getServiceById(int? id)
         {
@@ -177,7 +177,12 @@ namespace BusinessLogicLayer.Services
                                                     .OrderByDescending(g => g.AppointmentCount)
                                                     .FirstOrDefault();
 
+            if(mostBookedService == null)
+            {
+                return "None";
+            }
             return _context.Services.Where(u => u.Id == mostBookedService.ServiceId).Select(e => e.Name).SingleOrDefault();
+            
             // no auto mapper is used here becaause: 
             // 1- i am not mapping entities to DTOs or view models.
             // 2- i am only retrieving a string (the service name) here after some LINQ-based aggregation.
