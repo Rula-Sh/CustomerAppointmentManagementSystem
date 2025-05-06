@@ -136,8 +136,10 @@ namespace BusinessLogicLayer.Services
 
         public async Task deleteAppointment(Appointment appointment)
         {
-
-            await _notificationsManager.CreateNotificationOnAppointmentDelete(appointment.Id);
+            if (appointment.Status == "Approved")
+            {
+                await _notificationsManager.CreateNotificationOnAppointmentDelete(appointment.Id);
+            }
 
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
