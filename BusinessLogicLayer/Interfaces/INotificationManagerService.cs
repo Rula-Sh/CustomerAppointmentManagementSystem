@@ -7,7 +7,8 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task<List<Notification>> GetUserNotifications(ClaimsPrincipal user);
         Task CreateNotification(Notification notification);
-        Task CreateNotificationOnServiceDelete(int serviceId);
+        //Task CreateNotificationOnServiceDeleteForCustomer(int serviceId);
+        Task CreateNotificationOnServiceActionForAdmin(int serviceId, string serviceName, ClaimsPrincipal user, string action);
         Task CreateNotificationOnAppointmentDelete(int appointmentId);
         Task ReadNotification(int id);
     }

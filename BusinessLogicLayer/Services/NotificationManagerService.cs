@@ -42,7 +42,7 @@ namespace BusinessLogicLayer.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateNotificationOnServiceDelete(int serviceId)
+        /*public async Task CreateNotificationOnServiceDeleteForCustomer(int serviceId)
         {
             // get appointments related to the service before deleting it
             var appointmentsDTOs = await _manageAppointments.Value.getAppointmentsFromServiceId(serviceId);
@@ -59,6 +59,22 @@ namespace BusinessLogicLayer.Services
                 var notification = _mapper.Map<Notification>(notificationDTO);
                 await CreateNotification(notification);
             }
+            await _signalRNotifier.SendNotificationAsync();
+        }*/
+
+        public async Task CreateNotificationOnServiceActionForAdmin(int serviceId, string serviceName, ClaimsPrincipal user, string status)
+        {
+            var employeeId = int.Parse(_manageUsers.GetUserId(user));
+            var employeeName = _context.Users.Where(u => u.Id == employeeId).Select(u => u.FullName).FirstOrDefault();
+
+            var notificationDTO = new NotificationDTO
+            {
+                UserId = 1,
+                Message = $"Employee {employeeName} (ID: {employeeId}), Have {status} {(status == "Created" ? $"{serviceName} Service." : $"the Service {serviceName} (ID: {serviceId}).")}",
+            };
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            await CreateNotification(notification);
+
             await _signalRNotifier.SendNotificationAsync();
         }
 
