@@ -126,7 +126,7 @@ namespace PresentationLayer.Controllers
             }*/
 
             // update DB
-            await _manageServices.addService(service);
+            await _manageServices.addService(service,User);
 
             return RedirectToAction("Index");
         }
@@ -161,7 +161,7 @@ namespace PresentationLayer.Controllers
             if (service == null)
                 return NotFound();
 
-            await _manageServices.DeleteService(service);
+            await _manageServices.DeleteService(service,User);
 
             return Ok();
         }
