@@ -64,7 +64,7 @@ namespace BusinessLogicLayer.Services
             return servicesViewModel;
         }
 
-        public async Task addService(ServiceDTO serviceDTO)
+        public async Task addService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
             /*
                         // create Service
@@ -122,6 +122,9 @@ namespace BusinessLogicLayer.Services
 
                             service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
                         }*/
+
+            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Created");
+
             var service = _mapper.Map<Service>(serviceDTO);
 
             _context.Services.Add(service);
@@ -164,9 +167,10 @@ namespace BusinessLogicLayer.Services
             return _mapper.Map<ServiceDTO>(service);
         }
 
-        public async Task DeleteService(ServiceDTO serviceDTO)
+        public async Task DeleteService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
-            await _notificationsManager.CreateNotificationOnServiceDelete(serviceDTO.Id);
+            //await _notificationsManager.CreateNotificationOnServiceDeleteForCustomer(serviceDTO.Id);
+            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Deleted");
 
             var existingService = await _context.Services.FindAsync(serviceDTO.Id);
             if (existingService != null)
