@@ -3971,12 +3971,19 @@ textarea.form-control-lg {
     padding-bottom: .5rem
 }
 
-    .navbar > .container, .navbar > .container-fluid, .navbar > .container-sm, .navbar > .container-md, .navbar > .container-lg, .navbar > .container-xl, .navbar > .container-xxl {
-        display: flex;
-        flex-wrap: inherit;
-        align-items: center;
-        justify-content: space-between
-    }
+.navbar > .container, .navbar > .container-fluid, .navbar > .container-sm, .navbar > .container-md, .navbar > .container-lg, .navbar > .container-xl, .navbar > .container-xxl {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between
+}
+
+.container-fluid {
+    position: relative;
+    width: calc(100% + 36%);
+    margin-left: -18%;
+    margin-right: -16%;
+}
 
 .navbar-brand {
     padding-top: .3125rem;
