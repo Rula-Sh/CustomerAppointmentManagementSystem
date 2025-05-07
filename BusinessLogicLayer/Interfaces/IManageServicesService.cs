@@ -11,6 +11,7 @@ namespace BusinessLogicLayer.Interfaces
         Task addService(ServiceDTO serviceDTO,ClaimsPrincipal user);
         Task<ServiceDTO> getService(int? id);
         //ServiceDTO getSelectedServiceDetails(ServiceDTO service);
+        Task<bool> DoesTheServiceHaveAppointments(int? serviceId);
         Task DeleteService(ServiceDTO serviceDTO, ClaimsPrincipal user);
         Task<ServiceDTO> getServiceById(int? id);
 

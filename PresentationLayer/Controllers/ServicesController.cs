@@ -161,9 +161,17 @@ namespace PresentationLayer.Controllers
             if (service == null)
                 return NotFound();
 
-            await _manageServices.DeleteService(service,User);
+            if (!await _manageServices.DoesTheServiceHaveAppointments(id))
+            {
+                await _manageServices.DeleteService(service,User);
 
-            return Ok();
+                return Ok(new { success = true, message = "Service Deleted Successfully." });
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Cannot Delete a Service with Active Appointments." });
+            }
+
         }
     }
 }

@@ -167,6 +167,17 @@ namespace BusinessLogicLayer.Services
             return _mapper.Map<ServiceDTO>(service);
         }
 
+        public async Task<bool> DoesTheServiceHaveAppointments(int? serviceId)
+        {
+            var appointments = await _manageAppointmentsService.Value.getAppointmentsFromServiceId(serviceId);
+            if(appointments == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
         public async Task DeleteService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
             //await _notificationsManager.CreateNotificationOnServiceDeleteForCustomer(serviceDTO.Id);
