@@ -131,6 +131,42 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            await _manageUsers.UpdateUserLastActivityDate(User);
+
+            var serviceDTO = await _manageServices.getServiceById(id);
+
+            var serviceViewModel = _mapper.Map<ServiceViewModel>(serviceDTO);
+
+            return View(serviceViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ServiceViewModel model)
+        {
+            if (model.DateTimeSlotGroups == null || !model.DateTimeSlotGroups.Any(g => g.TimeSlots != null && g.TimeSlots.Any()))
+            {
+                ModelState.AddModelError("", "At least one time slot for one date is required.");
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var service = _mapper.Map<ServiceDTO>(model);
+
+
+            // update DB
+            await _manageServices.updateService(service, User);
+
+            return RedirectToAction("Index");
+        }
+
+
         public async Task<IActionResult> Details(int? id)
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
