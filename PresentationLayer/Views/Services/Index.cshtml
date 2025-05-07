@@ -53,7 +53,8 @@ else
                                 <i class="bi bi-list-ul"></i>
                                 Details
                             </a>
-                            <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-outline-primary">
+                            @* <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-outline-primary js-edit"> *@
+                            <a href="javascript:;" data-id="@service.Id" class="btn btn-outline-primary js-edit">
                                 <i class="bi bi-pencil"></i>
                                 Edit
                             </a>
@@ -77,6 +78,27 @@ else
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            $('.js-edit').on('click', function () {
+                var btn = $(this);
+                var serviceId = btn.data('id');
+                console.log(btn.data('id'));
+
+                $.ajax({
+                    url: '/services/edit/' + btn.data('id'),
+                    success: function (response) {
+                        if (!response.success) {
+                             window.location.href = '/services/edit/' + serviceId;
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (err) {
+                        toastr.error("An unexpected error occurred.");
+                    }
+                });
+            });
+
             $('.js-delete').on('click', function () { //select when the user clicks on delete
                 var btn = $(this);
 

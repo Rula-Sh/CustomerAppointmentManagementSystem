@@ -140,7 +140,14 @@ namespace PresentationLayer.Controllers
 
             var serviceViewModel = _mapper.Map<ServiceViewModel>(serviceDTO);
 
-            return View(serviceViewModel);
+            if (!await _manageServices.DoesTheServiceHaveAppointments(id))
+            {
+                return View(serviceViewModel);
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Cannot Delete a Service with Active Appointments." });
+            }
         }
 
         [HttpPost]
