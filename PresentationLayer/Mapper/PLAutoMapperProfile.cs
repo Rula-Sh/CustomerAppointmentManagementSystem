@@ -14,7 +14,9 @@ namespace PresentationLayer.Mapper
             CreateMap<UserDTO, UserViewModel>();
 
             CreateMap<ServiceDTO, ServiceViewModel>();
-            CreateMap<DateTimeSlotGroupDTO, DateTimeSlotGroupViewModel>();
+            CreateMap<DateTimeSlotGroupDTO, DateTimeSlotGroupViewModel>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom<DateFormatResolver>());
+
 
             CreateMap<AppointmentDTO, AppointmentViewModel>();
 
