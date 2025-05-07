@@ -170,7 +170,7 @@ namespace BusinessLogicLayer.Services
         public async Task<bool> DoesTheServiceHaveAppointments(int? serviceId)
         {
             var appointments = await _manageAppointmentsService.Value.getAppointmentsFromServiceId(serviceId);
-            if(appointments == null)
+            if(appointments.Count() == 0)
             {
                 return false;
             }
