@@ -354,7 +354,7 @@ namespace BusinessLogicLayer.Services
             return _context.Appointments.Count();
         }
 
-        public async Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int id)
+        public async Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int? id)
         {
             var appointments = await _context.Appointments.Where(a => a.ServiceId == id).ToListAsync();
             return _mapper.Map<List<AppointmentDTO>>(appointments);

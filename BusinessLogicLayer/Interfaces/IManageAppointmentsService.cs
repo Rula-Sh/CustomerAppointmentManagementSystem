@@ -27,6 +27,6 @@ namespace BusinessLogicLayer.Interfaces
         Task<List<int>> getTotalAppointmentsPerService();
         Task<List<ActiveAppointmentDTO>> getTodaysAppointments();
         int GetTotalAppointments();
-        Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int id);
+        Task<List<AppointmentDTO>> getAppointmentsFromServiceId(int? id);
     }
 }
