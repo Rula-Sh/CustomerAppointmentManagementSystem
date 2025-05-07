@@ -39,6 +39,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     @* <link href="~/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" /> *@
 
+
+    <link href="~/toastr.js/toastr.min.css" rel="stylesheet" />
+
 </head>
 <body>
     <script>
@@ -139,7 +142,7 @@
 
     @* <div class="container"> *@
     @*     <main role="main" class="pb-3"> *@
-    @RenderBody()
+                @RenderBody()
     @*     </main> *@
     @* </div> *@
 
@@ -221,6 +224,9 @@
 
     <!-- Template Javascript -->
     <script src="mytemplate/js/main.js"></script>
+
+
+    <script src="~/toastr.js/toastr.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
