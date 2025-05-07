@@ -45,3 +45,9 @@ button.accept-policy {
     white-space: nowrap;
     line-height: 40px;
 }
+
+
+.my-container {
+    margin-left: 13%;
+    margin-right: 13%;
+}
