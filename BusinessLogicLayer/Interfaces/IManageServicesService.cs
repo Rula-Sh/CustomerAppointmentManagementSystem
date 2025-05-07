@@ -9,6 +9,7 @@ namespace BusinessLogicLayer.Interfaces
         Task<List<ServiceDTO>> GetAllServices();
         Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user);
         Task addService(ServiceDTO serviceDTO,ClaimsPrincipal user);
+        Task updateService(ServiceDTO serviceDTO,ClaimsPrincipal user);
         Task<ServiceDTO> getService(int? id);
         //ServiceDTO getSelectedServiceDetails(ServiceDTO service);
         Task<bool> DoesTheServiceHaveAppointments(int? serviceId);

@@ -131,6 +131,18 @@ namespace BusinessLogicLayer.Services
             await _context.SaveChangesAsync();
         }
 
+
+        public async Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user)
+        {
+
+            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Updated");
+
+            var service = _mapper.Map<Service>(serviceDTO);
+
+            _context.Services.Update(service);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ServiceDTO> getService(int? id)
         {
             var service = await _context.Services
@@ -162,14 +174,14 @@ namespace BusinessLogicLayer.Services
 
         public async Task<ServiceDTO> getServiceById(int? id)
         {
-            var service = await _context.Services.FirstOrDefaultAsync(a => a.Id == id);
+            var service = await _context.Services.Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
             // in other codes it was SingleOrDefaultAsync
             return _mapper.Map<ServiceDTO>(service);
         }
 
         public async Task<bool> DoesTheServiceHaveAppointments(int? serviceId)
         {
-            var appointments = await _manageAppointmentsService.Value.getAppointmentsFromServiceId(serviceId);
+            var appointments = await _manageAppointmentsService.Value.getActiveAppointmentsFromServiceId(serviceId);
             if(appointments.Count() == 0)
             {
                 return false;
