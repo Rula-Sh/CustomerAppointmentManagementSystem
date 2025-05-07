@@ -382,6 +382,7 @@
                     ${time}
         @*<input type="hidden" name="DateTimeSlotGroups[${dateIndex}].Date" value="${date}" /> @* moved tot in the renderDateSection function *@
                         <input type="hidden" name="DateTimeSlotGroups[${dateIndex}].TimeSlots[${timeIndex}]" value="${time}" />
+        @*DateTimeSlotGroups[${dateIndex}].TimeSlots[${timeIndex}]      =       time*@
 
         @* <input type="hidden" name="TimeSlots[${date}][]" value="${time}" /> *@
                         <i onclick="removeTimeSlot('${date}', '${time}', this)" class="bi bi-trash3" style="color:red;"></i>
