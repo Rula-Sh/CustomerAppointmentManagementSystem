@@ -69,31 +69,7 @@
         </div>
         <div class="col-md-5 m-2">
             <div id="selectedDatesContainer" class="mt-3">
-
-                @foreach (var dateTimeSlotGroup in Model.DateTimeSlotGroups)
-                {
-                    <div class="date-section rounded-4 border border-1 mb-3" data-date="@dateTimeSlotGroup.Date" id="dateSection">
-                        <div class="d-flex justify-content-between bg-primary-subtle ps-3 pe-3 pt-2 pe-2 rounded-top-4">
-                            <h5>@dateTimeSlotGroup.Date</h5>
-                            <i onclick="removeDate('@dateTimeSlotGroup.Date')" class="bi bi-trash3-fill h5" style="color:red;"></i>
-                        </div>
-                        <div class="time-slots row ps-3 pe-3 ">
-                            @foreach (var timeSlot in dateTimeSlotGroup.TimeSlots)
-                            {
-                                <div class="time-slot col-4 mb-2 text-center">
-                                    @timeSlot
-                                    <input type="hidden" name="@timeSlot" value="@timeSlot" />
-                                    <i onclick="removeTimeSlot('@dateTimeSlotGroup.Date', '@timeSlot', this)" class="bi bi-trash3" style="color:red;"></i>
-                                </div>
-                            }
-                        </div>
-                        <select asp-for="@dateTimeSlotGroup.Date" class="form-control time-select  rounded-top-0 rounded-bottom-4" id="select-@dateTimeSlotGroup.Date" onchange="addTimeSlot('@dateTimeSlotGroup.Date')">
-                            <option value="">-- Select Time --</option>
-                        </select>
-                        <input type="hidden" class="date-input" name="DateTimeSlotGroups[${index}].Date" value="${date}" />
-                        @* <input type="hidden" asp-for="TimeSlots" name="SelectedDates[]" value="${date}" />*@
-                    </div>
-                }
+                @* Dates and TimeSlots Will Be Created Here *@
             </div>
         </div>
     </div>
@@ -107,12 +83,45 @@
 
 
     <script>
+        const selectedDates = []; // to track selected dates
+        const dateTimeData = {}; // contain time slots per date
+        // dateTimeData structure will look like this:
+        /*dateTimeData = {
+        "2025-04-10": ["08:00 - 10:00", "12:00 - 14:00"],
+        "2025-04-11": ["9:30 - 11:00"]
+        };*/
+
+
 
         // $(function() { ... });  is jQuery short-hand for "$(document).ready(function() { ... });".... What it's designed to do (amongst other things) is ensure that your function is called once all the DOM elements of the page are ready to be used.
         // in page initialization load the service duration list and a list of when the service can be available
-         $(function () {
+        $(function () {
             //initializeDurationDropdown();
             initializeDatePicker();
+
+            // set the values of selectedDates and dateTimeData from the service ServiceDates FileSystemDirectoryHandle TimeSlots (DateTimeSlotGroups and TimeSlots in VM)
+            @foreach (var group in Model.DateTimeSlotGroups)
+            {
+                <text>
+                    selectedDates.push("@group.Date");
+
+                    dateTimeData["@group.Date"] = [
+                    @Html.Raw(string.Join(",", group.TimeSlots.Select(ts => $"\"{ts}\"")))
+                    ];
+                </text>
+            }
+
+            console.log(selectedDates);
+            console.log(dateTimeData);
+
+            // create service dates containers
+            @for (int i = 0; i < Model.DateTimeSlotGroups.Count; i++)
+            {
+                var group = Model.DateTimeSlotGroups[i];
+                <text>
+                        renderDateSection('@group.Date', @i, @Html.Raw(Json.Serialize(group.TimeSlots)));
+                </text>
+            }
 
             $("#durationList").on("change", function () { // added this here since i no longer use initializeDurationDropdown function
                 //document.getElementById('selectDurationAlert').style.display = "none";
@@ -124,30 +133,6 @@
             });
 
         });
-
-
-
-        const selectedDates = []; // to track selected dates
-        const dateTimeData = {}; // contain time slots per date
-        // dateTimeData structure will look like this:
-        /*dateTimeData = {
-            "2025-04-10": ["08:00 - 10:00", "12:00 - 14:00"],
-            "2025-04-11": ["9:30 - 11:00"]
-        };*/
-
-        @foreach (var group in Model.DateTimeSlotGroups)
-        {
-            <text>
-                        selectedDates.push("@group.Date");
-
-                        dateTimeData["@group.Date"] = [
-                @Html.Raw(string.Join(",", group.TimeSlots.Select(ts => $"\"{ts}\"")))
-                        ];
-            </text>
-        }
-
-        console.log(selectedDates);
-        console.log(dateTimeData);
 
         // -------------------------------------- list all durations a service can take --------------------------------------
         function initializeDurationDropdown() {
@@ -221,7 +206,7 @@
             });
         }
         // -------------------------------------- create DateSection when selecting a date --------------------------------------
-        function renderDateSection(date,index) {
+        function renderDateSection(date,index,selectedTimes) {
             const container = $("#selectedDatesContainer");  // where the list of selected dates will be added in
 
             const timeOptions = generateTimeOptions(); // get the list of when the service can be available based on the duration
@@ -246,6 +231,34 @@
             `);
             // <div class="time-slots row"> will contain a list of when the service can be available
             container.append(section); // add all the times where a service can be available on the page to #selectedDatesContainer element
+
+            // create selected timeSlots items
+            const selectElement = $('#select-' + date);
+            const slotContainer = section.find(".time-slots");
+
+            // Pre-render each selected time slot
+            selectedTimes.forEach((time, timeIndex) => {
+                selectElement.find(`option[value="${time}"]`).prop('selected', true); // optional
+
+                // Push into dateTimeData if not present
+                if (!dateTimeData[date]) dateTimeData[date] = [];
+                if (!dateTimeData[date].includes(time)) {
+                    dateTimeData[date].push(time);
+                }
+
+                const slot = $(`
+                    <div class="time-slot col-4 mb-2 text-center">
+                        ${time}
+                        <input type="hidden" name="DateTimeSlotGroups[${index}].TimeSlots[${timeIndex}]" value="${time}" />
+                        <i onclick="removeTimeSlot('${date}', '${time}', this)" class="bi bi-trash3" style="color:red;"></i>
+                    </div>
+                `);
+                slotContainer.append(slot);
+
+                // Optionally remove from select dropdown
+                selectElement.find(`option[value="${time}"]`).remove();
+            });
+
         }
 
         // -------------------------------------- list the times where a service can be available --------------------------------------
@@ -413,11 +426,17 @@
 
         // -------------------------------------- add when the service can be available when selecting a time-slot form a sprcific date --------------------------------------
         function addTimeSlot(date) {
-            const container = $(`.date-section[data-date="${date}"] .time-slots`); // will contain the selected item-slots that the service will be available at
-
+            
             const select = $(`#select-${date}`); // get the id of the dropdown list of a specific date
             const time = select.val(); // get the value of the selected time-slot... note: the value is an attribute of the option tag => <option value"__">.....</option>
-            console.log(date);
+            const container = $(`.date-section[data-date="${date}"] .time-slots`); // will contain the selected item-slots that the service will be available at
+
+            console.log("in addTimeSlot");
+            console.log("date",date);
+            console.log("dateTimeData",dateTimeData);
+            console.log("time",time);
+            console.log("dateTimeData[date].includes(time)",dateTimeData[date].includes(time));
+
             if (time && !dateTimeData[date].includes(time)) { // if time is not null and the selected time is not already in the list
                 dateTimeData[date].push(time); // add the time-slot to the specified date
                 const dateIndex = selectedDates.indexOf(date);
@@ -447,15 +466,26 @@
 
         // -------------------------------------- remove time-slot --------------------------------------
         function removeTimeSlot(date, time, button) {
-            dateTimeData[date] = dateTimeData[date].filter(t => t !== time); // delete the time-slot from the date that it is refered to
+            // Remove timeSlot from dateTimeData
+            dateTimeData[date] = dateTimeData[date].filter(t => t !== time);// delete the time-slot from the date that it is refered to
             // (t => t !== time) filters dateTimeData[date] from the unwanted time-slot... meaning when the filter reaches t === time it skips it
-            $(button).closest('.time-slot').remove();// remove the time-slot in the page
 
-            // sort time slot in the list`
+            // remove the timeSlot div
+            const slotDiv = $(button).closest('.time-slot');
+            slotDiv.remove();
+
+            // remove the timeSlot input
+            $(`input[type="hidden"][value="${time}"]`).each(function () {
+                if ($(this).attr("name").includes(date)) {
+                    $(this).remove();
+                }
+            });
+
+            // add time back to dropdown
             const select = $(`#select-${date}`);
             select.append(`<option value="${time}">${time}</option>`);
             const options = select.find('option').toArray().sort((a, b) => {
-            // get all <option> elements in the <select> element with id select-${date}, convert the jQuery object 'select' to an array and sort it
+                // get all <option> elements in the <select> element with id select-${date}, convert the jQuery object 'select' to an array and sort it
                 return a.value.localeCompare(b.value, undefined, { numeric: true });
                 // compart the value attributes of <option> elements a and b.
                 // localeCompare() is a string comparison method that respects human-friendly ordering rules.
@@ -467,12 +497,30 @@
             select.empty().append(options); // re-attach <option> elements to the <select> tag
         }
 
+
         // -------------------------------------- remove selected date --------------------------------------
         function removeDate(date) {
-            selectedDates.splice(selectedDates.indexOf(date), 1); // .splice(dateIndex, 1) removes ONE item from the array selectedDates starting from the dateIndex... meaning it removes only the unwanted passed date
+            //selectedDates.splice(selectedDates.indexOf(date), 1); // .splice(dateIndex, 1) removes ONE item from the array selectedDates starting from the dateIndex... meaning it removes only the unwanted passed date
+
+            const trimmedDate = date.trim();
+            const index = selectedDates.findIndex(d => d.trim() === trimmedDate); // Remove from selectedDates and dateTimeData
+            if (index !== -1) selectedDates.splice(index, 1);
             delete dateTimeData[date];
+
+            // remove the date section from DOM
             $(`.date-section[data-date="${date}"]`).remove();
+
+            // remove all related timeSlots inputs
+            // $(`input[type="hidden"]`).each(function () {
+            //     if ($(this).attr("name").includes(date)) {
+            //         $(this).remove();
+            //     }
+            // });
+
+            console.log('date ' + date+ " is deleted");
+            console.log(selectedDates);
         }
+
         $('form').on('submit', function (e) {
             let isValid = false;
 
@@ -485,23 +533,23 @@
                     break;
                 }
             }
-            console.log(isValid)
+
+            console.log("isValid",isValid);
+            console.log("selectedDates",selectedDates);
+            console.log("dateTimeData",dateTimeData);
 
             if (!isValid) {
                 e.preventDefault(); // Stop the form from submitting
                 $('#dateValidationAlert').show(); // Show the error message
 
-            console.log("inside if when false");
+                console.log("inside form submit when isValid false");
             } else {
+                 // e.preventDefault();
                 $('#dateValidationAlert').hide(); // Hide it just in case
-            console.log("inside if when true");
+                console.log("inside form submit when isValid true");
             }
         });
 
-
     </script>
-
-
-
 
 }
