@@ -17,7 +17,7 @@ namespace PresentationLayer.Controllers
         private readonly IMapper _mapper;
 
 
-        public ServicesController(IManageUsersService manageUsers,IManageServicesService manageServices, IMapper mapper)
+        public ServicesController(IManageUsersService manageUsers, IManageServicesService manageServices, IMapper mapper)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
@@ -126,7 +126,7 @@ namespace PresentationLayer.Controllers
             }*/
 
             // update DB
-            await _manageServices.addService(service,User);
+            await _manageServices.addService(service, User);
 
             return RedirectToAction("Index");
         }
@@ -206,7 +206,7 @@ namespace PresentationLayer.Controllers
 
             if (!await _manageServices.DoesTheServiceHaveAppointments(id))
             {
-                await _manageServices.DeleteService(service,User);
+                await _manageServices.DeleteService(service, User);
 
                 return Ok(new { success = true, message = "Service Deleted Successfully." });
             }

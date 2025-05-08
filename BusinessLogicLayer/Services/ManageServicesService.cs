@@ -131,15 +131,31 @@ namespace BusinessLogicLayer.Services
             await _context.SaveChangesAsync();
         }
 
-
         public async Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
-
             await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Updated");
 
-            var service = _mapper.Map<Service>(serviceDTO);
+            //    var service = _mapper.Map<Service>(serviceDTO);
 
-            _context.Services.Update(service);
+            //    _context.Services.Update(service);
+            //await _context.SaveChangesAsync();
+
+            var existingService = await _context.Services
+                .Include(s => s.ServiceDates)
+                .ThenInclude(g => g.ServiceTimeSlots)
+                .FirstOrDefaultAsync(s => s.Id == serviceDTO.Id);
+
+            if (existingService == null) return;
+
+            // remove ServiceDates and ServiceTimeSlots data since when i Update the db i get them back
+            _context.ServiceTimeSlots.RemoveRange(
+                existingService.ServiceDates.SelectMany(g => g.ServiceTimeSlots));
+            _context.ServiceDates.RemoveRange(existingService.ServiceDates);
+
+            // update service properties and set the new DateTimeSlotGroups
+            _mapper.Map(serviceDTO, existingService);
+            // i CANT use: var service = _mapper.Map<Service>(serviceDTO); because it creates a new service, and i need to update it
+
             await _context.SaveChangesAsync();
         }
 
