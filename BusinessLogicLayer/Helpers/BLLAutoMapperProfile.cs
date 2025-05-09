@@ -34,6 +34,10 @@ namespace BusinessLogicLayer.Helpers
 
             CreateMap<Notification, NotificationDTO>();
 
+            CreateMap<Service, ServiceWithActiveAppointmentsDTO>()
+                .ForMember(dest => dest.ActiveAppointments, opt => opt.Ignore())
+                .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
+
             // -------------------- POST --------------------
             // create a service
             CreateMap<ServiceDTO, Service >()
