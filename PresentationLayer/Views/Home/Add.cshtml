@@ -96,11 +96,19 @@
                 const dateDropdown = document.getElementById('serviceDatesList'); 
                 dateDropdown.innerHTML = '<option value="">-- Select a Date --</option>';
                 data.dateTimeSlotGroups.forEach(group => {
-                    // const dateStr = new Date(group.date).toLocaleDateString(); 
-                    const [day, month, year] = group.date.split('/');
-                    const validDate = new Date(`${year}-${month}-${day}`); // Convert to yyyy-MM-dd format
+                    // const dateStr = new Date(group.date).toLocaleDateString();
+
+                    const normalizedDate = group.date.replace(/-/g, '/'); // replace any dashes with slashes to avoid incorrect ISO date parsing
+                    // "13-05-2025" might be misinterpreted as ISO (yyyy-MM-dd) and cause a RangeError..... while "13/05/2025" is more likely to be treated as a locale-specific (dd/MM/yyyy) date.
+
+                    const [day, month, year] = normalizedDate.split('/');
+                    const validDate = new Date(`${year}-${month}-${day}`); // Convert to yyyy-MM-dd format (ISO-friendly format)... which is the safest format to use with the JavaScript Date constructor.
+                    console.log("group.date"+group.date);
+                    console.log("validDate"+validDate);
                     const dateStr = new Intl.DateTimeFormat('en-GB').format(validDate); // en-GB uses dd/MM/yyyy format
-                    group.timeSlots.forEach(time => { 
+                    
+                    console.log("dateStr"+dateStr);
+                    group.timeSlots.forEach(time => {
                         const option = document.createElement('option');
                         //  option.value = group.date;
                         // option.textContent = new Date(group.date).toLocaleDateString();
