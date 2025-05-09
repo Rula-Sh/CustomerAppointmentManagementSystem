@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTOs;
-using DataAccessLayer.Models;
 using PresentationLayer.ViewModels;
 
 namespace PresentationLayer.Mapper
@@ -24,10 +23,12 @@ namespace PresentationLayer.Mapper
 
             CreateMap<ActiveAppointmentDTO, ActiveAppointmentViewModel>();
 
+            CreateMap<ServiceWithActiveAppointmentsDTO, ServiceWithActiveAppointmentsViewModel>();
+
             // -------------------- POST --------------------
             // create a service
-            CreateMap<ServiceViewModel,ServiceDTO>();
-            CreateMap<DateTimeSlotGroupViewModel,DateTimeSlotGroupDTO>();
+            CreateMap<ServiceViewModel, ServiceDTO>();
+            CreateMap<DateTimeSlotGroupViewModel, DateTimeSlotGroupDTO>();
             //create an appointment
             CreateMap<BookAppointmentViewModel, BookAppointmentDTO>();
 
