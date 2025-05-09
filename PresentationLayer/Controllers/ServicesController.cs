@@ -181,12 +181,12 @@ namespace PresentationLayer.Controllers
             if (id == null)
                 return BadRequest();
 
-            var serviceDTO = await _manageServices.getService(id);
+            var ServiceWithActiveAppointmentsDTO = await _manageServices.getServiceWithActiveAppointments(id);
 
-            if (serviceDTO == null)
+            if (ServiceWithActiveAppointmentsDTO == null)
                 return NotFound();
 
-            var service = _mapper.Map<ServiceViewModel>(serviceDTO);
+            var service = _mapper.Map<ServiceWithActiveAppointmentsViewModel>(ServiceWithActiveAppointmentsDTO);
 
             return View("Details", service);
         }
