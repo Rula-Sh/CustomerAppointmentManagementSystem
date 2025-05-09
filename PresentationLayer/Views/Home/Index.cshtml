@@ -124,7 +124,87 @@
 
 @section Scripts {
 
-    <script>
+        <script>
+
+            $(document).ready(function () {
+                if ($("#customerAppointments").length) {
+                        const tableId = '#customerAppointments';
+                        if ($.fn.DataTable.isDataTable(tableId)) {
+                            $(tableId).DataTable().clear().destroy();
+                        }
+                        $(tableId).DataTable({
+
+                            "ajax": {
+                                "url": "Home/LoadData",
+                                "type": "POST",
+                                "datatype": "json"
+                            },
+
+                            "columns": [
+                                { "data": "name", "name": "name", "autoWidth": "10%", "className": "text-center" },
+                                { "data": "date", "name": "date", "autoWidth": "20%", "className": "text-center" },
+                                { "data": "status", "name": "status", "autoWidth": "10%", "className": "text-center" },
+                                {
+                                    data: null,
+                                    render: function(data, type, row) {
+                                        var actions = '';
+                                        if (row.status === "Completed" || row.status === "Approved") {
+                                            actions += '<a href="/Home/Details/' + row.id + '" class="btn btn-outline-secondary me-1"><i class="bi bi-list-ul"></i></a>';
+                                        }
+                                        if (row.status === "Pending" || row.status === "Rejected" || row.status === "Approved") {
+                                            actions += '<a href="javascript:;" class="btn btn-danger js-delete ms-1" data-id="' + row.id + '"><i class="bi bi-trash"></i></a>';
+                                        }
+                                        return actions;
+                                    },
+                                },
+                            ],
+                            "drawCallback": function () {
+                                // Bind delete button click handler
+                                $('.js-delete').off('click').on('click', function () {
+                                    var btn = $(this);
+                                    bootbox.confirm({
+                                        message: "Are you sure you want to delete the appointment?",
+                                        buttons: {
+                                            confirm: {
+                                                label: 'Yes',
+                                                className: 'btn-danger'
+                                            },
+                                            cancel: {
+                                                label: 'No',
+                                                className: 'btn-success'
+                                            }
+                                        },
+                                        callback: function (result) {
+                                            if(result){
+                                                $.ajax({
+                                                    url: 'home/delete/' + btn.data('id'),
+                                                    type: 'DELETE',
+                                                    success: function () {
+
+                                                    var row = btn.closest('tr');
+                                                    row.addClass('animate__animated animate__zoomOut');
+
+                                                    setTimeout(function () {
+                                                        row.remove();
+                                                    }, 1000);
+
+                                                    toastr.error('Appointment deleted');
+                                                    },
+                                                    error: function (err) {
+                                                        console.log('An error occurred: ' + err);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                });
+                                // Similarly bind other dynamic buttons if any
+                            }
+                        });
+                }
+            });
+
+
         $(document).ready(function () {
             $('.js-complete').on('click', function () {
                 var btn = $(this);
@@ -161,44 +241,44 @@
                  });
             });
 
-            $('.js-delete').click(function () {
-                var btn = $(this);
-                bootbox.confirm({
-                    message: "Are you sure you want to delete the appointment?",
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-danger'
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-success'
-                        }
-                    },
-                    callback: function (result) {
-                        if(result){
-                            $.ajax({
-                                url: 'home/delete/' + btn.data('id'),
-                                type: 'DELETE',
-                                success: function () {
+            // $('.js-delete').click(function () {
+            //     var btn = $(this);
+            //     bootbox.confirm({
+            //         message: "Are you sure you want to delete the appointment?",
+            //         buttons: {
+            //             confirm: {
+            //                 label: 'Yes',
+            //                 className: 'btn-danger'
+            //             },
+            //             cancel: {
+            //                 label: 'No',
+            //                 className: 'btn-success'
+            //             }
+            //         },
+            //         callback: function (result) {
+            //             if(result){
+            //                 $.ajax({
+            //                     url: 'home/delete/' + btn.data('id'),
+            //                     type: 'DELETE',
+            //                     success: function () {
 
-                                var row = btn.closest('tr');
-                                row.addClass('animate__animated animate__zoomOut');
+            //                     var row = btn.closest('tr');
+            //                     row.addClass('animate__animated animate__zoomOut');
 
-                                setTimeout(function () {
-                                    row.remove();
-                                }, 1000);
+            //                     setTimeout(function () {
+            //                         row.remove();
+            //                     }, 1000);
 
-                                toastr.error('Appointment deleted');
-                                },
-                                error: function (err) {
-                                    console.log('An error occurred: ' + err);
-                                }
-                            });
-                        }
-                    }
-                });
-            });
+            //                     toastr.error('Appointment deleted');
+            //                     },
+            //                     error: function (err) {
+            //                         console.log('An error occurred: ' + err);
+            //                     }
+            //                 });
+            //             }
+            //         }
+            //     });
+            // });
         });
     </script>
 }
