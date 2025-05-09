@@ -1830,7 +1830,7 @@ progress {
 
 .table {
     --bs-table-bg: rgba(0,0,0,0);
-    --bs-table-striped-color: #9B9B9B;
+    --bs-table-striped-color: #000;
     --bs-table-striped-bg: rgba(0,0,0,0.05);
     --bs-table-active-color: #9B9B9B;
     --bs-table-active-bg: rgba(0,0,0,0.1);
@@ -1838,7 +1838,7 @@ progress {
     --bs-table-hover-bg: rgba(0,0,0,0.075);
     width: 100%;
     margin-bottom: 1rem;
-    color: #9B9B9B;
+/*    color: #9B9B9B;*/
     vertical-align: top;
     border-color: #dee2e6
 }
