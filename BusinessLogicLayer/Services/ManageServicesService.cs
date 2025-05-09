@@ -198,7 +198,7 @@ namespace BusinessLogicLayer.Services
         public async Task<bool> DoesTheServiceHaveAppointments(int? serviceId)
         {
             var appointments = await _manageAppointmentsService.Value.getActiveAppointmentsFromServiceId(serviceId);
-            if(appointments.Count() == 0)
+            if (appointments.Count() == 0)
             {
                 return false;
             }
@@ -235,12 +235,12 @@ namespace BusinessLogicLayer.Services
                                                     .OrderByDescending(g => g.AppointmentCount)
                                                     .FirstOrDefault();
 
-            if(mostBookedService == null)
+            if (mostBookedService == null)
             {
                 return "None";
             }
             return _context.Services.Where(u => u.Id == mostBookedService.ServiceId).Select(e => e.Name).SingleOrDefault();
-            
+
             // no auto mapper is used here becaause: 
             // 1- i am not mapping entities to DTOs or view models.
             // 2- i am only retrieving a string (the service name) here after some LINQ-based aggregation.
@@ -259,6 +259,22 @@ namespace BusinessLogicLayer.Services
         public int GetTotalServices()
         {
             return _context.Services.Count();
+        }
+
+
+        public async Task<ServiceWithActiveAppointmentsDTO> getServiceWithActiveAppointments(int? id)
+        {
+            var service = await _context.Services
+                .Include(p => p.ServiceDates)
+                .ThenInclude(d => d.ServiceTimeSlots)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            var activeAppointments = await _context.Appointments.Where(a => a.ServiceId == service.Id && a.Status == "Approved").Include(a => a.Customer).Include(a => a.Employee).ToListAsync();
+
+            var serviceWithActiveAppointmentsDTO = _mapper.Map<ServiceWithActiveAppointmentsDTO>(service);
+            serviceWithActiveAppointmentsDTO.ActiveAppointments = _mapper.Map<List<AppointmentDTO>>(activeAppointments);
+
+            return serviceWithActiveAppointmentsDTO;
         }
     }
 }

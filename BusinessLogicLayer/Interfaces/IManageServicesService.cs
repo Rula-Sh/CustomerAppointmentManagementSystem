@@ -19,5 +19,6 @@ namespace BusinessLogicLayer.Interfaces
         string GetMostBookedServiceName();
         Task<List<string>> GetServicesNames();
         int GetTotalServices();
+        Task<ServiceWithActiveAppointmentsDTO> getServiceWithActiveAppointments(int? id);
     }
 }
