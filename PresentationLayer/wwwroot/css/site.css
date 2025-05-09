@@ -115,3 +115,8 @@ body {
     min-width: 300px;
     cursor: pointer;
 }
+
+/* to center dataTables columns*/
+.text-center {
+    text-align: center;
+}
