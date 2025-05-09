@@ -1,4 +1,4 @@
-﻿@model ServiceViewModel
+﻿@model ServiceWithActiveAppointmentsViewModel
 
 @{
     ViewData["Title"] = "@Model.Name  Details";
@@ -34,17 +34,56 @@
                     <div id="@formattedDate" class="tabcontent h-100 rounded-end">
                         <p class="w-100 text-center m-0 mt-1"><strong>Times Available</strong></p>
                         <div class="ps-3 pe-3 pb-2 text-center ">
-                        @foreach (var timeSlot in date.TimeSlots)
-                        {
-                            <p class="mb-0 mt-2">@timeSlot</p>
-                        }
+                            @foreach (var timeSlot in date.TimeSlots)
+                            {
+                                <p class="mb-0 mt-2">@timeSlot</p>
+                            }
                         </div>
                     </div>
                 }
             </div>
         </div>
     </div>
+    <div class="column col-12">
+        <h4>Active Appointments</h4>
+        @if (!Model.ActiveAppointments.Any())
+        {
+            <h5>
+                <i class="bi bi-exclamation-triangle"></i>
+                No Active appointments
+            </h5>
+        }
+        else
+        {
+            <div class="row">
+                @* <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id"> *@
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th> Name </th>
+                            <th> Customer </th>
+                            <th> Employee </th>
+                            <th> Date </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var appointment in Model.ActiveAppointments)
+                        {
+                            <tr>
+                                <td class=" text-black">@appointment.Name</td>
+                                <td class=" text-black">@appointment.Customer.FullName</td>
+                                <td class=" text-black">@appointment.Employee.FullName</td>
+                                <td class=" text-black">@appointment.Date</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @* </a> *@
+            </div>
+        }
+    </div>
 </div>
+
 <div>
     <a asp-action="Index" class="btn btn-outline-secondary mt-4">
         @* asp-route-id="@service.Id" used to select the service*@
