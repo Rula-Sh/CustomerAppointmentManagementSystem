@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyModel;
 using PresentationLayer.ViewModels;
 using System.Diagnostics;
+using DataAccessLayer.Data;
 
 
 namespace PresentationLayer.Controllers
@@ -46,6 +47,23 @@ namespace PresentationLayer.Controllers
             var appointments = _mapper.Map<List<AppointmentViewModel>>(appointmentsDTOs);
 
             return View(appointments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadData()
+        {
+            using (ApplicationDbContext appDBC = new ApplicationDbContext())
+            {
+                var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
+                var tableData = appointments.Select(a => new {
+                    a.Id,
+                    a.Name,
+                    Date = a.Date.ToString(),
+                    a.Status
+                });
+
+                return Json(new { data = tableData });
+            }
         }
 
         [Authorize(Roles = "Customer")]
