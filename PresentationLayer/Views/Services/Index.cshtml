@@ -85,10 +85,11 @@ else
                 console.log(btn.data('id'));
 
                 $.ajax({
-                    url: '/services/edit/' + btn.data('id'),
+                    url: '/services/edit/' + serviceId,
                     success: function (response) {
                         if (!response.success) {
-                             window.location.href = '/services/edit/' + serviceId;
+                            toastr.error(response.message);
+                             // window.location.href = '/services/edit/' + serviceId;
                         } else {
                             toastr.error(response.message);
                         }
