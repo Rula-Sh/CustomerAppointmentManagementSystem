@@ -4,6 +4,7 @@ using CAMS.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CAMS.Web.ViewModels;
+using CAMS.Data;
 
 namespace CAMS.Web.Controllers
 {
@@ -40,6 +41,26 @@ namespace CAMS.Web.Controllers
 
             return View(usersPath, usersViewModels);
 
+        }
+
+        [HttpPost]
+        [Route("Home/LoadUsers")]
+        public async Task<IActionResult> LoadUsers()
+        {
+            using (ApplicationDbContext appDBC = new ApplicationDbContext())
+            {
+                var users = await _manageUsers.GetUsers();
+                var tableData = users.Select(a => new {
+                    a.Id,
+                    a.FullName,
+                    a.Email,
+                    a.Roles,
+                    a.LastActivity,
+                    a.IsActive,
+                });
+
+                return Json(new { data = tableData });
+            }
         }
 
         [HttpPost]
