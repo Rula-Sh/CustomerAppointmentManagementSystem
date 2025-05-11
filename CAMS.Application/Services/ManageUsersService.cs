@@ -24,8 +24,17 @@ namespace CAMS.Application.Services
 
         public async Task<List<UserDTO>> GetUsers()
         {
-            var user = await _userManager.Users.ToListAsync();
-            return _mapper.Map<List<UserDTO>>(user);
+            var users = await _userManager.Users.ToListAsync();
+            var userDTOs = new List<UserDTO>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var dto = _mapper.Map<UserDTO>(user);
+                dto.Roles = roles;
+                userDTOs.Add(dto);
+            }
+
+            return userDTOs;
         }
 
         public async Task<List<string>> GetRoles(UserDTO userDTO)
@@ -57,18 +66,19 @@ namespace CAMS.Application.Services
             var currentUser = await GetUser(user);
             if (currentUser != null)
             {
-                currentUser.LastActivityDate = DateTime.Now; // or DateTime.UtcNow if needed
+                currentUser.LastActivityDate = DateTime.Now; // or DateTime.UtcNow
 
-                // Ensure the entity is tracked
                 var entry = _context.Entry(currentUser);
+
+                // Ensure the entity is tracked  (mark as modified only if it's detached or not already tracked)
                 if (entry.State == EntityState.Detached)
                 {
-                    _context.Attach(currentUser);  // Attach if it's detached
-                    // Mark the entity as modified if necessary
-                    _context.Entry(currentUser).State = EntityState.Modified;
-
-                    await _context.SaveChangesAsync();
+                    _context.Attach(currentUser);
                 }
+
+                entry.State = EntityState.Modified; // Mark as modified if it's detached or newly attached
+
+                await _context.SaveChangesAsync();  // Save changes
             }
         }
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
