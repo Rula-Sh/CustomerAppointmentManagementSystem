@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,19 +12,25 @@ namespace CAMS.Data.Models
                                           // i made the class extends IdentityUser<int> so that I can update on it in the database and not replace it
     {
         //public int Id { get; set; }
+        [Required]
+        [MaxLength(60)]
         public string FullName { get; set; }
         //public string Email { get; set; }
         //public string PasswordHash { get; set; }
         //public string PhoneNumber { get; set; }
+        [Required]
         public DateTime CreatedAt { get; set; }
 
         public byte[]? ProfilePicture { get; set; }
 
+        [Required]
         public bool IsActive { get; set; } = true;
 
+        [Required]
         public DateTime LastActivityDate { get; set; }
 
         // Many-to-Many relationship (User and Role)
+        [Required]
         public virtual ICollection<UserRole> UserRoles { get; set; }
 
         // One-to-Many relationship (User[Employee/Customer] and Appointment)

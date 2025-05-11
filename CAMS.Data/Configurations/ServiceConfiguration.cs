@@ -8,7 +8,7 @@ internal class ServiceConfiguration : IEntityTypeConfiguration<Service>
 {
     public void Configure(EntityTypeBuilder<Service> builder)
     {
-        builder.HasMany(s => s.Appointmens)
+        builder.HasMany(s => s.Appointments)
                 .WithOne(a => a.Service)
                 .HasForeignKey(a => a.ServiceId)
                 .OnDelete(DeleteBehavior.Cascade);
