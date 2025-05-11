@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PresentationLayer.SignalR
+namespace CAMS.Web.SignalR
 {
     public class NotificationHub : Hub
     {

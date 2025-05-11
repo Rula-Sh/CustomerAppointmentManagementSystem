@@ -1,6 +1,5 @@
 ﻿using CAMS.Data;
 using CAMS.Data.Models;
-using CAMS.Data;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceSeeding

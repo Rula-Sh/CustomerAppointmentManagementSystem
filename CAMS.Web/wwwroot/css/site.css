@@ -13,8 +13,9 @@ html {
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
 }
 
 body {
@@ -28,4 +29,111 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+
+/* ===================================== project cutomization ===================================== */
+
+.profile-picutre {
+    height: 295px;
+    width: 295px;
+    object-fit: cover;
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+}
+
+.inactive-row td {
+    color: gray !important;
+    opacity: 0.6 !important;
+    transition: color 0.3s, opacity 0.3s;
+}
+
+.active-row td {
+    color: black !important;
+    opacity: 1 !important;
+    transition: color 0.3s, opacity 0.3s;
+}
+
+/* -------------- Service Details --------------*/
+/* style service dates tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #cce0ff;
+}
+
+    /* style dates buttons that are used to open Times Available content */
+    .tab button {
+        background-color: inherit;
+        border: none;
+        padding: 14px 0px;
+        transition: 0.3s;
+    }
+
+        /* change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #99c2ff;
+        }
+
+        /* create an active/current tablink class */
+        .tab button.active {
+            background-color: #4d94ff;
+            color: white;
+            border-radius: 5px;
+        }
+
+/* style Times Available content */
+.tabcontent {
+    display: none;
+    border: 1px solid #ccc;
+    border-left: none;
+    background-color: #e6f0ff;
+}
+
+
+/* -------------- Notification --------------*/
+
+/* notification */
+.notification {
+    cursor: pointer;
+}
+/* notifications count */
+.smallText {
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+}
+
+.notifAbove10 {
+    left: 5px;
+}
+
+.notifbelow10 {
+    left: 8px;
+}
+/* notifications list */
+.popover {
+    min-width: 300px;
+    cursor: pointer;
+}
+
+/* to center dataTables columns*/
+.text-center {
+    text-align: center;
+}
+
+/* //////////////////////// */
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }

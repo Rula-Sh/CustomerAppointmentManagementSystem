@@ -1,0 +1,184 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1 class="mb-4">Dashboard</h1>
+<div class=" border border-2 rounded-5 mt-4 p-3 border-opacity-10">
+    <h2 class="mb-3">Statistics</h2>
+    <div class="row mb-4">
+        <div class="col-6">
+            <div class="row justify-content-around">
+                <strong class="col-6">Total Users:</strong> <span class="col-6">@Model.TotalUsers</span>
+                <strong class="col-6">Total Serivces:</strong> <span class="col-6">@Model.TotalServices</span>
+                <strong class="col-6">Total Appointments:</strong><span class="col-6"> @Model.TotalAppointments</span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row justify-content-around">
+                <strong class="col-7">Best Employee:</strong> <span class="col-5">@Model.BestEmployee</span>
+                <strong class="col-7">Avg Appoints. per Emp.:</strong> <span class="col-5">@Model.AvgAppointmentsPerEmployee</span>
+                <strong class="col-7">Most Booked Service:</strong> <span class="col-5">@Model.MostBookedService</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class=" border border-2 rounded-5 mt-4 p-3 border-opacity-10">
+    <h3 class="mb-2">Booking</h3>
+    <div class="row justify-content-around mb-4">
+        <canvas id="dailyBookingChart" class="col-6 w-50 h-25"></canvas>
+        <canvas id="weeklyBookingChart" class="col-6 w-50 h-25"></canvas>
+    </div>
+</div>
+
+
+<div class=" border border-2 rounded-5 mt-4 p-3 border-opacity-10">
+    <h3 class="mb-2">Appointments</h3>
+    <div class="row justify-content-between">
+        @* <canvas id="systemOverviewChart" class="col-6 w-50 h-25"></canvas> *@
+        <canvas id="serviceAppointmentsCount" class="col-6  w-50 h-25"></canvas>
+        <div class="col-6 d-flex justify-content-center align-items-center"> <canvas class=" w-50 h-100" id="appointmentsStatusChart"></canvas></div>
+        </div>
+</div>
+
+<div class=" border border-2 rounded-5 mt-4 p-3 border-opacity-10">
+    <h3 class=" mb-4">Today's Appointments</h3>
+    @if (!Model.ActiveAppointments.Any())
+    {
+        <h5 class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i>
+            No Appointments Today
+        </h5>
+    }
+    else
+    {
+
+        <table class="table table-striped">
+            <thead>
+                <tr class="bg-primary text-white">
+                    <th>Customer Name</th>
+                    <th>Appointment Date</th>
+                    <th>Service Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model.ActiveAppointments)
+                {
+                    <tr>
+                        <td>@appointment.CustomerName</td>
+                        <td>@appointment.AppointmentDate</td>
+                        <td>@appointment.ServiceName</td>
+                    </tr>
+                }
+            </tbody>
+    </table>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const dailyBookingChart = document.getElementById('dailyBookingChart');
+    new Chart(dailyBookingChart, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.last7Days)),
+            datasets: [{
+                label: '# of Daily Bookings',
+                data: @Html.Raw(Json.Serialize(Model.dailyBookingCounts)),
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'blue'
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const weeklyBookingChart = document.getElementById('weeklyBookingChart');
+    new Chart(weeklyBookingChart, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.lastWeeksinMonth)),
+            datasets: [{
+                label: '# of Weekly Bookings',
+                data: @Html.Raw(Json.Serialize(Model.weeklyBookingCounts)),
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'green'
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // const systemOverviewChart = document.getElementById('systemOverviewChart');
+    // new Chart(systemOverviewChart, {
+    //   type: 'bar',
+    //   data: {
+    //     labels: ['Users', 'Services', 'Appointments'],
+    //     datasets: [{
+    //       label: '# of System Overview',
+    //       data: [@@Model.Users.Count(),@@Model.Services.Count(),@@Model.Appointments.Count()],
+    //       borderWidth: 1
+    //     }]
+    //   },
+    //   options: {
+    //     scales: {
+    //       y: {
+    //         beginAtZero: true
+    //       }
+    //     }
+    //   }
+    // });
+
+    const appointmentsStatusChart = document.getElementById('appointmentsStatusChart');
+    new Chart(appointmentsStatusChart, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pending', 'Approved', 'Rejected', 'Completed'],
+        datasets: [{
+          label: '# of Appointments Status',
+          data: @Html.Raw(Json.Serialize(Model.appointmentsStatusCount))
+        }]
+      }
+    });
+
+    const serviceAppointmentsCount = document.getElementById('serviceAppointmentsCount');
+    new Chart(serviceAppointmentsCount, {
+      type: 'bar',
+      data: {
+        labels: @Html.Raw(Json.Serialize(Model.servicesLabel)),
+        datasets: [{
+          label: '# of Appointments Per Service',
+          data:@Html.Raw(Json.Serialize(Model.serviceAppointmentsCount)),
+          // backgroundColor: [
+          //   'rgb(253, 89, 51)',
+          //   'rgb(18, 153, 161)',
+          //   'rgb(239, 154, 78)',
+          //   'rgb(230, 216, 207)',
+          //   'rgb(232, 79, 153)',
+          //   'rgb(126, 78, 158)',
+          // ],
+          borderWidth: 1
+        }],
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+      }
+    });
+</script>

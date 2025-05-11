@@ -13,12 +13,12 @@ namespace CAMS.Data.Configurations
             builder.HasOne(ur => ur.User)
                    .WithMany(u => u.UserRoles)
                    .HasForeignKey(ur => ur.UserId)
-                   .OnDelete(DeleteBehavior.Restrict); // Prevent cascade path
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(ur => ur.Role)
                    .WithMany(r => r.UserRoles)
                    .HasForeignKey(ur => ur.RoleId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace PresentationLayer.ViewModels
+﻿namespace CAMS.Web.ViewModels
 {
     public class ActiveAppointmentViewModel
     {

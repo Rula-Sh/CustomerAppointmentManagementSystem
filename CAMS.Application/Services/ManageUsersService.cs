@@ -40,17 +40,21 @@ namespace CAMS.Application.Services
             // was using this in the controller: 'var userId = User.Identity.GetUserId();'
         }
 
-        public async Task<User> GetUserById(ClaimsPrincipal user)
+        public async Task<User> GetUser(ClaimsPrincipal user)
         {
             return await _userManager.FindByIdAsync(GetUserId(user));
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            return await _userManager.FindByIdAsync(id.ToString());
             // OR:  _context.Users.SingleOrDefault(a => a.Id == userId);
             //return _mapper.Map<UserDTO>(gottenUser);
-
         }
 
         public async Task UpdateUserLastActivityDate(ClaimsPrincipal user)
         {
-            var currentUser = await GetUserById(user);
+            var currentUser = await GetUser(user);
             if (currentUser != null)
             {
                 currentUser.LastActivityDate = DateTime.Now; // or DateTime.UtcNow if needed

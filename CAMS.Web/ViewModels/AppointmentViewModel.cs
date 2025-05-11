@@ -1,6 +1,6 @@
 ﻿using CAMS.Data.Models;
 
-namespace PresentationLayer.ViewModels
+namespace CAMS.Web.ViewModels
 {
     public class AppointmentViewModel
     {

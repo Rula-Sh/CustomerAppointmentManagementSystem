@@ -28,11 +28,12 @@ public static class DbInitializer
             {             
                 UserName = "admin",
                 Email = "admin@example.com",
-                FullName = "Admin User",
-                EmailConfirmed = true
+                FullName = "Admin Admin"
             };
-            await userManager.CreateAsync(admin, "P@ssw0rd");
+            await userManager.CreateAsync(admin, "!Q23wewe");//P@ssw0rd
             await userManager.AddToRoleAsync(admin, "Admin");
+            await userManager.AddToRoleAsync(admin, "Employee");
+            await userManager.AddToRoleAsync(admin, "Customer");
         }
 
         // Repeat for Employee and Customer...

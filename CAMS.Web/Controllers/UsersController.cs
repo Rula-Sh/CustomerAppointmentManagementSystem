@@ -3,9 +3,9 @@ using CAMS.Application.Helpers;
 using CAMS.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PresentationLayer.ViewModels;
+using CAMS.Web.ViewModels;
 
-namespace PresentationLayer.Controllers
+namespace CAMS.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
@@ -43,14 +43,14 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeAccountEmployement(int id)
+        public async Task<IActionResult> ChangeAccountEmployement(int id, string from,string to)
         {
-            var user = await _manageUsers.GetUserById(User);
+            var user = await _manageUsers.GetUserById(id);
 
             if (user == null)
                 return NotFound();
 
-            await _manageUsers.changeRoleFromTo(user, "Customer", "Employee");
+            await _manageUsers.changeRoleFromTo(user, from, to);
 
             return RedirectToAction(nameof(Index));
         }
@@ -58,7 +58,7 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public async Task<IActionResult> changeAccountActivity(int id)
         {
-            var user = await _manageUsers.GetUserById(User);
+            var user = await _manageUsers.GetUserById(id);
 
             if (user == null)
                 return NotFound();

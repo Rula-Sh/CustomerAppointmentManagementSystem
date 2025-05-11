@@ -1,13 +1,12 @@
-using BusinessLogicLayer.Services;
 using CAMS.Application.Helpers;
 using CAMS.Application.Interfaces;
 using CAMS.Application.Services;
 using CAMS.Data;
 using CAMS.Data.Models;
 using CAMS.Data.SeedingData;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PresentationLayer.Mapper;
+using CAMS.Web.Mapper;
+using CAMS.Web.SignalR;
 
 namespace CAMS.Web
 {
@@ -27,7 +26,6 @@ namespace CAMS.Web
             builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             // Register custom services
-            builder.Services.AddScoped<RoleManager<Role>>();
             builder.Services.AddScoped<IManageUsersService, ManageUsersService>();
             builder.Services.AddScoped<IManageServicesService, ManageServicesService>();
             builder.Services.AddScoped<IManageAppointmentsService, ManageAppointmentsService>();
@@ -43,8 +41,8 @@ namespace CAMS.Web
             builder.Services.AddSignalR();
 
             var app = builder.Build();
-            await ServiceSeeding.SeedAsync(app.Services);
             await DbInitializer.SeedAsync(app.Services);
+            await ServiceSeeding.SeedAsync(app.Services);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -63,6 +61,8 @@ namespace CAMS.Web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            app.MapHub<NotificationHub>("notificationHub");
 
             app.Run();
         }

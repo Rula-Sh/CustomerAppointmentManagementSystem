@@ -1,8 +1,8 @@
 ﻿using CAMS.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using PresentationLayer.SignalR;
+using CAMS.Web.SignalR;
 
-namespace BusinessLogicLayer.Services
+namespace CAMS.Application.Services
 {
     public class SignalRNotifierService : ISignalRNotifierService
     {

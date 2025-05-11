@@ -11,6 +11,8 @@ namespace CAMS.Data
     IdentityRoleClaim<int>, IdentityUserToken<int>>
     // i added this extend so that i overried User/Role/UserRole and convert the default id from string to int
     {        
+
+        public ApplicationDbContext() { } // added this because in HomeController.cs "new ApplicationDbContext()" caused the error "There is no argument given that corresponds to the required parameter 'options' of 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>)'"
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         //public DbSet<User> Users { get; set; }

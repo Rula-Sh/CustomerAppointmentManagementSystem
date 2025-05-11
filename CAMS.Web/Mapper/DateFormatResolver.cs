@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using AutoMapper;
 using CAMS.Application.DTOs;
-using PresentationLayer.ViewModels;
+using CAMS.Web.ViewModels;
 
-namespace PresentationLayer.Mapper
+namespace CAMS.Web.Mapper
 {
     public class DateFormatResolver : IValueResolver<DateTimeSlotGroupDTO, DateTimeSlotGroupViewModel, string>
     {
