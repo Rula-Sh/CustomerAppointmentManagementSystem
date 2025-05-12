@@ -24,8 +24,17 @@ namespace BusinessLogicLayer.Services
 
         public async Task<List<UserDTO>> GetUsers()
         {
-            var user = await _userManager.Users.ToListAsync();
-            return _mapper.Map<List<UserDTO>>(user);
+            var users = await _userManager.Users.ToListAsync();
+            var userDTOs = new List<UserDTO>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var dto = _mapper.Map<UserDTO>(user);
+                dto.Roles = roles;
+                userDTOs.Add(dto);
+            }
+
+            return userDTOs;
         }
 
         public async Task<List<string>> GetRoles(UserDTO userDTO)
