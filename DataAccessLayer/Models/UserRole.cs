@@ -10,9 +10,10 @@ namespace DataAccessLayer.Models
     public class UserRole : IdentityUserRole<int>
     {
         // Many-to-Many relationship table (User and Role)
-        public User User { get; set; }
         //public int UserId { get; set; }
-        public Role Role { get; set; }
+        public virtual User User { get; set; }
         //public int RoleId { get; set; }
+        public virtual Role Role { get; set; }
+        //commented UserId RoleId because of the error: "System.InvalidOperationException: 'The value of 'UserRole.UserId' is unknown when attempting to save changes. This is because the property is also part of a foreign key for which the principal entity in the relationship is not known.'"
     }
 }

@@ -97,7 +97,7 @@ namespace DataAccessLayer.Data
             //        .OnDelete(DeleteBehavior.Cascade);
             //});
             builder.Entity<Service>()
-                .HasMany(s => s.Appointmens)
+                .HasMany(s => s.Appointments)
                 .WithOne(a => a.Service)
                 .HasForeignKey(a => a.ServiceId)
                 .OnDelete(DeleteBehavior.Cascade);
