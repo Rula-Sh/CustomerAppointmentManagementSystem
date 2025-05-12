@@ -249,8 +249,8 @@
 
                                                         toastr.success('Appointment Completed');
                                                     },
-                                                    error: function () {
-                                                        toastr.error('Something went wrong!');
+                                                    error: function (err) {
+                                                        toastr.error('Something went wrong!',err);
                                                     }
                                                 });
                                             }

@@ -69,7 +69,7 @@ namespace CAMS.Web.Controllers
             {
                 var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
                 var tableData = appointments.Select(a => new {
-                    //a.Id,
+                    a.Id,
                     a.Name,
                     CustomerFullName = a.Customer.FullName,
                     Date = a.Date.ToString(),
