@@ -1,4 +1,6 @@
-﻿namespace CAMS.Application.DTOs
+﻿using CAMS.Data.Models;
+
+namespace CAMS.Application.DTOs
 {
     public class ServiceDTO
     {
@@ -12,6 +14,7 @@
 
         //public List<string> SelectedDates { get; set; }
         //public Dictionary<string, List<string>> TimeSlots { get; set; }// Dictionary where key is the date string and value is a list of time strings
+        public User Employee { get; set; }
         public List<DateTimeSlotGroupDTO> DateTimeSlotGroups { get; set; }
     }
 }

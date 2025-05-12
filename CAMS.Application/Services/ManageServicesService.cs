@@ -41,12 +41,12 @@ namespace CAMS.Application.Services
                 }).ToList()
             }).ToListAsync();*/
             // using AutoMapper
-            var servcies = await _context.Services.Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
+            var servcies = await _context.Services.Include(s => s.Employee).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
 
-            var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
+            var servicesDTO = _mapper.Map<List<ServiceDTO>>(servcies);
 
 
-            return servicesViewModel;
+            return servicesDTO;
         }
 
         public async Task<List<ServiceDTO>> GetEmployeeServices(ClaimsPrincipal user)
