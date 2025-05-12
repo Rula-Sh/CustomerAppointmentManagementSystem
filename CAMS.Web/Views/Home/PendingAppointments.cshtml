@@ -91,6 +91,11 @@ else
                     title: "Add instructions before attending the appointment",
                     centerVertical: true,
                     callback: function(result){
+
+                        if (result === null) { // if user clicked "Cancel"
+                            return;
+                        }
+
                         if(result == ''){result='no notes';}
                         $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
                             // url: 'Approve/' + btn.data('id'),
