@@ -59,7 +59,7 @@ namespace CAMS.Application.Services
         public List<int> getServicesIdsFromActiveAndPendingAppointments(ClaimsPrincipal user)
         {
             var userId = int.Parse(_manageUsers.GetUserId(user));
-            return _context.Appointments.Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
+            return _context.Appointments.Include(a => a.Employee).Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
         }
 
         /*public async Task<BookAppointmentDTO> ViewAddAppointment()
@@ -93,7 +93,7 @@ namespace CAMS.Application.Services
             // using AutoMapper
             var appointment = _mapper.Map<Appointment>(bookAppointmentDTO);
             appointment.CustomerId = Int32.Parse(_manageUsers.GetUserId(user));
-            appointment.EmployeeId = 1; // again hardcod because of FK issues
+            appointment.EmployeeId = bookAppointmentDTO.EmployeeId; // again hardcod because of FK issues
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
@@ -161,7 +161,8 @@ namespace CAMS.Application.Services
             }).ToListAsync();
             return appointments;*/
             // using AutoMapper
-            var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Employee).Where(a => a.Status == "Pending").ToListAsync();
+            var employeeId = int.Parse(_manageUsers.GetUserId(user));
+            var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Employee).Where(a => a.Status == "Pending" && a.EmployeeId == employeeId).ToListAsync();
             var appointmentsViewModel = _mapper.Map<List<AppointmentDTO>>(appointments);
 
             return appointmentsViewModel;
