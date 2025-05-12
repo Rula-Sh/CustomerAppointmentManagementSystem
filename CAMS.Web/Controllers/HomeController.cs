@@ -38,7 +38,7 @@ namespace CAMS.Web.Controllers
         {
             if (!User.Identity.IsAuthenticated) // check if the user is looged in or not
             {
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
+                return RedirectToPage("/Account/Login");
             }
 
             await _manageUsers.UpdateUserLastActivityDate(User);
