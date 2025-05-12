@@ -4,6 +4,7 @@ using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
 using AutoMapper;
 using PresentationLayer.ViewModels;
+using DataAccessLayer.Data;
 
 namespace PresentationLayer.Controllers
 {
@@ -57,6 +58,26 @@ namespace PresentationLayer.Controllers
 
             return View(usersPath, usersViewModels);
 
+        }
+
+        [HttpPost]
+        [Route("Home/LoadUsers")]
+        public async Task<IActionResult> LoadUsers()
+        {
+            using (ApplicationDbContext appDBC = new ApplicationDbContext())
+            {
+                var users = await _manageUsers.GetUsers();
+                var tableData = users.Select(a => new {
+                    a.Id,
+                    a.FullName,
+                    a.Email,
+                    a.Roles,
+                    a.LastActivity,
+                    a.IsActive,
+                });
+
+                return Json(new { data = tableData });
+            }
         }
 
         [HttpPost]
