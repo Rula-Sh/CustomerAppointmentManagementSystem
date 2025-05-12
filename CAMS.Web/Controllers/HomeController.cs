@@ -260,6 +260,12 @@ namespace CAMS.Web.Controllers
             return Ok();
         }
 
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
