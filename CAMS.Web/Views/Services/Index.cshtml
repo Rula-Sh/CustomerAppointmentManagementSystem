@@ -96,21 +96,16 @@ else
             $('.js-edit').on('click', function () {
                 var btn = $(this);
                 var serviceId = btn.data('id');
-                console.log(btn.data('id'));
 
-                $.ajax({
-                    url: '/services/edit/' + btn.data('id'),
-                    success: function (response) {
-                        if (!response.success) {
-                             window.location.href = '/services/edit/' + serviceId;
+                fetch('/services/CanEdit/' + serviceId)
+                    .then(res => res.json()) //.then() takes the raw Response object (res)....res.json() reads the body and returns another promise with the parsed JSON
+                    .then(response => {
+                        if (response.success) {
+                            window.location.href = '/services/edit/' + serviceId;
                         } else {
                             toastr.error(response.message);
                         }
-                    },
-                    error: function (err) {
-                        toastr.error("An unexpected error occurred.");
-                    }
-                });
+                    });
             });
 
             $('.js-delete').on('click', function () { //select when the user clicks on delete
