@@ -14,11 +14,10 @@ namespace CAMS.Application.Helpers
                 .ForMember(dest => dest.LastActivity, opt => opt.MapFrom(src => TimeDifferenceHelper.getTimeDifference(src.LastActivityDate)))
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap();
-                //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
+            //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
 
             CreateMap<Service, ServiceDTO>()
-                .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates))
-                .ForMember(dest => dest.EmployeeId, opt=>opt.Ignore());
+                .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
 
             CreateMap<ServiceDate, DateTimeSlotGroupDTO>()
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)))
