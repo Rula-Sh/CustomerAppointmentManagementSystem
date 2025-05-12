@@ -48,9 +48,8 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var viewModel = new ServiceViewModel { };
+            var viewModel = new ServiceViewModel { EmployeeId = int.Parse(_manageUsers.GetUserId(User)) };
             return View(viewModel); // had to pass a viewModel so that i dont get an error in Add.cshtml where it expects PostFormViewModel object (System.NullReferenceException: 'Object reference not set to an instance of an object.'... Microsoft.AspNetCore.Mvc.Razor.RazorPage<TModel>.Model.get returned null.)
-
         }
 
         [HttpPost]
@@ -66,7 +65,8 @@ namespace PresentationLayer.Controllers
                 ModelState.AddModelError("", "At least one time slot for one date is required.");
                 return View(model);
             }
-
+            //model.Employee = await _manageUsers.GetUser(User);
+            ModelState.Remove(nameof(model.Employee));
             if (!ModelState.IsValid)
             {
                 return View(model);

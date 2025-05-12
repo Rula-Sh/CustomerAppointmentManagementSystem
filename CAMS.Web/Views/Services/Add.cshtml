@@ -29,6 +29,7 @@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
             @*i am already inside the controller, so i dont need to mention it*@
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="EmployeeId" value="@Model.EmployeeId" />
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
             <div class="form-group">
                 <label class="text-muted" asp-for="Name"></label> @* it would add the Title by default *@
@@ -59,7 +60,7 @@
             </div>
             <div class="form-group">
                 <label class="text-muted" asp-for="Price"></label>
-                <input type="text" class="form-control" asp-for="Price" placeholder="10.00" value="" step="0.01" min="0" max="9999.99" />
+                <input type="text" class="form-control" asp-for="Price" placeholder="0.00" value="" step="0.01" min="0" max="9999.99" />
                 @* step="0.01": Ensures two decimal places / min="0": Prevents negative prices / max="999.99": Matches your current decimal(5,2) max value *@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
@@ -99,6 +100,7 @@
         // $(function() { ... });  is jQuery short-hand for "$(document).ready(function() { ... });".... What it's designed to do (amongst other things) is ensure that your function is called once all the DOM elements of the page are ready to be used.
         // in page initialization load the service duration list and a list of when the service can be available
          $(function () {
+             console.log("Model.EmployeeId",@Model.EmployeeId)
             //initializeDurationDropdown();
             initializeDatePicker();
 
