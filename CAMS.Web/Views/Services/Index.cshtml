@@ -3,6 +3,21 @@
 @{
     ViewData["Title"] = "Services";
 }
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Services</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <a asp-action="Index" asp-controller="Home" class="breadcrumb-item text-white active"> Home </a>
+                <a asp-action="Index" asp-controller="Services" class="breadcrumb-item text-white active"> Services </a>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
 <div class="d-flex justify-content-between mb-4 mt-4">
     <h1>Services</h1>
 
@@ -88,7 +103,7 @@ else
                     url: '/services/edit/' + btn.data('id'),
                     success: function (response) {
                         if (!response.success) {
-                             window.location.href = '/services/edit/' + serviceId;
+                            toastr.error(response.message);
                         } else {
                             toastr.error(response.message);
                         }

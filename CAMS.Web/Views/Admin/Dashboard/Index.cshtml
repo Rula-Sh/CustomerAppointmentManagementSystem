@@ -4,7 +4,22 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1 class="mb-4">Dashboard</h1>
+
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Dashboard</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb">
+                <a asp-action="Index" asp-controller="Home" class="breadcrumb-item text-white active"> Home </a>
+                <a asp-action="Dashboard" asp-controller="Home" class="breadcrumb-item text-white active"> Dashboard </a>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
 <div class=" border border-2 rounded-5 mt-4 p-3 border-opacity-10">
     <h2 class="mb-3">Statistics</h2>
     <div class="row mb-4">
