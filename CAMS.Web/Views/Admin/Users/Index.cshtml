@@ -74,7 +74,18 @@
                     },
 
                     "columns": [
-                        { "data": "fullName", "name": "fullName", "autoWidth": "10%", "className": "text-center" },
+                        { "data": "fullName", "name": "fullName", "autoWidth": "10%", "className": "text-center", 
+                            "render": function (data, type, row) {
+                                var cssClass = "text-info"; // default
+                                if (row.roles && row.roles.indexOf("Admin") !== -1) {
+                                    cssClass = "text-danger"; // as admin
+                                } else if (row.roles && row.roles.indexOf("Customer") !== -1) {
+                                    cssClass = "text-success"; // as customer
+                                }
+
+                                return '<span class="' + cssClass + '">' + data + '</span>';
+                            }
+                        },
                         { "data": "email", "name": "email", "autoWidth": "20%", "className": "text-center" },
                         { "data": "roles", "name": "roles", "autoWidth": "10%", "className": "text-center" },
                         { "data": "lastActivity", "name": "lastActivity", "autoWidth": "10%", "className": "text-center" },
@@ -88,11 +99,11 @@
                                     var isCustomer = row.roles && row.roles.indexOf("Customer") !== -1;
                                     var isActive = row.isActive;
 
-                                    actions += '<a href="javascript:;" class="btn btn-primary js-hire" data-id="' + row.id + '" '+ (isCustomer ? "" : "hidden") + '>Hire</a>';
-                                    actions += '<a href="javascript:;" class="btn btn-danger js-fire" data-id="' + row.id + '" '+ (isCustomer ? "hidden" : "") + '>Fire</a>';
+                                    actions += '<a href="javascript:;" class="btn btn-primary js-hire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "" : "hidden") + '>Hire</a>';
+                                    actions += '<a href="javascript:;" class="btn btn-danger js-fire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "hidden" : "") + '>Fire</a>';
 
-                                    actions += '<a href="javascript:;" class="btn btn-warning js-deactivate" data-id="' + row.id + '" '+ (isActive ? "" : "hidden") + '>Deactivate</a>';
-                                    actions += '<a href="javascript:;" class="btn btn-success js-activate" data-id="' + row.id + '" '+ (isActive ? "hidden" : "") + '>Activate</a>';
+                                    actions += '<a href="javascript:;" class="btn btn-warning js-deactivate ms-1 me-1" data-id="' + row.id + '" '+ (isActive ? "" : "hidden") + '>Deactivate</a>';
+                                    actions += '<a href="javascript:;" class="btn btn-success js-activate ms-1 me-1" data-id="' + row.id + '" '+ (isActive ? "hidden" : "") + '>Activate</a>';
                                 }
                                 return actions;
                             },
