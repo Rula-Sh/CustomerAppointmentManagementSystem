@@ -11,7 +11,7 @@
     <div class="container py-5">
         <h1 class="display-3 text-white mb-3 animated slideInDown">Create Service</h1>
         <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb animated slideInDown">
                 <a asp-action="Index" asp-controller="Home" class="breadcrumb-item text-white active"> Home </a>
                 <a asp-action="Index" asp-controller="Services" class="breadcrumb-item text-white active"> Services </a>
                 <a asp-action="Add" asp-controller="Services" class="breadcrumb-item text-white active"> Create Service </a>
@@ -20,10 +20,6 @@
     </div>
 </div>
 <!-- Page Header End -->
-
-<h2>@(Model.Id > 0 ? "Edit" : "Add") Serivce</h2>
-
-<hr />
 
 <form method="post" asp-action="@(Model.Id > 0 ? "Edit" : "Add")" enctype="multipart/form-data">
 
