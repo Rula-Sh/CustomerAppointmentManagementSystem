@@ -135,7 +135,7 @@
                         $(tableId).DataTable({
 
                             "ajax": {
-                                "url": "Home/LoadData",
+                                "url": "Home/LoadCustomerAppointments",
                                 "type": "POST",
                                 "datatype": "json"
                             },
@@ -198,7 +198,6 @@
                                         }
                                     });
                                 });
-                                // Similarly bind other dynamic buttons if any
                             }
                         });
                 }
@@ -206,79 +205,68 @@
 
 
         $(document).ready(function () {
-            $('.js-complete').on('click', function () {
-                var btn = $(this);
-
-                console.log(btn.data('id'));
-                bootbox.prompt({
-                    title: "Provide your notes about the appointmet",
-                    centerVertical: true,
-                    callback: function(result){
-                        if(result)
-                        {
-                            if(result == ''){result='no notes';}
-                            $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                                url: 'complete/',
-                                type: 'POST',
-                                data: { 'id' : btn.data('id'), 'notes' : result },
-                                success: function () {
-                                    var row = btn.closest('tr');
-                                    row.addClass('animate__animated animate__zoomOut');
-
-                                    setTimeout(function () {
-                                        row.remove();
-                                    }, 1000);
-
-                                    toastr.success('Appointment Completed');
-                                },
-                                error: function () {
-                                    toastr.error('Something went wrong!');
-                                }
-                            });
+                if ($("#employeeActiveAppointments").length) {
+                        const tableId = '#employeeActiveAppointments';
+                        if ($.fn.DataTable.isDataTable(tableId)) {
+                            $(tableId).DataTable().clear().destroy();
                         }
-                        
-                    }
-                 });
+                        $(tableId).DataTable({
+
+                            "ajax": {
+                                "url": "Home/LoadEmployeeAppointments",
+                                "type": "POST",
+                                "datatype": "json"
+                            },
+
+                            "columns": [
+                                { "data": "name", "name": "name", "autoWidth": "10%", "className": "text-center" },
+                                { "data": "customerFullName", "name": "customerFullName", "autoWidth": "20%", "className": "text-center" },
+                                { "data": "date", "name": "date", "autoWidth": "10%", "className": "text-center" },
+                                {
+                                    data: null,
+                                    render: function(row) {
+                                           return '<a href="javascript:;" class="btn btn-success js-complete ms-1" data-id="' + row.id + '">Finish<i class="bi bi-check"></i></a> ';
+                                    },
+                                },
+                            ],
+                            "drawCallback": function () {
+                                $('.js-complete').on('click', function () {
+                                    var btn = $(this);
+
+                                    console.log(btn.data('id'));
+                                    bootbox.prompt({
+                                        title: "Provide your notes about the appointmet",
+                                        centerVertical: true,
+                                        callback: function(result){
+                                            if(result)
+                                            {
+                                                if(result == ''){result='no notes';}
+                                                $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                                                    url: 'complete/',
+                                                    type: 'POST',
+                                                    data: { 'id' : btn.data('id'), 'notes' : result },
+                                                    success: function () {
+                                                        var row = btn.closest('tr');
+                                                        row.addClass('animate__animated animate__zoomOut');
+
+                                                        setTimeout(function () {
+                                                            row.remove();
+                                                        }, 1000);
+
+                                                        toastr.success('Appointment Completed');
+                                                    },
+                                                    error: function () {
+                                                        toastr.error('Something went wrong!');
+                                                    }
+                                                });
+                                            }
+
+                                        }
+                                     });
+                                });
+                            }
+                        });
+                }
             });
-
-            // $('.js-delete').click(function () {
-            //     var btn = $(this);
-            //     bootbox.confirm({
-            //         message: "Are you sure you want to delete the appointment?",
-            //         buttons: {
-            //             confirm: {
-            //                 label: 'Yes',
-            //                 className: 'btn-danger'
-            //             },
-            //             cancel: {
-            //                 label: 'No',
-            //                 className: 'btn-success'
-            //             }
-            //         },
-            //         callback: function (result) {
-            //             if(result){
-            //                 $.ajax({
-            //                     url: 'home/delete/' + btn.data('id'),
-            //                     type: 'DELETE',
-            //                     success: function () {
-
-            //                     var row = btn.closest('tr');
-            //                     row.addClass('animate__animated animate__zoomOut');
-
-            //                     setTimeout(function () {
-            //                         row.remove();
-            //                     }, 1000);
-
-            //                     toastr.error('Appointment deleted');
-            //                     },
-            //                     error: function (err) {
-            //                         console.log('An error occurred: ' + err);
-            //                     }
-            //                 });
-            //             }
-            //         }
-            //     });
-            // });
-        });
     </script>
 }

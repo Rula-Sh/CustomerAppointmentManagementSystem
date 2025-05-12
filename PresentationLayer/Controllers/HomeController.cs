@@ -50,7 +50,7 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadData()
+        public async Task<IActionResult> LoadCustomerAppointments()
         {
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
             {
@@ -60,6 +60,23 @@ namespace PresentationLayer.Controllers
                     a.Name,
                     Date = a.Date.ToString(),
                     a.Status
+                });
+
+                return Json(new { data = tableData });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadEmployeeAppointments()
+        {
+            using (ApplicationDbContext appDBC = new ApplicationDbContext())
+            {
+                var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
+                var tableData = appointments.Select(a => new {
+                    //a.Id,
+                    a.Name,
+                    CustomerFullName = a.Customer.FullName,
+                    Date = a.Date.ToString(),
                 });
 
                 return Json(new { data = tableData });
