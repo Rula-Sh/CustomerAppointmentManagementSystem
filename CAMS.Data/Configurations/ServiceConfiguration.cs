@@ -14,6 +14,6 @@ internal class ServiceConfiguration : IEntityTypeConfiguration<Service>
                 .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(s => s.Price)
-                .HasColumnType("decimal(5,2)");
+                .HasColumnType("decimal(6,2)");
     }
 }

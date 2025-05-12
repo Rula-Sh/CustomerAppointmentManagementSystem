@@ -19,6 +19,8 @@ namespace CAMS.Data.Models
         [Required]
         public string Duration { get; set; }
         [Required]
+        [Range(0, 9999.99, ErrorMessage = "Price must be between 0 and 9999.99")]
+
         public decimal Price { get; set; }
         //public DateTime[] AvailableTimeSlots { get; set; }
 

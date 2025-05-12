@@ -4,6 +4,7 @@ using CAMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CAMS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512104055_updatePriceRange")]
+    partial class updatePriceRange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +71,7 @@ namespace CAMS.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("CAMS.Data.Models.Notification", b =>
@@ -97,7 +100,7 @@ namespace CAMS.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("CAMS.Data.Models.Role", b =>
@@ -157,7 +160,7 @@ namespace CAMS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("CAMS.Data.Models.ServiceDate", b =>
@@ -178,7 +181,7 @@ namespace CAMS.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ServiceDates", (string)null);
+                    b.ToTable("ServiceDates");
                 });
 
             modelBuilder.Entity("CAMS.Data.Models.ServiceTimeSlot", b =>
@@ -200,7 +203,7 @@ namespace CAMS.Data.Migrations
 
                     b.HasIndex("ServiceDateId");
 
-                    b.ToTable("ServiceTimeSlots", (string)null);
+                    b.ToTable("ServiceTimeSlots");
                 });
 
             modelBuilder.Entity("CAMS.Data.Models.User", b =>
