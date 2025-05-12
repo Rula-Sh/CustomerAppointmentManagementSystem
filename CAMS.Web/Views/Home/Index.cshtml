@@ -60,6 +60,12 @@
             else if (User.IsInRole("Customer"))
             {
                 <partial name="_CustomerAppointments" model="Model" />
+            } else
+            {
+                <div class="d-flex justify-content-around">
+                    <h2>Log in for the Best Experience with Our Services</h2>
+                    <a asp-action="Login" asp-controller="Account" class="btn btn-primary align-self-center">Login</a>
+                </div>
             }
 
             @* OR(older syntax): @Html.Partial("_EmployeeAppointments", Model) *@
@@ -165,7 +171,7 @@
                                             },
                                             cancel: {
                                                 label: 'No',
-                                                className: 'btn-success'
+                                            className: 'btn-primary'
                                             }
                                         },
                                         callback: function (result) {
