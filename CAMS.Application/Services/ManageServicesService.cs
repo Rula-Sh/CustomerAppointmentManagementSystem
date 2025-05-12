@@ -48,7 +48,7 @@ namespace CAMS.Application.Services
         }
         public async Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user)
         {
-            var servicesIds = _manageAppointmentsService.Value.getServicesIdsFromAppointments(user);
+            var servicesIds = _manageAppointmentsService.Value.getServicesIdsFromActiveAndPendingAppointments(user);
 
 
             var servcies = await _context.Services.Where(s => !servicesIds.Contains(s.Id)).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();

@@ -7,7 +7,7 @@ namespace CAMS.Application.Interfaces
     public interface IManageAppointmentsService
     {
         Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user);
-        List<int> getServicesIdsFromAppointments(ClaimsPrincipal user);
+        List<int> getServicesIdsFromActiveAndPendingAppointments(ClaimsPrincipal user);
         //Task<BookAppointmentDTO> ViewAddAppointment();
         Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user);
         Task<AppointmentDTO> appointmentDetails(int? id);

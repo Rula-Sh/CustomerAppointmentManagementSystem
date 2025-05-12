@@ -56,10 +56,10 @@ namespace CAMS.Application.Services
             return appointments;
         }
 
-        public List<int> getServicesIdsFromAppointments(ClaimsPrincipal user)
+        public List<int> getServicesIdsFromActiveAndPendingAppointments(ClaimsPrincipal user)
         {
             var userId = int.Parse(_manageUsers.GetUserId(user));
-            return _context.Appointments.Where(a => a.CustomerId == userId).Select(a => a.ServiceId).ToList();
+            return _context.Appointments.Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
         }
 
         /*public async Task<BookAppointmentDTO> ViewAddAppointment()
@@ -186,7 +186,7 @@ namespace CAMS.Application.Services
                                                     .OrderByDescending(g => g.AppointmentCount)
                                                     .FirstOrDefault();
 
-            if(bestEmployee == null)
+            if (bestEmployee == null)
             {
                 return _context.Users.Where(u => u.Id == 1).Select(e => e.FullName).SingleOrDefault();
             }
