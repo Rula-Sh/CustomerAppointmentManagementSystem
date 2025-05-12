@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CAMS.Web.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly IManageUsersService _manageUsers;
@@ -36,11 +35,6 @@ namespace CAMS.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (!User.Identity.IsAuthenticated) // check if the user is looged in or not
-            {
-                return RedirectToPage("/Account/Login");
-            }
-
             await _manageUsers.UpdateUserLastActivityDate(User);
 
             var appointmentsDTOs = await _manageAppointments.getAppointmentsBasedOnRole(User);
@@ -50,6 +44,7 @@ namespace CAMS.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> LoadCustomerAppointments()
         {
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
@@ -67,6 +62,7 @@ namespace CAMS.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> LoadEmployeeAppointments()
         {
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
