@@ -13,14 +13,16 @@ namespace CAMS.Application.Services
         private readonly ApplicationDbContext _context;
         private readonly INotificationManagerService _notificationsManager;
         private readonly Lazy<IManageAppointmentsService> _manageAppointmentsService;
+        private readonly IManageUsersService _manageUsersService;
         private readonly IMapper _mapper;
 
-        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper, Lazy<IManageAppointmentsService> manageAppointmentsService)
+        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper, Lazy<IManageAppointmentsService> manageAppointmentsService, IManageUsersService manageUsersService)
         {
             _context = context;
             _notificationsManager = notificationsManager;
             _mapper = mapper;
             _manageAppointmentsService = manageAppointmentsService;
+            _manageUsersService = manageUsersService;
         }
 
         public async Task<List<ServiceDTO>> GetAllServices()
@@ -46,6 +48,18 @@ namespace CAMS.Application.Services
 
             return servicesViewModel;
         }
+
+        public async Task<List<ServiceDTO>> GetEmployeeServices(ClaimsPrincipal user)
+        {
+            var employeeId = int.Parse(_manageUsersService.GetUserId(user));
+
+            var servcies = await _context.Services.Where(s => s.EmployeeId == employeeId).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
+
+            var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
+
+            return servicesViewModel;
+        }
+
         public async Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user)
         {
             var servicesIds = _manageAppointmentsService.Value.getServicesIdsFromActiveAndPendingAppointments(user);
@@ -120,6 +134,7 @@ namespace CAMS.Application.Services
             await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Created");
 
             var service = _mapper.Map<Service>(serviceDTO);
+            service.EmployeeId = int.Parse(_manageUsersService.GetUserId(user));
 
             _context.Services.Add(service);
             await _context.SaveChangesAsync();

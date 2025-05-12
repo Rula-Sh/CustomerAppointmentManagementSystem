@@ -21,7 +21,7 @@ public static class ServiceSeeding
 
             var servicesToSeed = new List<Service>
             {
-                new Service { Name = "Haircut", Price = 15.00m, Description = "requried",Duration = "01:00",
+                new Service { Name = "Haircut", EmployeeId= 1, Price = 15.00m, Description = "requried",Duration = "01:00",
                     ServiceDates = new List<ServiceDate> {
                         new ServiceDate { ServiceId = 1, Date = DateOnly.FromDateTime(DateTime.Today),
                             ServiceTimeSlots = new List<ServiceTimeSlot> {
@@ -36,7 +36,7 @@ public static class ServiceSeeding
                         },
                     }
                 },
-                new Service { Name = "Shave", Price = 10.00m , Description = "requried",Duration = "00:30",
+                new Service { Name = "Shave", EmployeeId= 1, Price = 10.00m , Description = "requried",Duration = "00:30",
                     ServiceDates = new List<ServiceDate> {
                         new ServiceDate { ServiceId = 2, Date = DateOnly.FromDateTime(DateTime.Today.AddDays(3)),
                             ServiceTimeSlots = new List<ServiceTimeSlot> {
@@ -54,7 +54,7 @@ public static class ServiceSeeding
                         },
                     }
                 },
-                new Service { Name = "Facial", Price = 25.00m , Description = "requried",Duration = "01:00",
+                new Service { Name = "Facial", EmployeeId= 1, Price = 25.00m , Description = "requried",Duration = "01:00",
                     ServiceDates = new List<ServiceDate> {
                         new ServiceDate { ServiceId = 3, Date = DateOnly.FromDateTime(DateTime.Today),
                             ServiceTimeSlots = new List<ServiceTimeSlot> {

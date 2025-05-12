@@ -17,7 +17,9 @@ namespace CAMS.Application.Helpers
                 //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
 
             CreateMap<Service, ServiceDTO>()
-                .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
+                .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates))
+                .ForMember(dest => dest.EmployeeId, opt=>opt.Ignore());
+
             CreateMap<ServiceDate, DateTimeSlotGroupDTO>()
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)))
                 .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src.ServiceTimeSlots.Select(t => t.Time).ToList()));

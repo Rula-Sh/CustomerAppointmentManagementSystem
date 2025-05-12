@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,10 @@ namespace CAMS.Data.Models
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+
+        [Required]
+        [ForeignKey("ServiceId")]
+        public int EmployeeId { get; set; }
         [Required]
         [MaxLength(150)]
         public string Description { get; set; }
@@ -23,6 +28,8 @@ namespace CAMS.Data.Models
 
         public decimal Price { get; set; }
         //public DateTime[] AvailableTimeSlots { get; set; }
+
+        public virtual User Employee { get; set; }
 
         [Required]
         public virtual ICollection<ServiceDate> ServiceDates { get; set; }
