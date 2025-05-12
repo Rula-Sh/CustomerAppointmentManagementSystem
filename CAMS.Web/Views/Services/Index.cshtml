@@ -7,9 +7,16 @@
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-5 mb-5">
     <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">Services</h1>
+
+        <div class="d-flex justify-content-between mb-4 mt-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Services</h1>
+            <a class="btn btn-primary align-self-center animated slideInDown" asp-action="Add">
+                <i class="bi bi-plus"></i>
+                Add Service
+            </a>
+        </div>
         <nav aria-label="breadcrumb animated slideInDown">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb animated slideInDown">
                 <a asp-action="Index" asp-controller="Home" class="breadcrumb-item text-white active"> Home </a>
                 <a asp-action="Index" asp-controller="Services" class="breadcrumb-item text-white active"> Services </a>
             </ol>
@@ -18,14 +25,6 @@
 </div>
 <!-- Page Header End -->
 
-<div class="d-flex justify-content-between mb-4 mt-4">
-    <h1>Services</h1>
-
-    <a class="btn btn-primary align-self-center" asp-action="Add">
-        <i class="bi bi-plus"></i>
-        Add Service
-    </a>
-</div>
 
 @if (!Model.Any())
 {
@@ -103,7 +102,7 @@ else
                     url: '/services/edit/' + btn.data('id'),
                     success: function (response) {
                         if (!response.success) {
-                            toastr.error(response.message);
+                             window.location.href = '/services/edit/' + serviceId;
                         } else {
                             toastr.error(response.message);
                         }
