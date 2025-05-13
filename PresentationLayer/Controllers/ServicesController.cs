@@ -132,6 +132,19 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> CanEdit(int? id)
+        {
+            if (!await _manageServices.DoesTheServiceHaveAppointments(id))
+            {
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Cannot Edit a Service with Active Appointments." });
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
@@ -140,15 +153,9 @@ namespace PresentationLayer.Controllers
 
             var serviceViewModel = _mapper.Map<ServiceViewModel>(serviceDTO);
 
-            if (!await _manageServices.DoesTheServiceHaveAppointments(id))
-            {
-                return View(serviceViewModel);
-            }
-            else
-            {
-                return Ok(new { success = false, message = "Cannot Delete a Service with Active Appointments." });
-            }
+            return View(serviceViewModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Edit(ServiceViewModel model)
