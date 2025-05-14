@@ -31,7 +31,7 @@ namespace CAMS.Application.Services
             var appointmentsQuery = _context.Appointments.AsQueryable();
             if (user.IsInRole("Employee"))
             {
-                appointmentsQuery = appointmentsQuery.Where(a => a.EmployeeId == Int32.Parse(userId));
+                appointmentsQuery = appointmentsQuery.Where(a => a.EmployeeId == Int32.Parse(userId) && a.Status == "Approved");
             }
             else if (user.IsInRole("Customer"))
             {
