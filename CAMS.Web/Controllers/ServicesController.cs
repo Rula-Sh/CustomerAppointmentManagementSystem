@@ -136,7 +136,7 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CanEdit(int? id)
+        public async Task<IActionResult> CanEditOrDelete(int? id)
         {
             if (!await _manageServices.DoesTheServiceHaveAppointments(id))
             {
@@ -144,7 +144,7 @@ namespace PresentationLayer.Controllers
             }
             else
             {
-                return Ok(new { success = false, message = "Cannot Edit a Service with Active Appointments." });
+                return Ok(new { success = false, message = "Cannot Edit or Delete a Service with Active Appointments." });
             }
         }
 

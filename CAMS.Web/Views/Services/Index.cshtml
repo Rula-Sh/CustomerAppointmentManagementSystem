@@ -101,7 +101,7 @@ else
                 var btn = $(this);
                 var serviceId = btn.data('id');
 
-                fetch('/services/CanEdit/' + serviceId)
+                fetch('/services/CanEditOrDelete/' + serviceId)
                     .then(res => res.json()) //.then() takes the raw Response object (res)....res.json() reads the body and returns another promise with the parsed JSON
                     .then(response => {
                         if (response.success) {
@@ -114,53 +114,64 @@ else
 
             $('.js-delete').on('click', function () { //select when the user clicks on delete
                 var btn = $(this);
+                var serviceId = btn.data('id');
 
                 console.log(btn.data('id')); //to show deleted service id
-                //https://bootboxjs.com/examples.html
-                bootbox.confirm({ // show a confirmation box to delete
-                    title:"Delete Service",
-                    message: "Are you sure that you need to delete this service?",
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-danger' //btn-success makes the button color green
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-outline-secondary' // btn-outline-secondary makes the button color red , btn-outline-secondary makes it look white with grey border
-                        }
-                    },
-                    callback: function (result) {
-                        //var result = confirm('Are you sure that you need to delete this service?'); // before the bootbox
-                        if (result) {
-                            $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                                url: '/services/delete/' + btn.data('id'),
-                                type: 'DELETE',
-                                success: function (response) {
-                                    if (response.success) {
 
-                                        var serviceContainer = btn.parents('.col-12'); //parents is the card which its id is .col-12
-                                        // was with .fadeOut(); at the end
-                                       serviceContainer.addClass('animate__animated animate__zoomOut');
-                                        // from adding animate.css package, https://animate.style/
 
-                                        setTimeout(function () {
-                                           serviceContainer.remove(); // to remove the card after deleting, this code alone causes the deleting animation to disapear instantly, thats why i used setTimeout()
-                                        }, 1000); //1s
-
-                                        toastr.success(response.message);
-
-                                     } else {
-                                        toastr.error(response.message); // "Cannot Delete a Service with Active Appointments."
-                                     }
+                fetch('/services/CanEditOrDelete/' + serviceId)
+                    .then(res => res.json()) //.then() takes the raw Response object (res)....res.json() reads the body and returns another promise with the parsed JSON
+                    .then(response => {
+                        if (response.success) {
+                            //https://bootboxjs.com/examples.html
+                            bootbox.confirm({ // show a confirmation box to delete
+                                title:"Delete Service",
+                                message: "Are you sure that you need to delete this service?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Yes',
+                                        className: 'btn-danger' //btn-success makes the button color green
+                                    },
+                                    cancel: {
+                                        label: 'No',
+                                        className: 'btn-outline-secondary' // btn-outline-secondary makes the button color red , btn-outline-secondary makes it look white with grey border
+                                    }
                                 },
-                                error: function (err) {
-                                    toastr.error("An unexpected error occurred.");
+                                callback: function (result) {
+                                    //var result = confirm('Are you sure that you need to delete this service?'); // before the bootbox
+                                    if (result) {
+                                        $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                                            url: '/services/delete/' + btn.data('id'),
+                                            type: 'DELETE',
+                                            success: function (response) {
+                                                if (response.success) {
+
+                                                    var serviceContainer = btn.parents('.col-12'); //parents is the card which its id is .col-12
+                                                    // was with .fadeOut(); at the end
+                                                   serviceContainer.addClass('animate__animated animate__zoomOut');
+                                                    // from adding animate.css package, https://animate.style/
+
+                                                    setTimeout(function () {
+                                                       serviceContainer.remove(); // to remove the card after deleting, this code alone causes the deleting animation to disapear instantly, thats why i used setTimeout()
+                                                    }, 1000); //1s
+
+                                                    toastr.success(response.message);
+
+                                                 } else {
+                                                    toastr.error(response.message); // "Cannot Delete a Service with Active Appointments."
+                                                 }
+                                            },
+                                            error: function (err) {
+                                                toastr.error("An unexpected error occurred.");
+                                            }
+                                        });
+                                    }
                                 }
                             });
+                        } else {
+                            toastr.error(response.message);
                         }
-                    }
-                });
+                    });
             });
         });
     </script>
