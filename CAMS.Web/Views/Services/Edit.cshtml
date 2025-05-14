@@ -51,7 +51,7 @@
                 <label class="text-muted" asp-for="Duration"></label>
                 @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
-                <select class="form-control" id="durationList" asp-for="Duration">
+                <select class="text-white form-control" id="durationList" asp-for="Duration">
                     <option value="">-- Select Duration --</option>
                     <option value="00:30">00:30</option>
                     <option value="01:00">01:00</option>
