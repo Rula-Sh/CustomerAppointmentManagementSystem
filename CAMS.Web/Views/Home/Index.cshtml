@@ -234,17 +234,30 @@
                                     var btn = $(this);
 
                                     console.log(btn.data('id'));
-                                    bootbox.prompt({
-                                        title: "Provide your notes about the appointmet",
+
+                                    // bootbox.prompt({
+                                    //     title: "Provide your notes about the appointmet",
+                                    bootbox.confirm({
+                                        title: "Complete Appointment",
+                                        message: "Are you sure you want to Finish this appointment?",
+                                        buttons: {
+                                            confirm: {
+                                                label: 'Yes',
+                                                className: 'btn-success'
+                                            },
+                                            cancel: {
+                                                label: 'No',
+                                                className: 'btn-outline-secondary'
+                                            }
+                                        },
                                         centerVertical: true,
                                         callback: function(result){
-                                            if(result)
-                                            {
-                                                if(result == ''){result='no notes';}
+                                            if(result){
+                                                // if(result == ''){result='no notes';}
                                                 $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                                                    url: 'complete/',
+                                                url: 'complete/'+ btn.data('id'),
                                                     type: 'POST',
-                                                    data: { 'id' : btn.data('id'), 'notes' : result },
+                                                    // data: { 'id' : btn.data('id'), 'notes' : result },
                                                     success: function () {
                                                         var row = btn.closest('tr');
                                                         row.addClass('animate__animated animate__zoomOut');

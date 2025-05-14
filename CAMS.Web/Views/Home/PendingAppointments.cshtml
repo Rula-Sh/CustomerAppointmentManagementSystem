@@ -87,20 +87,20 @@ else
 
                 console.log(btn.data('id'));
 
-                 bootbox.prompt({
-                    title: "Add instructions before attending the appointment",
-                    centerVertical: true,
-                    callback: function(result){
+                 // bootbox.prompt({
+                 //    title: "Add instructions before attending the appointment",
+                 //    centerVertical: true,
+                 //    callback: function(result){
 
-                        if (result === null) { // if user clicked "Cancel"
-                            return;
-                        }
+                 //        if (result === null) { //if user clicked "Cancel"
+                 //            return;
+                 //        }
 
-                        if(result == ''){result='no notes';}
+                 //        if(result == ''){result='no notes';}
                         $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                            // url: 'Approve/' + btn.data('id'),
-                            url: 'Approve/',
-                            data: { 'id' : btn.data('id'), 'notes' : result },
+                            url: 'Approve/' + btn.data('id'),
+                            // url: 'Approve/',
+                            // data: { 'id' : btn.data('id'), 'notes' : result },
                             type: 'POST',
                             success: function () {
                                 var row = btn.closest('tr');
@@ -116,30 +116,51 @@ else
                                 toastr.error('Something went wrong!', err);
                             }
                         });
-                    }
-                 });
+                 //    }
+                 // });
             });
 
             $('.js-reject').on('click', function (){
                 var btn = $(this);
 
                 console.log(btn.data('id'));
-                $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
-                    url: 'Reject/' + btn.data('id'),
-                    type: 'POST',
-                    success: function () {
-                    var row = btn.closest('tr');
-                    row.addClass('animate__animated', 'animate__zoomOut');
 
-                    setTimeout(function () {
-                        row.remove();
-                    }, 1000);
-
-
-                        toastr.error('Appointment Rejected');
+                    bootbox.confirm({
+                    title: "Reject Appointment",
+                    message: "Are you sure you want to reject this appointment?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-outline-secondary'
+                        }
                     },
-                    error: function () {
-                        toastr.error('Something went wrong!');
+                    centerVertical: true,
+                    callback: function(result){
+                        if (result) {
+                            $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                                url: 'Reject/' + btn.data('id'),
+                                type: 'POST',
+                                success: function () {
+                                var row = btn.closest('tr');
+                                row.addClass('animate__animated', 'animate__zoomOut');
+
+                                setTimeout(function () {
+                                    row.remove();
+                                }, 1000);
+
+
+                                    toastr.error('Appointment Rejected');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+                        }
+
                     }
                 });
             });
