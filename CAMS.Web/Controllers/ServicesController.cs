@@ -169,6 +169,7 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
+            ModelState.Remove(nameof(model.Employee));
             if (!ModelState.IsValid)
             {
                 return View(model);

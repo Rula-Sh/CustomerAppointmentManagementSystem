@@ -199,7 +199,7 @@ namespace CAMS.Application.Services
 
         public async Task<ServiceDTO> getServiceById(int? id)
         {
-            var service = await _context.Services.Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
+            var service = await _context.Services.Include(s => s.Employee).Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
             // in other codes it was SingleOrDefaultAsync
             return _mapper.Map<ServiceDTO>(service);
         }

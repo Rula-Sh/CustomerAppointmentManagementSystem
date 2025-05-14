@@ -36,6 +36,7 @@
             @*i am already inside the controller, so i dont need to mention it*@
             <input type="hidden" asp-for="Id" />
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
+            <input type="hidden" asp-for="EmployeeId" value="@Model.EmployeeId" />
             <div class="form-group">
                 <label class="text-muted" asp-for="Name"></label> @* it would add the Title by default *@
                 <input type="text" class="form-control" asp-for="Name" maxlength="250" />
