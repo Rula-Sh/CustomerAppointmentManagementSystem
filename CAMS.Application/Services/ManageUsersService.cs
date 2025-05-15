@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using AutoMapper;
 using CAMS.Application.DTOs;
 using CAMS.Application.Interfaces;
@@ -83,6 +84,26 @@ namespace CAMS.Application.Services
         }
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
         {
+            if(oldRole == "Employee")
+            {
+                var services = await _context.Services.Where(s => s.EmployeeId == user.Id).ToListAsync();
+                if (services.Any()) {
+                    //services != null → ensures the variable is not null(i.e., the list exists).
+                    //services.Any() → ensures the list contains at least one item to remove.
+                    _context.Services.RemoveRange(services);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else if(oldRole == "Customer")
+            {
+                var appointments = await _context.Appointments.Where(s => s.CustomerId == user.Id).ToListAsync();
+                if (appointments.Any())
+                {
+                    _context.Appointments.RemoveRange(appointments);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             await _userManager.RemoveFromRoleAsync(user, oldRole);
             await _userManager.AddToRoleAsync(user, NewRole);
         }
