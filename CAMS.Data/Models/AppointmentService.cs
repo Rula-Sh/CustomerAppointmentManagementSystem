@@ -1,16 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CAMS.Data.Models
 {
     public class AppointmentService
     {
         // Many-to-Many relationship table (Appointment and Service)
-        [ForeignKey("Appointment")]
+        [Required]
         public int AppointmentId { get; set; }
+        [ForeignKey("AppointmentId")]
         public Appointment Appointment { get; set; }
 
-        [ForeignKey("Service")]
+        [Required]
         public int ServiceId { get; set; }
+        [ForeignKey("ServiceId")]
         public Service Service { get; set; }
     }
 }

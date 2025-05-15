@@ -10,13 +10,13 @@ namespace CAMS.Data.Models
 {
     public class Service
     {
+        [Key]
         public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
-        [ForeignKey("ServiceId")]
         public int EmployeeId { get; set; }
         [Required]
         [MaxLength(150)]
@@ -25,19 +25,17 @@ namespace CAMS.Data.Models
         public string Duration { get; set; }
         [Required]
         [Range(0, 9999.99, ErrorMessage = "Price must be between 0 and 9999.99")]
-
         public decimal Price { get; set; }
         //public DateTime[] AvailableTimeSlots { get; set; }
 
+        [ForeignKey("EmployeeId")]
         public virtual User Employee { get; set; }
 
-        [Required]
-        public virtual ICollection<ServiceDate> ServiceDates { get; set; }
+        public virtual ICollection<ServiceDate> ServiceDates { get; set; } = new List<ServiceDate>();
         //public virtual ICollection<DateTimeSlotGroup> DateTimeSlotGroup { get; set; }
 
         // Many-to-Many relationship (Appointment and Service)
         //public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
-        [Required]
-        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

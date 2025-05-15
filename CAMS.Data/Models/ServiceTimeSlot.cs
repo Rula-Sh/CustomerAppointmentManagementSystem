@@ -10,12 +10,13 @@ namespace CAMS.Data.Models
 {
     public class ServiceTimeSlot
     {
+        [Key]
         public int Id { get; set; }
         [Required]
-        [ForeignKey("ServiceDate")]
         public int ServiceDateId { get; set; }
         [Required]
         public string Time { get; set; }
+        [ForeignKey("ServiceDateId")]
         public ServiceDate ServiceDate { get; set; }
     }
 }

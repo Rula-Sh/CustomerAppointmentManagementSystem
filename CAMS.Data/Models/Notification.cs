@@ -10,8 +10,8 @@ namespace CAMS.Data.Models
 {
     public class Notification
     {
+        [Key]
         public int Id { get; set; }
-        [ForeignKey("UserId")]
         public int UserId { get; set; }
         [Required]
         [MaxLength(100)]
@@ -20,7 +20,7 @@ namespace CAMS.Data.Models
         public bool IsRead { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
-        [Required]
+        [ForeignKey("UserId")]
         public virtual User User { get; set; }
     }
 }

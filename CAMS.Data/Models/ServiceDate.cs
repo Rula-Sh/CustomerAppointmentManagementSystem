@@ -10,15 +10,14 @@ namespace CAMS.Data.Models
 {
     public class ServiceDate
     {
+        [Key]
         public int Id { get; set; }
         [Required]
-        [ForeignKey("ServiceId")]
         public int ServiceId { get; set; }
         [Required]
         public DateOnly Date { get; set; }
-        [Required]
+        [ForeignKey("ServiceId")]
         public Service Service { get; set; }
-        [Required]
-        public virtual ICollection<ServiceTimeSlot> ServiceTimeSlots { get; set; }
+        public virtual ICollection<ServiceTimeSlot> ServiceTimeSlots { get; set; } = new List<ServiceTimeSlot>();
     }
 }

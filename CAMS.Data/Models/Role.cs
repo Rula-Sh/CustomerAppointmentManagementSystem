@@ -14,6 +14,6 @@ namespace CAMS.Data.Models
         //public string Name { get; set; }
 
         // Many-to-Many relationship (User and Role)
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

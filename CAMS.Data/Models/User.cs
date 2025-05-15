@@ -30,12 +30,11 @@ namespace CAMS.Data.Models
         public DateTime LastActivityDate { get; set; }
 
         // Many-to-Many relationship (User and Role)
-        [Required]
         public virtual ICollection<UserRole> UserRoles { get; set; }
 
         // One-to-Many relationship (User[Employee/Customer] and Appointment)
-        public virtual ICollection<Appointment> CustomerAppointments { get; set; }
-        public virtual ICollection<Appointment> EmployeeAppointments { get; set; }
+        public virtual ICollection<Appointment> CustomerAppointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Appointment> EmployeeAppointments { get; set; } = new List<Appointment>();
 
 
 
