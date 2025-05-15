@@ -12,14 +12,17 @@ namespace CAMS.Web.Controllers
     public class UsersController : Controller
     {
         private readonly IManageUsersService _manageUsers;
+        private readonly IManageServicesService _manageServices;
         private readonly IMapper _mapper;
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsersService manageUsers, IMapper mapper)
+        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices)
         {
             _manageUsers = manageUsers;
             _mapper = mapper;
+            _manageServices = manageServices;
+
         }
 
         public async Task<IActionResult> Index()
@@ -71,9 +74,20 @@ namespace CAMS.Web.Controllers
             if (user == null)
                 return NotFound();
 
-            await _manageUsers.changeRoleFromTo(user, from, to);
 
-            return RedirectToAction(nameof(Index));
+            //await _manageUsers.changeRoleFromTo(user, from, to);
+            //return RedirectToAction(nameof(Index));
+
+            if (await _manageServices.doesTheUserHaveActiveAppointments(id))
+            {
+                return Ok(new { success = false, message = "The User Have Active Appointments, Please Wait for Them to be Completed!" });
+            }
+            else
+            {
+                await _manageUsers.changeRoleFromTo(user, from, to);
+                return Ok(new { success = true, message = "The User Have Active Appointments, Please Wait for Them to be Completed!" });
+            }
+
         }
 
         [HttpPost]

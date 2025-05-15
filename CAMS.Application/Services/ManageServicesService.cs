@@ -285,5 +285,25 @@ namespace CAMS.Application.Services
 
             return serviceWithActiveAppointmentsDTO;
         }
+
+        public async Task<bool> doesTheUserHaveActiveAppointments(int userId){
+            bool hasActiveAppointments;
+            var userRole = await _context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.Role.Name).ToListAsync();
+            if (userRole.Contains("Employee"))
+            {
+                var employeeServiceIds = await _context.Services.Where(s => s.EmployeeId == userId).Select(s => s.Id).ToListAsync();
+
+                hasActiveAppointments = await _context.Appointments
+                    .AnyAsync(a => a.Status == "Approved" && employeeServiceIds.Contains(a.ServiceId));
+                //AnyAsync is an asynchronous LINQ method provided by Entity Framework Core that checks whether any elements in a sequence satisfy a given condition — without loading all the data into memory.... It returns true if at least one element in the query matches the condition... otherwise, it returns false.
+            }
+            else
+            {
+                hasActiveAppointments = await _context.Appointments
+                    .AnyAsync(a => a.Status == "Approved" && a.CustomerId == userId);
+            }
+
+            return hasActiveAppointments;
+        }
     }
 }

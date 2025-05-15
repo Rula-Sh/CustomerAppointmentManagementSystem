@@ -21,5 +21,6 @@ namespace CAMS.Application.Interfaces
         Task<List<string>> GetServicesNames();
         int GetTotalServices();
         Task<ServiceWithActiveAppointmentsDTO> getServiceWithActiveAppointments(int? id);
+        Task<bool> doesTheUserHaveActiveAppointments(int userId);
     }  
 }

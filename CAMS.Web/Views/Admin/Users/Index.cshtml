@@ -118,12 +118,20 @@
                                                                                 '&from=' + encodeURIComponent('Customer') +
                                                                                 '&to=' + encodeURIComponent('Employee'),
                                 method: 'POST',
-                                success: function(){
+                                success: function(result){
+                                    if(result.success){
                                     console.log("hire success");
+
+                                    toastr.success('Employee Hired');
+
                                     btn.parents('tr').find('.Role').text("Employee");
 
                                     btn.prop('hidden', true);
                                     btn.siblings('.js-fire').prop('hidden', false);
+
+                                    } else{
+                                        toastr.error(result.message);
+                                    }
 
                                 },
                                 error: function(error){
@@ -154,14 +162,18 @@
                                                                                 '&from=' + encodeURIComponent('Employee') +
                                                                                 '&to=' + encodeURIComponent('Customer'),
                                             method: 'POST',
-                                            success: function(){
-                                                console.log("fire success");
+                                            success: function(result){
+                                                if(result.success){
+                                                    console.log("fire success");
+                                                    toastr.error("User Fired");
 
-                                                btn.parents('tr').find('.Role').text("Customer");
+                                                    btn.parents('tr').find('.Role').text("Customer");
 
-                                                btn.prop('hidden', true);
-                                                btn.siblings('.js-hire').prop('hidden', false);
-
+                                                    btn.prop('hidden', true);
+                                                    btn.siblings('.js-hire').prop('hidden', false);
+                                                } else{
+                                                    toastr.error(result.message);
+                                                }
                                             },
                                             error: function(error){
                                                 alert('Something went wrong');
