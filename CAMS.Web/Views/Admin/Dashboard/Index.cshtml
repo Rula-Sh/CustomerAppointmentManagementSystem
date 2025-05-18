@@ -102,9 +102,11 @@
         type: 'line',
         data: {
             labels: @Html.Raw(Json.Serialize(Model.last7Days)),
+            // labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [{
                 label: '# of Daily Bookings',
                 data: @Html.Raw(Json.Serialize(Model.dailyBookingCounts)),
+                // data: [0, 1, 3, 5, 4, 4, 6],
                 borderWidth: 2,
                 fill: false,
                 borderColor: 'blue'
@@ -122,9 +124,11 @@
         type: 'line',
         data: {
             labels: @Html.Raw(Json.Serialize(Model.lastWeeksinMonth)),
+            // labels: ['Apr27', 'May04', 'May11', 'May18'],
             datasets: [{
                 label: '# of Weekly Bookings',
                 data: @Html.Raw(Json.Serialize(Model.weeklyBookingCounts)),
+                // data: [7, 15, 13, 22],
                 borderWidth: 2,
                 fill: false,
                 borderColor: 'green'
@@ -165,6 +169,7 @@
         datasets: [{
           label: '# of Appointments Status',
           data: @Html.Raw(Json.Serialize(Model.appointmentsStatusCount))
+          // data: [2, 3, 1, 5],
         }]
       }
     });
@@ -177,6 +182,7 @@
         datasets: [{
           label: '# of Appointments Per Service',
           data:@Html.Raw(Json.Serialize(Model.serviceAppointmentsCount)),
+          // data: [4,1,3,2],
           // backgroundColor: [
           //   'rgb(253, 89, 51)',
           //   'rgb(18, 153, 161)',
