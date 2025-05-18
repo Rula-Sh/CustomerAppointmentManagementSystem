@@ -73,6 +73,12 @@ public class AccountController : Controller
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "Customer");
+                await _userManager.FindByNameAsync(user.UserName);
+                var LoginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                if (LoginResult.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
                 return RedirectToAction("Login", "Account");
             }
             else
