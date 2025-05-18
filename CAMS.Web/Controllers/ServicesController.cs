@@ -219,7 +219,7 @@ namespace PresentationLayer.Controllers
             {
                 await _manageServices.DeleteService(service, User);
 
-                return Ok(new { success = true, message = "Service Deleted Successfully." });
+                return Ok(new { success = true, message = "Service Deleted." });
             }
             else
             {

@@ -155,7 +155,7 @@ else
                                                        serviceContainer.remove(); // to remove the card after deleting, this code alone causes the deleting animation to disapear instantly, thats why i used setTimeout()
                                                     }, 1000); //1s
 
-                                                    toastr.success(response.message);
+                                                    toastr.error(response.message);
 
                                                  } else {
                                                     toastr.error(response.message); // "Cannot Delete a Service with Active Appointments."
