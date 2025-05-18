@@ -218,7 +218,7 @@ namespace CAMS.Application.Services
             var last7DaysDates = getLast7DaysDates();
 
             // set the last 7 days format to the days of the week
-            return last7DaysDates.Select(d => d.ToString("dddd")).ToList();
+            return last7DaysDates.Select(d => d.ToString("ddd")).ToList();
         }
 
         public async Task<List<int>> getTotalAppointmentsFromPast7Days()
@@ -315,7 +315,7 @@ namespace CAMS.Application.Services
 
         public async Task<List<ActiveAppointmentDTO>> getTodaysAppointments()
         {
-            var today = DateTime.Today.ToString("M/d/yyyy");
+            var today = DateTime.Today.ToString("dd/MM/yyyy");
 
             /*return await _context.Appointments
                 .Where(a =>
@@ -357,7 +357,7 @@ namespace CAMS.Application.Services
 
         public async Task<List<AppointmentDTO>> getActiveAppointmentsFromServiceId(int? id)
         {
-            var appointments = await _context.Appointments.Where(a => a.ServiceId == id).Where(a => a.Status == "Pending" || a.Status == "Approved").ToListAsync();
+            var appointments = await _context.Appointments.Where(a => a.ServiceId == id).Where(a => a.Status == "Approved").ToListAsync();
             return _mapper.Map<List<AppointmentDTO>>(appointments);
         }
 
