@@ -93,6 +93,22 @@ namespace CAMS.Application.Services
             await _signalRNotifier.SendNotificationAsync();
         }
 
+
+        public async Task CreateNotificationOnAppointmentStatusChange(int appointmentId)
+        {
+            var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
+
+            //create a notification for the customer with the updated appointment status
+            var notificationDTO = new NotificationDTO
+            {
+                UserId = appointment.CustomerId,
+                Message = $"Your appointment {appointment.Name} had been {appointment.Status}",
+            };
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            await CreateNotification(notification);
+            await _signalRNotifier.SendNotificationAsync();
+        }
+
         public async Task ReadNotification(int notificationId)
         {
             var notification = _context.Notifications.FirstOrDefault(n => n.Id == notificationId);

@@ -10,6 +10,7 @@ namespace CAMS.Application.Interfaces
         //Task CreateNotificationOnServiceDeleteForCustomer(int serviceId);
         Task CreateNotificationOnServiceActionForAdmin(int serviceId, string serviceName, ClaimsPrincipal user, string action);
         Task CreateNotificationOnAppointmentDelete(int appointmentId);
+        Task CreateNotificationOnAppointmentStatusChange(int appointmentId);
         Task ReadNotification(int id);
     }
 }

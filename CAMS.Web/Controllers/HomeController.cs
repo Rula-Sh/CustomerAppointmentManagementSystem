@@ -20,18 +20,21 @@ namespace CAMS.Web.Controllers
         private readonly IManageAppointmentsService _manageAppointments;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly INotificationManagerService _notificationsManager;
 
         public HomeController(IManageUsersService manageUsers,
                               IManageServicesService manageServices,
                               IManageAppointmentsService manageappointments,
                               IMapper mapper,
-                              UserManager<User> userManager)
+                              UserManager<User> userManager,
+                              INotificationManagerService notificationsManager)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
             _manageAppointments = manageappointments;
             _mapper = mapper;
             _userManager = userManager;
+            _notificationsManager = notificationsManager;
         }
 
         public async Task<IActionResult> Index()
@@ -211,10 +214,12 @@ namespace CAMS.Web.Controllers
             appointment.EmployeeId = int.Parse(_userManager.GetUserId(User));
             //was: appointment.EmployeeId = int.Parse(User.Identity.GetUserId()); before removing the import "using Microsoft.AspNet.Identity;"
             appointment.Notes = ""; //appointment.Notes = notes;
-            //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
-            // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
+                                    //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
+                                    // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
 
             await _manageAppointments.updateAppointment(appointment);
+
+            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
 
             return Ok();
         }
@@ -235,6 +240,9 @@ namespace CAMS.Web.Controllers
             appointment.Status = "Rejected";
 
             await _manageAppointments.updateAppointment(appointment);
+
+
+            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
 
             return Ok();
         }
@@ -258,6 +266,9 @@ namespace CAMS.Web.Controllers
             appointment.Notes = "";//appointment.Notes = notes;
 
             await _manageAppointments.updateAppointment(appointment);
+
+
+            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
 
             return Ok();
         }
