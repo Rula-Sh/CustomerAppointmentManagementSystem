@@ -77,21 +77,27 @@ namespace CAMS.Application.Services
             }
         }
 
-        public async Task CreateNotificationOnAppointmentDelete(int appointmentId)
-        {
-            // get appointment before deleting it
-            var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
+         public async Task CreateNotificationToEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
+         {
+             // this line is here first to get the appointment before deleting it (if action = "Delete")
+             var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
 
-            //create a notification for the     employee with the assigned deleted appointment
-            var notificationDTO = new NotificationDTO
+            var message = $"You Have a New Pending Appointment on: {appointment.Date}";
+            if (action == "Delete")
             {
-                UserId = appointment.EmployeeId,
-                Message = $"a customer has canceled their appointment on: {appointment.Date}",
-            };
-            var notification = _mapper.Map<Notification>(notificationDTO);
-            await CreateNotification(notification);
-            await _signalRNotifier.SendNotificationAsync();
-        }
+                message = $"A Customer Has Canceled Their Appointment on: {appointment.Date}";
+            }
+
+                //create a notification for the employee with the assigned appointment
+                var notificationDTO = new NotificationDTO
+                {
+                    UserId = appointment.EmployeeId,
+                    Message = message,
+                };
+             var notification = _mapper.Map<Notification>(notificationDTO);
+             await CreateNotification(notification);
+             await _signalRNotifier.SendNotificationAsync();
+         }
 
 
         public async Task CreateNotificationOnAppointmentStatusChange(int appointmentId)

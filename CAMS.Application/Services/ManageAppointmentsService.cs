@@ -128,6 +128,8 @@ namespace CAMS.Application.Services
             // ProjectTo<T>() is an AutoMapper method that allows you to map entities directly to DTOs or view models in the database query (e.g., LINQ to Entities), rather than loading the full entity into memory and then mapping it.
             // ProjectTo() builds the SQL query that fetches only the fields needed for the view model — it’s efficient and runs completely on the database side.
 
+            await _notificationsManager.CreateNotificationToEmployeeOnAppointmentCreateOrDelete(appointment.Id, "Create");
+
             return appointment;
         }
 
@@ -142,7 +144,7 @@ namespace CAMS.Application.Services
         {
             if (appointment.Status == "Approved")
             {
-                await _notificationsManager.CreateNotificationOnAppointmentDelete(appointment.Id);
+                await _notificationsManager.CreateNotificationToEmployeeOnAppointmentCreateOrDelete(appointment.Id, "Delete");
             }
 
             _context.Appointments.Remove(appointment);
