@@ -31,6 +31,7 @@ namespace CAMS.Web
             builder.Services.AddScoped<IManageAppointmentsService, ManageAppointmentsService>();
             builder.Services.AddScoped<INotificationManagerService, NotificationManagerService>();
             builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
+            builder.Services.AddScoped<IAuditLogService, AuditLogService>();
             builder.Services.AddScoped(typeof(Lazy<>), typeof(LazyResolver<>));
 
             // AutoMapper profiles

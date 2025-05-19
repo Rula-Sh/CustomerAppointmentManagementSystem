@@ -36,6 +36,8 @@ namespace CAMS.Data.Models
         public virtual ICollection<Appointment> CustomerAppointments { get; set; } = new List<Appointment>();
         public virtual ICollection<Appointment> EmployeeAppointments { get; set; } = new List<Appointment>();
 
+        public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+
 
 
         // after creating the properties run add-migration AddNewColumnsToUsersTable on the Package Manager Console ->

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static Azure.Core.HttpHeader;
+using CAMS.Application.Services;
 
 namespace CAMS.Web.Controllers
 {
@@ -21,13 +22,15 @@ namespace CAMS.Web.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly INotificationManagerService _notificationsManager;
+        private readonly IAuditLogService _auditLogService;
 
         public HomeController(IManageUsersService manageUsers,
                               IManageServicesService manageServices,
                               IManageAppointmentsService manageappointments,
                               IMapper mapper,
                               UserManager<User> userManager,
-                              INotificationManagerService notificationsManager)
+                              INotificationManagerService notificationsManager,
+                              IAuditLogService auditLogService)
         {
             _manageUsers = manageUsers;
             _manageServices = manageServices;
@@ -35,6 +38,7 @@ namespace CAMS.Web.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _notificationsManager = notificationsManager;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IActionResult> Index()
@@ -221,6 +225,8 @@ namespace CAMS.Web.Controllers
 
             await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
 
+            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have approved on {appointment.Name} appointment with ID: {appointment.Id}", "Approve Appointment");
+
             return Ok();
         }
 
@@ -243,6 +249,8 @@ namespace CAMS.Web.Controllers
 
 
             await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
+
+            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have rejected {appointment.Name} appointment with ID: {appointment.Id}", "Reject Appointment");
 
             return Ok();
         }
@@ -269,6 +277,8 @@ namespace CAMS.Web.Controllers
 
 
             await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
+
+            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have completed {appointment.Name} appointment with ID: {appointment.Id}", "Complete Appointment");
 
             return Ok();
         }

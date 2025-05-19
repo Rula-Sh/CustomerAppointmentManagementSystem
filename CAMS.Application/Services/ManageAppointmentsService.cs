@@ -14,13 +14,15 @@ namespace CAMS.Application.Services
         private readonly IManageUsersService _manageUsers;
         private readonly IMapper _mapper;
         private readonly INotificationManagerService _notificationsManager;
+        private readonly IAuditLogService _auditLogService;
 
-        public ManageAppointmentsService(ApplicationDbContext context, IManageUsersService manageUsers, IMapper mapper, INotificationManagerService notificationsManager)
+        public ManageAppointmentsService(ApplicationDbContext context, IManageUsersService manageUsers, IMapper mapper, INotificationManagerService notificationsManager, IAuditLogService auditLogService)
         {
             _context = context;
             _manageUsers = manageUsers;
             _mapper = mapper;
             _notificationsManager = notificationsManager;
+            _auditLogService = auditLogService;
         }
 
         public async Task<List<AppointmentDTO>> getAppointmentsBasedOnRole(ClaimsPrincipal user)
@@ -97,6 +99,8 @@ namespace CAMS.Application.Services
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
+
+            await _auditLogService.AddAuditLog(appointment.CustomerId,"Customer", "have booked an appointment", "Book Appointment");
         }
 
         public async Task<AppointmentDTO> appointmentDetails(int? id)
@@ -143,6 +147,8 @@ namespace CAMS.Application.Services
 
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
+
+            await _auditLogService.AddAuditLog(appointment.CustomerId, "Customer", "have canceled their appointment", "Cancel Appointment");
         }
 
         public async Task<List<AppointmentDTO>> getPendingAppointments(ClaimsPrincipal user)

@@ -26,7 +26,7 @@ namespace CAMS.Data
         //public DbSet<DateTimeSlotGroup> DateTimeSlotGroups { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
-        //public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

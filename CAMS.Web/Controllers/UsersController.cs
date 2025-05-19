@@ -14,14 +14,16 @@ namespace CAMS.Web.Controllers
         private readonly IManageUsersService _manageUsers;
         private readonly IManageServicesService _manageServices;
         private readonly IMapper _mapper;
+        private readonly IAuditLogService _auditLogService;
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices)
+        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices,IAuditLogService auditLogService)
         {
             _manageUsers = manageUsers;
             _mapper = mapper;
             _manageServices = manageServices;
+            _auditLogService = auditLogService;
 
         }
 
@@ -99,6 +101,15 @@ namespace CAMS.Web.Controllers
                 return NotFound();
 
             user.IsActive = !user.IsActive;
+
+            if (user.IsActive)
+            {
+                await _auditLogService.AddAuditLog(1, "Admin", $"have activated {user.FullName} with ID: {user.Id} account", "Activate Account");
+            }
+            else
+            {
+                await _auditLogService.AddAuditLog(1, "Admin", $"have deactivated {user.FullName} with ID: {user.Id} account", "Deactivate Account");
+            }
 
             await _manageUsers.updateAsync(user);
 

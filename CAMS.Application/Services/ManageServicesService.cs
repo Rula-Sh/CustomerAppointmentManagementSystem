@@ -15,14 +15,16 @@ namespace CAMS.Application.Services
         private readonly Lazy<IManageAppointmentsService> _manageAppointmentsService;
         private readonly IManageUsersService _manageUsersService;
         private readonly IMapper _mapper;
+        private readonly IAuditLogService _auditLogService;
 
-        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper, Lazy<IManageAppointmentsService> manageAppointmentsService, IManageUsersService manageUsersService)
+        public ManageServicesService(ApplicationDbContext context, INotificationManagerService notificationsManager, IMapper mapper, Lazy<IManageAppointmentsService> manageAppointmentsService, IManageUsersService manageUsersService, IAuditLogService auditLogService)
         {
             _context = context;
             _notificationsManager = notificationsManager;
             _mapper = mapper;
             _manageAppointmentsService = manageAppointmentsService;
             _manageUsersService = manageUsersService;
+            _auditLogService = auditLogService;
         }
 
         public async Task<List<ServiceDTO>> GetAllServices()
@@ -138,6 +140,8 @@ namespace CAMS.Application.Services
 
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
+
+            await _auditLogService.AddAuditLog(service.EmployeeId, "Employee", $"have created {service.Name} Service", "Create Service");
         }
 
         public async Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user)
@@ -166,6 +170,8 @@ namespace CAMS.Application.Services
             // i CANT use: var service = _mapper.Map<Service>(serviceDTO); because it creates a new service, and i need to update it
 
             await _context.SaveChangesAsync();
+
+            await _auditLogService.AddAuditLog(serviceDTO.EmployeeId, "Employee", $"have updated {serviceDTO.Name} Service details", "Update Service");
         }
 
         public async Task<ServiceDTO> getService(int? id)
@@ -225,7 +231,11 @@ namespace CAMS.Application.Services
             {
                 _context.Services.Remove(existingService);
                 await _context.SaveChangesAsync();
+
+                await _auditLogService.AddAuditLog(existingService.EmployeeId, "Employee", $"have deleted {existingService.Name} Service", "Delete Service");
+
             }
+
 
             //var service = _mapper.Map<Service>(serviceDTO);
             //_context.Services.Remove(service);

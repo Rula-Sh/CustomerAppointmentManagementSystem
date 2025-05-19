@@ -15,12 +15,15 @@ namespace CAMS.Application.Services
         private readonly UserManager<User> _userManager; // UserManager<User> is a class that provides APIs for managing users in an application. It is part of the ASP.NET Identity system, which is used to handle authentication, authorization, and user management.
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IAuditLogService _auditLogService;
 
-        public ManageUsersService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
+        public ManageUsersService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper, IAuditLogService auditLogService)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _auditLogService = auditLogService;
+
         }
 
         public async Task<List<UserDTO>> GetUsers()
@@ -93,6 +96,8 @@ namespace CAMS.Application.Services
                     _context.Services.RemoveRange(services);
                     await _context.SaveChangesAsync();
                 }
+
+                await _auditLogService.AddAuditLog(1, "Admin", $"have fired {user.FullName} with ID: {user.Id}", "Fire Employee");
             }
             else if(oldRole == "Customer")
             {
@@ -102,6 +107,8 @@ namespace CAMS.Application.Services
                     _context.Appointments.RemoveRange(appointments);
                     await _context.SaveChangesAsync();
                 }
+
+                await _auditLogService.AddAuditLog(1, "Admin", $"have hired {user.FullName} with ID: {user.Id}", "Hire Employee");
             }
 
             await _userManager.RemoveFromRoleAsync(user, oldRole);
