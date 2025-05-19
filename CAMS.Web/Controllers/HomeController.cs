@@ -223,7 +223,7 @@ namespace CAMS.Web.Controllers
 
             await _manageAppointments.updateAppointment(appointment);
 
-            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
+            await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
             await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have approved on {appointment.Name} appointment with ID: {appointment.Id}", "Approve Appointment");
 
@@ -248,7 +248,7 @@ namespace CAMS.Web.Controllers
             await _manageAppointments.updateAppointment(appointment);
 
 
-            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
+            await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
             await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have rejected {appointment.Name} appointment with ID: {appointment.Id}", "Reject Appointment");
 
@@ -276,7 +276,7 @@ namespace CAMS.Web.Controllers
             await _manageAppointments.updateAppointment(appointment);
 
 
-            await _notificationsManager.CreateNotificationOnAppointmentStatusChange(appointment.Id);
+            await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
             await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have completed {appointment.Name} appointment with ID: {appointment.Id}", "Complete Appointment");
 

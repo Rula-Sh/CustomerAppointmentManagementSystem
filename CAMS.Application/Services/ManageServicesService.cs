@@ -133,7 +133,7 @@ namespace CAMS.Application.Services
                             service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
                         }*/
 
-            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Created");
+            await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Created");
 
             var service = _mapper.Map<Service>(serviceDTO);
             service.EmployeeId = int.Parse(_manageUsersService.GetUserId(user));
@@ -146,7 +146,7 @@ namespace CAMS.Application.Services
 
         public async Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
-            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Updated");
+            await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Updated");
 
             //    var service = _mapper.Map<Service>(serviceDTO);
 
@@ -224,7 +224,7 @@ namespace CAMS.Application.Services
         public async Task DeleteService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
             //await _notificationsManager.CreateNotificationOnServiceDeleteForCustomer(serviceDTO.Id);
-            await _notificationsManager.CreateNotificationOnServiceActionForAdmin(serviceDTO.Id, serviceDTO.Name, user, "Deleted");
+            await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Deleted");
 
             var existingService = await _context.Services.FindAsync(serviceDTO.Id);
             if (existingService != null)

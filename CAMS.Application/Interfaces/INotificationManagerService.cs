@@ -8,9 +8,9 @@ namespace CAMS.Application.Interfaces
         Task<List<Notification>> GetUserNotifications(ClaimsPrincipal user);
         Task CreateNotification(Notification notification);
         //Task CreateNotificationOnServiceDeleteForCustomer(int serviceId);
-        Task CreateNotificationOnServiceActionForAdmin(int serviceId, string serviceName, ClaimsPrincipal user, string action);
-        Task CreateNotificationToEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
-        Task CreateNotificationOnAppointmentStatusChange(int appointmentId);
+        Task CreateNotificationForAdminOnServiceAction(int serviceId, string serviceName, ClaimsPrincipal user, string action);
+        Task CreateNotificationForEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
+        Task CreateNotificationForCustomerOnAppointmentStatusChange(int appointmentId);
         Task ReadNotification(int id);
     }
 }

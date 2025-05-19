@@ -60,7 +60,7 @@ namespace CAMS.Application.Services
             await _signalRNotifier.SendNotificationAsync();
         }*/
 
-        public async Task CreateNotificationOnServiceActionForAdmin(int serviceId, string serviceName, ClaimsPrincipal user, string status)
+        public async Task CreateNotificationForAdminOnServiceAction(int serviceId, string serviceName, ClaimsPrincipal user, string status)
         {
             var employeeId = int.Parse(_manageUsers.GetUserId(user));
             var employeeName = _context.Users.Where(u => u.Id == employeeId).Select(u => u.FullName).FirstOrDefault();
@@ -77,7 +77,7 @@ namespace CAMS.Application.Services
             }
         }
 
-         public async Task CreateNotificationToEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
+         public async Task CreateNotificationForEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
          {
              // this line is here first to get the appointment before deleting it (if action = "Delete")
              var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
@@ -85,7 +85,7 @@ namespace CAMS.Application.Services
             var message = $"You Have a New Pending Appointment on: {appointment.Date}";
             if (action == "Delete")
             {
-                message = $"A Customer Has Canceled Their Appointment on: {appointment.Date}";
+                message = $"A Customer Have Canceled Their Appointment on: {appointment.Date}";
             }
 
                 //create a notification for the employee with the assigned appointment
@@ -100,7 +100,7 @@ namespace CAMS.Application.Services
          }
 
 
-        public async Task CreateNotificationOnAppointmentStatusChange(int appointmentId)
+        public async Task CreateNotificationForCustomerOnAppointmentStatusChange(int appointmentId)
         {
             var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
 
