@@ -29,12 +29,12 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Index()
         {
 
-            //Best Employee
-            var bestEmployeeName = _manageAppointments.getEmployeeNameWithMostCompleteAndApprovedAppointments();
+            //Best Provider
+            var bestProviderName = _manageAppointments.getProviderNameWithMostCompleteAndApprovedAppointments();
 
 
-            //Average Appointments per Employee
-            double avgAppointmentsPerEmployee = _manageAppointments.GetAverageAppointmentsPerEmployee();
+            //Average Appointments per Provider
+            double avgAppointmentsPerProvider = _manageAppointments.GetAverageAppointmentsPerProvider();
 
 
             //Most Booked Service
@@ -73,8 +73,8 @@ namespace PresentationLayer.Controllers
                 TotalServices = _manageServices.GetTotalServices(),
                 TotalAppointments = _manageAppointments.GetTotalAppointments(),
 
-                BestEmployee = bestEmployeeName,
-                AvgAppointmentsPerEmployee = avgAppointmentsPerEmployee,
+                BestProvider = bestProviderName,
+                AvgAppointmentsPerProvider = avgAppointmentsPerProvider,
                 MostBookedService = mostBookedServiceName,
 
                 last7Days = last7DaysLabels,

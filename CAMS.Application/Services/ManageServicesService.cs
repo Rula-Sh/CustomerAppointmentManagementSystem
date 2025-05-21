@@ -44,7 +44,7 @@ namespace CAMS.Application.Services
                 }).ToList()
             }).ToListAsync();*/
             // using AutoMapper
-            var servcies = await _context.Services.Include(s => s.Employee).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
+            var servcies = await _context.Services.Include(s => s.Provider).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
 
             var servicesDTO = _mapper.Map<List<ServiceDTO>>(servcies);
 
@@ -52,11 +52,11 @@ namespace CAMS.Application.Services
             return servicesDTO;
         }
 
-        public async Task<List<ServiceDTO>> GetEmployeeServices(ClaimsPrincipal user)
+        public async Task<List<ServiceDTO>> GetProviderServices(ClaimsPrincipal user)
         {
-            var employeeId = int.Parse(_manageUsersService.GetUserId(user));
+            var providerId = int.Parse(_manageUsersService.GetUserId(user));
 
-            var servcies = await _context.Services.Where(s => s.EmployeeId == employeeId).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
+            var servcies = await _context.Services.Where(s => s.ProviderId == providerId).Include(s => s.ServiceDates).ThenInclude(d => d.ServiceTimeSlots).ToListAsync();
 
             var servicesViewModel = _mapper.Map<List<ServiceDTO>>(servcies);
 
@@ -139,12 +139,12 @@ namespace CAMS.Application.Services
             await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Created");
 
             var service = _mapper.Map<Service>(serviceDTO);
-            service.EmployeeId = int.Parse(_manageUsersService.GetUserId(user));
+            service.ProviderId = int.Parse(_manageUsersService.GetUserId(user));
 
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
 
-            await _auditLogService.AddAuditLog(service.EmployeeId, "Employee", $"have created {service.Name} Service", "Create Service");
+            await _auditLogService.AddAuditLog(service.ProviderId, "Provider", $"have created {service.Name} Service", "Create Service");
         }
 
         public async Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user)
@@ -169,12 +169,12 @@ namespace CAMS.Application.Services
 
             await _context.SaveChangesAsync();
 
-            await _auditLogService.AddAuditLog(serviceDTO.EmployeeId, "Employee", $"have updated {serviceDTO.Name} Service details", "Update Service");
+            await _auditLogService.AddAuditLog(serviceDTO.ProviderId, "Provider", $"have updated {serviceDTO.Name} Service details", "Update Service");
         }
 
         public async Task<ServiceDTO> getServiceById(int? id)
         {
-            var service = await _context.Services.Include(s => s.Employee).Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
+            var service = await _context.Services.Include(s => s.Provider).Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
             return _mapper.Map<ServiceDTO>(service);
         }
 
@@ -203,7 +203,7 @@ namespace CAMS.Application.Services
                 _context.Services.Remove(existingService);
                 await _context.SaveChangesAsync();
 
-                await _auditLogService.AddAuditLog(existingService.EmployeeId, "Employee", $"have deleted {existingService.Name} Service", "Delete Service");
+                await _auditLogService.AddAuditLog(existingService.ProviderId, "Provider", $"have deleted {existingService.Name} Service", "Delete Service");
             }
         }
 
@@ -253,7 +253,7 @@ namespace CAMS.Application.Services
                 .ThenInclude(d => d.ServiceTimeSlots)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
-            var activeAppointments = await _context.Appointments.Where(a => a.ServiceId == service.Id && a.Status == "Approved").Include(a => a.Customer).Include(a => a.Employee).ToListAsync();
+            var activeAppointments = await _context.Appointments.Where(a => a.ServiceId == service.Id && a.Status == "Approved").Include(a => a.Customer).Include(a => a.Provider).ToListAsync();
 
             var serviceWithActiveAppointmentsDTO = _mapper.Map<ServiceWithActiveAppointmentsDTO>(service);
             serviceWithActiveAppointmentsDTO.ActiveAppointments = _mapper.Map<List<AppointmentDTO>>(activeAppointments);
@@ -265,12 +265,12 @@ namespace CAMS.Application.Services
         {
             bool hasActiveAppointments;
             var userRole = await _context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.Role.Name).ToListAsync();
-            if (userRole.Contains("Employee"))
+            if (userRole.Contains("Provider"))
             {
-                var employeeServiceIds = await _context.Services.Where(s => s.EmployeeId == userId).Select(s => s.Id).ToListAsync();
+                var providerServiceIds = await _context.Services.Where(s => s.ProviderId == userId).Select(s => s.Id).ToListAsync();
 
                 hasActiveAppointments = await _context.Appointments
-                    .AnyAsync(a => a.Status == "Approved" && employeeServiceIds.Contains(a.ServiceId));
+                    .AnyAsync(a => a.Status == "Approved" && providerServiceIds.Contains(a.ServiceId));
                 //AnyAsync is an asynchronous LINQ method provided by Entity Framework Core that checks whether any elements in a sequence satisfy a given condition — without loading all the data into memory.... It returns true if at least one element in the query matches the condition... otherwise, it returns false.
             }
             else

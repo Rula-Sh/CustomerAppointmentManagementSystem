@@ -25,7 +25,7 @@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
             <input type="hidden" asp-for="Id" />
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
-            <input type="hidden" asp-for="EmployeeId" value="@Model.EmployeeId" />
+            <input type="hidden" asp-for="ProviderId" value="@Model.ProviderId" />
             <div class="form-group">
                 <label class="text-muted" asp-for="Name"></label> @* it would add the Title by default *@
                 <input type="text" class="form-control" asp-for="Name" maxlength="250" />

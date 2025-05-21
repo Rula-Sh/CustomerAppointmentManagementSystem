@@ -27,7 +27,7 @@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
             <input type="hidden" asp-for="Id" />
             @* <input type="hidden" asp-for="Id"/> is used so that when i modify the service, i be able to change it based on the id*@
-            <input type="hidden" asp-for="EmployeeId" id="employeeId" />
+            <input type="hidden" asp-for="ProviderId" id="providerId" />
             <div class="form-group">
                 <label class="text-black" asp-for="Services"><strong>Service</strong></label>
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should remove the select tag below *@
@@ -97,8 +97,8 @@
                     $('#priceInput').val(data.price);
                     $('#serviceId').val(serviceId);
                     $('#ServiceName').val(`${data.name}`);
-                    $('#employeeId').val(data.employeeId);
-                    console.log(`employeeId= ${data.employeeId}`);
+                    $('#providerId').val(data.providerId);
+                    console.log(`providerId= ${data.providerId}`);
 
                 const dateDropdown = document.getElementById('serviceDatesList');
                 dateDropdown.innerHTML = '<option value="">-- Select a Date --</option>';

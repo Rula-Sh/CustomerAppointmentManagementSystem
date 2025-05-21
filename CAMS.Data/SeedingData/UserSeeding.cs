@@ -23,18 +23,18 @@ public static class UserSeeding
         };
         admin.PasswordHash = hasher.HashPassword(admin, "P@ssw0rd");
 
-        var employee = new User
+        var provider = new User
         {
             Id = 2,
-            UserName = "employee",
-            NormalizedUserName = "EMPLOYEE",
-            FullName = "Employee User",
-            Email = "employee@example.com",
-            NormalizedEmail = "EMPLOYEE@EXAMPLE.COM",
+            UserName = "provider",
+            NormalizedUserName = "PROVIDER",
+            FullName = "Provider User",
+            Email = "provider@example.com",
+            NormalizedEmail = "PROVIDER@EXAMPLE.COM",
             EmailConfirmed = true,
             SecurityStamp = "2"
         };
-        employee.PasswordHash = hasher.HashPassword(employee, "P@ssw0rd");
+        provider.PasswordHash = hasher.HashPassword(provider, "P@ssw0rd");
 
         var customer = new User
         {
@@ -50,6 +50,6 @@ public static class UserSeeding
         };
         customer.PasswordHash = hasher.HashPassword(customer, "P@ssw0rd");
 
-        builder.Entity<User>().HasData(admin, employee, customer);
+        builder.Entity<User>().HasData(admin, provider, customer);
     }
 }

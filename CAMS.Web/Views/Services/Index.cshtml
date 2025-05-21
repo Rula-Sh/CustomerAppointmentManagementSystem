@@ -50,7 +50,7 @@ else
                                 <div class="mb-2">
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <p><strong>Assigned To:</strong> @service.Employee.FullName </p>
+                                        <p><strong>Assigned To:</strong> @service.Provider.FullName </p>
                                     }
                                     <strong>Available in:</strong>
                                     @string.Join(" - ", service.DateTimeSlotGroups.Select(a => a.Date))

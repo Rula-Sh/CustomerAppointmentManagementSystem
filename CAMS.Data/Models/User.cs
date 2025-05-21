@@ -30,9 +30,9 @@ namespace CAMS.Data.Models
         // Many-to-Many relationship (User and Role)
         public virtual ICollection<UserRole> UserRoles { get; set; }
 
-        // One-to-Many relationship (User[Employee/Customer] and Appointment)
+        // One-to-Many relationship (User[Provider/Customer] and Appointment)
         public virtual ICollection<Appointment> CustomerAppointments { get; set; } = new List<Appointment>();
-        public virtual ICollection<Appointment> EmployeeAppointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Appointment> ProviderAppointments { get; set; } = new List<Appointment>();
 
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 

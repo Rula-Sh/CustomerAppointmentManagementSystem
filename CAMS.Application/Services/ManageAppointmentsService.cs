@@ -31,16 +31,16 @@ namespace CAMS.Application.Services
 
             //var userId = Int32.Parse(User.Identity.GetUserId());
             var appointmentsQuery = _context.Appointments.AsQueryable();
-            if (user.IsInRole("Employee"))
+            if (user.IsInRole("Provider"))
             {
-                appointmentsQuery = appointmentsQuery.Where(a => a.EmployeeId == Int32.Parse(userId) && a.Status == "Approved");
+                appointmentsQuery = appointmentsQuery.Where(a => a.ProviderId == Int32.Parse(userId) && a.Status == "Approved");
             }
             else if (user.IsInRole("Customer"))
             {
                 appointmentsQuery = appointmentsQuery.Where(a => a.CustomerId == Int32.Parse(userId));
             }
 
-            var appointmentList = await appointmentsQuery.Include(a => a.Customer).Include(a => a.Employee).ToListAsync();
+            var appointmentList = await appointmentsQuery.Include(a => a.Customer).Include(a => a.Provider).ToListAsync();
             var appointments = _mapper.Map<List<AppointmentDTO>>(appointmentList);
 
             return appointments;
@@ -49,7 +49,7 @@ namespace CAMS.Application.Services
         public List<int> getServicesIdsFromActiveAndPendingAppointments(ClaimsPrincipal user)
         {
             var userId = int.Parse(_manageUsers.GetUserId(user));
-            return _context.Appointments.Include(a => a.Employee).Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
+            return _context.Appointments.Include(a => a.Provider).Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
         }
 
         public async Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user)
@@ -57,13 +57,13 @@ namespace CAMS.Application.Services
             // using AutoMapper
             var appointment = _mapper.Map<Appointment>(bookAppointmentDTO);
             appointment.CustomerId = Int32.Parse(_manageUsers.GetUserId(user));
-            appointment.EmployeeId = bookAppointmentDTO.EmployeeId; // again hardcod because of FK issues
+            appointment.ProviderId = bookAppointmentDTO.ProviderId; // again hardcod because of FK issues
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
 
-            await _notificationsManager.CreateNotificationForEmployeeOnAppointmentCreateOrDelete(appointment.Id, "Create");
+            await _notificationsManager.CreateNotificationForProviderOnAppointmentCreateOrDelete(appointment.Id, "Create");
             await _auditLogService.AddAuditLog(appointment.CustomerId, "Customer", "have booked an appointment", "Book Appointment");
         }
 
@@ -91,7 +91,7 @@ namespace CAMS.Application.Services
         {
             if (appointment.Status == "Approved")
             {
-                await _notificationsManager.CreateNotificationForEmployeeOnAppointmentCreateOrDelete(appointment.Id, "Delete");
+                await _notificationsManager.CreateNotificationForProviderOnAppointmentCreateOrDelete(appointment.Id, "Delete");
             }
 
             _context.Appointments.Remove(appointment);
@@ -103,8 +103,8 @@ namespace CAMS.Application.Services
         public async Task<List<AppointmentDTO>> getPendingAppointments(ClaimsPrincipal user)
         {
             // using AutoMapper
-            var employeeId = int.Parse(_manageUsers.GetUserId(user));
-            var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Employee).Where(a => a.Status == "Pending" && a.EmployeeId == employeeId).ToListAsync();
+            var ProviderId = int.Parse(_manageUsers.GetUserId(user));
+            var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Provider).Where(a => a.Status == "Pending" && a.ProviderId == ProviderId).ToListAsync();
             var appointmentsViewModel = _mapper.Map<List<AppointmentDTO>>(appointments);
 
             return appointmentsViewModel;
@@ -116,32 +116,32 @@ namespace CAMS.Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public string getEmployeeNameWithMostCompleteAndApprovedAppointments()
+        public string getProviderNameWithMostCompleteAndApprovedAppointments()
         {
-            //best employee
-            var bestEmployee = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
-                                                    .GroupBy(a => a.EmployeeId)
+            //best Provider
+            var bestProvider = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
+                                                    .GroupBy(a => a.ProviderId)
                                                     .Select(group => new
                                                     {
-                                                        EmployeeId = group.Key,
+                                                        ProviderId = group.Key,
                                                         AppointmentCount = group.Count()
                                                     })
                                                     .OrderByDescending(g => g.AppointmentCount)
                                                     .FirstOrDefault();
 
-            if (bestEmployee == null)
+            if (bestProvider == null)
             {
                 return _context.Users.Where(u => u.Id == 1).Select(e => e.FullName).SingleOrDefault();
             }
-            return _context.Users.Where(u => u.Id == bestEmployee.EmployeeId).Select(e => e.FullName).SingleOrDefault();
+            return _context.Users.Where(u => u.Id == bestProvider.ProviderId).Select(e => e.FullName).SingleOrDefault();
         }
 
-        public double GetAverageAppointmentsPerEmployee()
+        public double GetAverageAppointmentsPerProvider()
         {
-            //Average Appointments per Employee
+            //Average Appointments per Provider
             var TotalAppointments = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved").Count();
-            var TotalEmployees = _context.UserRoles.Include(u => u.User).Where(u => u.Role.Name == "Employee").Count();
-            return (double)TotalAppointments / (TotalEmployees - 1);
+            var TotalProviders = _context.UserRoles.Include(u => u.User).Where(u => u.Role.Name == "Provider").Count();
+            return (double)TotalAppointments / (TotalProviders - 1);
         }
 
         public List<DateTime> getLast7DaysDates()

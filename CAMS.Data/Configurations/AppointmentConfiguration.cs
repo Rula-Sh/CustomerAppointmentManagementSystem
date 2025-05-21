@@ -15,9 +15,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
              .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasOne(a => a.Employee)
-            .WithMany(e => e.EmployeeAppointments)
-            .HasForeignKey(a => a.EmployeeId)
+            .HasOne(a => a.Provider)
+            .WithMany(e => e.ProviderAppointments)
+            .HasForeignKey(a => a.ProviderId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

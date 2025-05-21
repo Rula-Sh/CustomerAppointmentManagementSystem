@@ -9,6 +9,6 @@
         public int ServiceId { get; set; }
         public decimal ServicePrice { get; set; }
         public string ServiceName { get; set; }
-        public int EmployeeId { get; set; }
+        public int ProviderId { get; set; }
     }
 }

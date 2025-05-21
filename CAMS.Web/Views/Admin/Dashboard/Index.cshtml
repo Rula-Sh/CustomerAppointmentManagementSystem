@@ -30,8 +30,8 @@
         </div>
         <div class="col-6">
             <div class="row justify-content-around">
-                <strong class="col-7">Best Employee:</strong> <span class="col-5">@Model.BestEmployee</span>
-                <strong class="col-7">Avg Appoints. per Emp.:</strong> <span class="col-5">@Model.AvgAppointmentsPerEmployee</span>
+                <strong class="col-7">Best Provider:</strong> <span class="col-5">@Model.BestProvider</span>
+                <strong class="col-7">Avg Appoints. per Emp.:</strong> <span class="col-5">@Model.AvgAppointmentsPerProvider</span>
                 <strong class="col-7">Most Booked Service:</strong> <span class="col-5">@Model.MostBookedService</span>
             </div>
         </div>
@@ -74,7 +74,7 @@
                 <tr class="bg-primary text-white">
                     <th>Service</th>
                     <th>Customer</th>
-                    <th>Employee</th>
+                    <th>Provider</th>
                     <th>Appointment Date</th>
                 </tr>
             </thead>
@@ -84,7 +84,7 @@
                     <tr>
                         <td>@appointment.ServiceName</td>
                         <td>@appointment.CustomerName</td>
-                        <td>@appointment.EmployeeName</td>
+                        <td>@appointment.ProviderName</td>
                         <td>@appointment.AppointmentDate</td>
                     </tr>
                 }

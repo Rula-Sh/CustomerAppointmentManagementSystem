@@ -12,7 +12,7 @@ public static class DbInitializer
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
-        string[] roles = { "Admin", "Employee", "Customer" };
+        string[] roles = { "Admin", "Provider", "Customer" };
 
         foreach (var roleName in roles)
         {
@@ -32,11 +32,11 @@ public static class DbInitializer
             };
             await userManager.CreateAsync(admin, "!Q23wewe");//P@ssw0rd
             await userManager.AddToRoleAsync(admin, "Admin");
-            await userManager.AddToRoleAsync(admin, "Employee");
+            await userManager.AddToRoleAsync(admin, "Provider");
             await userManager.AddToRoleAsync(admin, "Customer");
         }
 
-        // Repeat for Employee and Customer...
+        // Repeat for Provider and Customer...
     }
 }
 

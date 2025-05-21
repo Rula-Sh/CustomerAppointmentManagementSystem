@@ -53,9 +53,9 @@
             {
                 
             }
-            @if (User.IsInRole("Employee"))
+            @if (User.IsInRole("Provider"))
             {
-                <partial name="_EmployeeAppointments" model="Model" />
+                <partial name="_ProviderAppointments" model="Model" />
             }
             else if (User.IsInRole("Customer"))
             {
@@ -69,8 +69,8 @@
                 </div>
             }
 
-            @* OR(older syntax): @Html.Partial("_EmployeeAppointments", Model) *@
-            @* or i could do it like this, but each will have a controller: @{ Html.RenderAction("_EmployeeAppointments"); } *@
+            @* OR(older syntax): @Html.Partial("_ProviderAppointments", Model) *@
+            @* or i could do it like this, but each will have a controller: @{ Html.RenderAction("_ProviderAppointments"); } *@
 
         </div>
     </div>
@@ -175,15 +175,15 @@
         });
 
         $(document).ready(function () {
-            if ($("#employeeActiveAppointments").length) {
-                    const tableId = '#employeeActiveAppointments';
+            if ($("#providerActiveAppointments").length) {
+                    const tableId = '#providerActiveAppointments';
                     if ($.fn.DataTable.isDataTable(tableId)) {
                         $(tableId).DataTable().clear().destroy();
                     }
                     $(tableId).DataTable({
 
                         "ajax": {
-                            "url": "Appointments/LoadEmployeeAppointments",
+                            "url": "Appointments/LoadProviderAppointments",
                             "type": "POST",
                             "datatype": "json"
                         },

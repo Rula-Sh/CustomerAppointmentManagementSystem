@@ -66,7 +66,7 @@
         //                     <li class="nav-item">
         // @@* <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@@
         //                     </li>
-        // @@if (User.IsInRole("Employee"))
+        // @@if (User.IsInRole("Provider"))
         // {
         //     @@if (User.IsInRole("Admin")) // to only show the manage options when the admin is signed in
         //     {
@@ -117,7 +117,7 @@
                     {
                         <a class="nav-item nav-link text-dark me-3" asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a>
                     }
-                    @if (User.IsInRole("Employee"))
+                    @if (User.IsInRole("Provider"))
                     {
                         <a class="nav-item nav-link text-dark me-3" asp-area="" asp-controller="Services" asp-action="Index">Manage Services</a>
                     }

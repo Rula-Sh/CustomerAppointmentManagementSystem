@@ -17,7 +17,7 @@ namespace CAMS.Data.Models
         public string Name { get; set; }
 
         [Required]
-        public int EmployeeId { get; set; }
+        public int ProviderId { get; set; }
         [Required]
         [MaxLength(150)]
         public string Description { get; set; }
@@ -27,8 +27,8 @@ namespace CAMS.Data.Models
         [Range(0, 9999.99, ErrorMessage = "Price must be between 0 and 9999.99")]
         public decimal Price { get; set; }
 
-        [ForeignKey("EmployeeId")]
-        public virtual User Employee { get; set; }
+        [ForeignKey("ProviderId")]
+        public virtual User Provider { get; set; }
 
         public virtual ICollection<ServiceDate> ServiceDates { get; set; } = new List<ServiceDate>();
 

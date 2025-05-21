@@ -10,7 +10,7 @@ namespace CAMS.Data.Models
 
         // Foreign keys
         public int CustomerId { get; set; }
-        public int EmployeeId { get; set; }
+        public int ProviderId { get; set; }
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
@@ -25,11 +25,11 @@ namespace CAMS.Data.Models
         public DateTime CreatedAt { get; set; }
 
         // Navigation properties
-        // One-to-Many relationship (User[Employee/Customer] and Appointment) *** Foreign keys included on top
+        // One-to-Many relationship (User[Provider/Customer] and Appointment) *** Foreign keys included on top
         [ForeignKey("CustomerId")]
         public virtual User Customer { get; set; }
-        [ForeignKey("EmployeeId")]
-        public virtual User Employee { get; set; }
+        [ForeignKey("ProviderId")]
+        public virtual User Provider { get; set; }
 
         [ForeignKey("Service")]
         public int ServiceId { get; set; }

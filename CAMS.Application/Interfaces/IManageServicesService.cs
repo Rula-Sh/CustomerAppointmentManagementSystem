@@ -7,7 +7,7 @@ namespace CAMS.Application.Interfaces
     public interface IManageServicesService
     {
         Task<List<ServiceDTO>> GetAllServices();
-        Task<List<ServiceDTO>> GetEmployeeServices(ClaimsPrincipal user);
+        Task<List<ServiceDTO>> GetProviderServices(ClaimsPrincipal user);
         Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user);
         Task addService(ServiceDTO serviceDTO, ClaimsPrincipal user);
         Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user);

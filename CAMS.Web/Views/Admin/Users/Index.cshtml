@@ -116,15 +116,15 @@
                             $.ajax({
                                 url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
                                                                                 '&from=' + encodeURIComponent('Customer') +
-                                                                                '&to=' + encodeURIComponent('Employee'),
+                                                                                '&to=' + encodeURIComponent('Provider'),
                                 method: 'POST',
                                 success: function(result){
                                     if(result.success){
                                     console.log("hire success");
 
-                                    toastr.success('Employee Hired');
+                                    toastr.success('Provider Hired');
 
-                                    btn.parents('tr').find('.Role').text("Employee");
+                                    btn.parents('tr').find('.Role').text("Provider");
 
                                     btn.prop('hidden', true);
                                     btn.siblings('.js-fire').prop('hidden', false);
@@ -159,7 +159,7 @@
                                     if(result){
                                         $.ajax({
                                             url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
-                                                                                '&from=' + encodeURIComponent('Employee') +
+                                                                                '&from=' + encodeURIComponent('Provider') +
                                                                                 '&to=' + encodeURIComponent('Customer'),
                                             method: 'POST',
                                             success: function(result){

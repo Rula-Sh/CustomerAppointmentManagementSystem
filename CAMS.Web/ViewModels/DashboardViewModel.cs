@@ -6,8 +6,8 @@
         public int TotalServices { get; set; }
         public int TotalAppointments { get; set; }
 
-        public string BestEmployee { get; set; }
-        public double AvgAppointmentsPerEmployee { get; set; }
+        public string BestProvider { get; set; }
+        public double AvgAppointmentsPerProvider { get; set; }
         public string MostBookedService { get; set; }
 
         public List<string> last7Days { get; set; }

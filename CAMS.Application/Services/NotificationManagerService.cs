@@ -62,14 +62,14 @@ namespace CAMS.Application.Services
 
         public async Task CreateNotificationForAdminOnServiceAction(int serviceId, string serviceName, ClaimsPrincipal user, string status)
         {
-            var employeeId = int.Parse(_manageUsers.GetUserId(user));
-            var employeeName = _context.Users.Where(u => u.Id == employeeId).Select(u => u.FullName).FirstOrDefault();
-            if (employeeId != 1)
+            var providerId = int.Parse(_manageUsers.GetUserId(user));
+            var providerName = _context.Users.Where(u => u.Id == providerId).Select(u => u.FullName).FirstOrDefault();
+            if (providerId != 1)
             {
                 var notificationDTO = new NotificationDTO
                 {
                     UserId = 1,
-                    Message = $"Employee {employeeName} (ID: {employeeId}), Have {status} {(status == "Created" ? $"{serviceName} Service." : $"the Service {serviceName} (ID: {serviceId}).")}",
+                    Message = $"Provider {providerName} (ID: {providerId}), Have {status} {(status == "Created" ? $"{serviceName} Service." : $"the Service {serviceName} (ID: {serviceId}).")}",
                 };
                 var notification = _mapper.Map<Notification>(notificationDTO);
                 await CreateNotification(notification);
@@ -78,7 +78,7 @@ namespace CAMS.Application.Services
             }
         }
 
-        public async Task CreateNotificationForEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
+        public async Task CreateNotificationForProviderOnAppointmentCreateOrDelete(int appointmentId, string action)
         {
             // this line is here first to get the appointment before deleting it (if action = "Delete")
             var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
@@ -89,10 +89,10 @@ namespace CAMS.Application.Services
                 message = $"A Customer Have Canceled Their Appointment on: {appointment.Date}";
             }
 
-            //create a notification for the employee with the assigned appointment
+            //create a notification for the provider with the assigned appointment
             var notificationDTO = new NotificationDTO
             {
-                UserId = appointment.EmployeeId,
+                UserId = appointment.ProviderId,
                 Message = message,
             };
             var notification = _mapper.Map<Notification>(notificationDTO);

@@ -71,7 +71,7 @@ namespace CAMS.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> LoadEmployeeAppointments()
+        public async Task<IActionResult> LoadProviderAppointments()
         {
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
             {
@@ -157,7 +157,7 @@ namespace CAMS.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Employee, Customer")]
+        [Authorize(Roles = "Provider, Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
@@ -195,7 +195,7 @@ namespace CAMS.Web.Controllers
         }
 
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Provider")]
         public async Task<IActionResult> PendingAppointments()
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
@@ -206,7 +206,7 @@ namespace CAMS.Web.Controllers
             return View(appointments);
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Provider")]
         [HttpPost]
         //[Route("Appointments/approve")]
         [Route("Appointments/Approve/{id}")]
@@ -221,8 +221,8 @@ namespace CAMS.Web.Controllers
                 return NotFound();
 
             appointment.Status = "Approved";
-            appointment.EmployeeId = int.Parse(_userManager.GetUserId(User));
-            //was: appointment.EmployeeId = int.Parse(User.Identity.GetUserId()); before removing the import "using Microsoft.AspNet.Identity;"
+            appointment.ProviderId = int.Parse(_userManager.GetUserId(User));
+            //was: appointment.ProviderId = int.Parse(User.Identity.GetUserId()); before removing the import "using Microsoft.AspNet.Identity;"
             appointment.Notes = ""; //appointment.Notes = notes;
                                     //no need to use a n automepper here, because i am getting the appointment to update it internally. I am not returning it to the view or exposing it externally — so there's no real need to map it to a ViewModel:
                                     // i should use the automapperin this case if: i want to show it to the user (like for approval or a details page) / i want to enforce separation of concerns more strictly
@@ -231,12 +231,12 @@ namespace CAMS.Web.Controllers
 
             await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
-            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have approved on {appointment.Name} appointment with ID: {appointment.Id}", "Approve Appointment");
+            await _auditLogService.AddAuditLog(appointment.ProviderId, "Provider", $"have approved on {appointment.Name} appointment with ID: {appointment.Id}", "Approve Appointment");
 
             return Ok();
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Provider")]
         [HttpPost]
         //[Route("Appointments/reject")]
         public async Task<IActionResult> Reject(int? id)
@@ -256,13 +256,13 @@ namespace CAMS.Web.Controllers
 
             await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
-            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have rejected {appointment.Name} appointment with ID: {appointment.Id}", "Reject Appointment");
+            await _auditLogService.AddAuditLog(appointment.ProviderId, "Provider", $"have rejected {appointment.Name} appointment with ID: {appointment.Id}", "Reject Appointment");
 
             return Ok();
         }
 
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Provider")]
         [HttpPost]
         //[Route("complete")]
         [Route("complete/{id}")]
@@ -284,7 +284,7 @@ namespace CAMS.Web.Controllers
 
             await _notificationsManager.CreateNotificationForCustomerOnAppointmentStatusChange(appointment.Id);
 
-            await _auditLogService.AddAuditLog(appointment.EmployeeId, "Employee", $"have completed {appointment.Name} appointment with ID: {appointment.Id}", "Complete Appointment");
+            await _auditLogService.AddAuditLog(appointment.ProviderId, "Provider", $"have completed {appointment.Name} appointment with ID: {appointment.Id}", "Complete Appointment");
 
             return Ok();
         }

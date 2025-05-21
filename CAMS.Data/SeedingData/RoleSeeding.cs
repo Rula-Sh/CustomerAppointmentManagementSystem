@@ -19,8 +19,8 @@ public class RoleSeeding
             new Role
             {
                 Id = 2,
-                Name = "Employee",
-                NormalizedName = "Employee".ToUpper(),
+                Name = "Provider",
+                NormalizedName = "Provider".ToUpper(),
                 ConcurrencyStamp = "2",
 
             },

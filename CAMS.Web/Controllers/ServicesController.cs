@@ -7,7 +7,7 @@ using CAMS.Web.ViewModels;
 
 namespace PresentationLayer.Controllers
 {
-    [Authorize(Roles = "Admin, Employee")]
+    [Authorize(Roles = "Admin, Provider")]
 
     public class ServicesController : Controller
     {
@@ -27,7 +27,7 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var servicesDTO = await _manageServices.GetEmployeeServices(User);
+            var servicesDTO = await _manageServices.GetProviderServices(User);
             if (User.IsInRole("Admin"))
             {
                 servicesDTO = await _manageServices.GetAllServices();
@@ -42,7 +42,7 @@ namespace PresentationLayer.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var viewModel = new ServiceViewModel { EmployeeId = int.Parse(_manageUsers.GetUserId(User)) };
+            var viewModel = new ServiceViewModel { ProviderId = int.Parse(_manageUsers.GetUserId(User)) };
             return View(viewModel);
         }
 
@@ -59,7 +59,7 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
-            ModelState.Remove(nameof(model.Employee));
+            ModelState.Remove(nameof(model.Provider));
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -106,7 +106,7 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
-            ModelState.Remove(nameof(model.Employee));
+            ModelState.Remove(nameof(model.Provider));
             if (!ModelState.IsValid)
             {
                 return View(model);

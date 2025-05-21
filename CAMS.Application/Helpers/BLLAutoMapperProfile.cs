@@ -30,7 +30,7 @@ namespace CAMS.Application.Helpers
             CreateMap<Appointment, ActiveAppointmentDTO>()
             .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name))
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
-            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee.FullName))
+            .ForMember(dest => dest.ProviderName, opt => opt.MapFrom(src => src.Provider.FullName))
             .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Date));
 
 
@@ -50,7 +50,7 @@ namespace CAMS.Application.Helpers
             //create an appointment
             CreateMap<BookAppointmentDTO, Appointment>()
             .ForMember(dest => dest.CustomerId, opt => opt.Ignore())
-            .ForMember(dest => dest.EmployeeId, opt => opt.Ignore())
+            .ForMember(dest => dest.ProviderId, opt => opt.Ignore())
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ServiceName))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => "Pending"))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now))

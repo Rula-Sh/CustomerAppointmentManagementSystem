@@ -15,8 +15,8 @@ namespace CAMS.Application.Interfaces
         Task<List<AppointmentDTO>> getPendingAppointments(ClaimsPrincipal user);
         Task updateAppointment(Appointment appointment);
 
-        string getEmployeeNameWithMostCompleteAndApprovedAppointments();
-        double GetAverageAppointmentsPerEmployee();
+        string getProviderNameWithMostCompleteAndApprovedAppointments();
+        double GetAverageAppointmentsPerProvider();
         List<DateTime> getLast7DaysDates();
         List<string> getLast7Days();
         Task<List<int>> getTotalAppointmentsFromPast7Days();
