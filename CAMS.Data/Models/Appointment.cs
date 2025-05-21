@@ -26,13 +26,11 @@ namespace CAMS.Data.Models
 
         // Navigation properties
         // One-to-Many relationship (User[Employee/Customer] and Appointment) *** Foreign keys included on top
-        [ForeignKey("CustomerId")] 
+        [ForeignKey("CustomerId")]
         public virtual User Customer { get; set; }
         [ForeignKey("EmployeeId")]
         public virtual User Employee { get; set; }
 
-        // Many-to-Many relationship (Appointment and Service)
-        //public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
         [ForeignKey("Service")]
         public int ServiceId { get; set; }
         public virtual Service Service { get; set; }

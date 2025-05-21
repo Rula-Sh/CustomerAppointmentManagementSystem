@@ -26,16 +26,12 @@ namespace CAMS.Data.Models
         [Required]
         [Range(0, 9999.99, ErrorMessage = "Price must be between 0 and 9999.99")]
         public decimal Price { get; set; }
-        //public DateTime[] AvailableTimeSlots { get; set; }
 
         [ForeignKey("EmployeeId")]
         public virtual User Employee { get; set; }
 
         public virtual ICollection<ServiceDate> ServiceDates { get; set; } = new List<ServiceDate>();
-        //public virtual ICollection<DateTimeSlotGroup> DateTimeSlotGroup { get; set; }
 
-        // Many-to-Many relationship (Appointment and Service)
-        //public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

@@ -10,20 +10,15 @@ namespace CAMS.Data
     IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
     IdentityRoleClaim<int>, IdentityUserToken<int>>
     // i added this extend so that i overried User/Role/UserRole and convert the default id from string to int
-    {        
+    {
 
         public ApplicationDbContext() { } // added this because in HomeController.cs "new ApplicationDbContext()" caused the error "There is no argument given that corresponds to the required parameter 'options' of 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>)'"
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        //public DbSet<User> Users { get; set; }
-        //public DbSet<Role> Roles { get; set; }
-        //public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        //public DbSet<AppointmentService> AppointmentServices { get; set; }
         public DbSet<ServiceDate> ServiceDates { get; set; }
         public DbSet<ServiceTimeSlot> ServiceTimeSlots { get; set; }
-        //public DbSet<DateTimeSlotGroup> DateTimeSlotGroups { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
@@ -44,15 +39,6 @@ namespace CAMS.Data
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims", "security");
             builder.Entity<IdentityUserToken<int>>().ToTable("UserTokens", "security");
 
-            // Many-to-Many relationship (User and Role)
-
-
-            // One-to-Many relationship (User[Employee/Customer] and Appointment)
-
-
-            // set price data type Precision 5 and scale 2 // had a warning on it from PMC
-            //RoleSeeding.SeedRoles(builder);
-            //UserSeeding.SeedUsers(builder);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

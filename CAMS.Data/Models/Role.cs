@@ -10,8 +10,7 @@ namespace CAMS.Data.Models
 {
     public class Role : IdentityRole<int>
     {
-        //public int Id { get; set; }
-        //public string Name { get; set; }
+        // The properties of IdentityRole are already included in this class
 
         // Many-to-Many relationship (User and Role)
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

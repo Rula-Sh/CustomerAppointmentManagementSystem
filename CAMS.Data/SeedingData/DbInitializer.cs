@@ -25,7 +25,7 @@ public static class DbInitializer
         if (await userManager.FindByNameAsync("admin") == null)
         {
             var admin = new User
-            {             
+            {
                 UserName = "admin",
                 Email = "admin@example.com",
                 FullName = "Admin Admin"

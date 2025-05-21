@@ -11,13 +11,11 @@ namespace CAMS.Data.Models
     public class User : IdentityUser<int> // make the Id to be of type int instead of the default string in IdentityUser... doing so, i must convert the type to string to all Identity tables
                                           // i made the class extends IdentityUser<int> so that I can update on it in the database and not replace it
     {
-        //public int Id { get; set; }
+        // The properties of IdentityUser are already included in this class
+
         [Required]
         [MaxLength(60)]
         public string FullName { get; set; }
-        //public string Email { get; set; }
-        //public string PasswordHash { get; set; }
-        //public string PhoneNumber { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
 
