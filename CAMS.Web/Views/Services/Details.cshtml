@@ -9,12 +9,12 @@
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-5 mb-5">
     <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">@Model.Name Service Details</h1>
+        <h1 class="display-3 text-white mb-3 animated slideInDown"><span class="text-primary">@Model.Name</span> Details</h1>
         <nav aria-label="breadcrumb animated slideInDown">
             <ol class="breadcrumb animated slideInDown">
                 <a asp-action="Index" asp-controller="Home" class="breadcrumb-item text-white active"> Home </a>
                 <a asp-action="Index" asp-controller="Services" class="breadcrumb-item text-white active"> Services </a>
-                <a asp-action="Details" asp-controller="Services" class="breadcrumb-item text-white active"> @Model.Name Service Details</a>
+                <a asp-action="Details" asp-controller="Services" class="breadcrumb-item text-white active"> @Model.Name Details</a>
             </ol>
         </nav>
     </div>
@@ -24,7 +24,7 @@
 <div class="row border border-2 rounded-4 mt-4 p-4 border border-primary border-opacity-50">
     <div class="column col-6 card-body d-flex flex-column justify-content-between">
 
-        <h2 class="card-title">@Model.Name Service</h2>
+        <h2 class="card-title"><span class="text-primary">@Model.Name</span></h2>
         <br />
         <p><strong>Price: </strong>@Model.Price JD</p>
         <p> <strong>Available in: </strong>@string.Join(" - ", Model.DateTimeSlotGroups.Select(a => a.Date))</p>
