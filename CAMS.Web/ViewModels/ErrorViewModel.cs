@@ -1,4 +1,4 @@
-namespace CAMS.Web.Models
+namespace CAMS.Web.ViewModels
 {
     public class ErrorViewModel
     {
