@@ -4,8 +4,6 @@
     ViewData["Title"] = "Appointment";
 }
 
-
-
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-5 mb-5">
     <div class="container py-5">
@@ -39,7 +37,7 @@
             {
                 <span>🟢</span>
             }
-            @* I know that there Pending and Rejected Appointments can be viewed but i placed it there incase if i wanted to show them later*@
+            @* I know that Pending and Rejected Appointments cant be viewed but i placed it there incase if i wanted to show them later*@
             else if (Model.Status == "Pending")
             {
                 <span>🟠</span>

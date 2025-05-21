@@ -25,14 +25,12 @@
         <div class="col-md-6">
             @* columns medium 4 *@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
-            @*i am already inside the controller, so i dont need to mention it*@
             <input type="hidden" asp-for="Id" />
-            @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
+            @* <input type="hidden" asp-for="Id"/> is used so that when i modify the service, i be able to change it based on the id*@
             <input type="hidden" asp-for="EmployeeId" id="employeeId" />
             <div class="form-group">
                 <label class="text-black" asp-for="Services"><strong>Service</strong></label>
-                @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
-                <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
+                <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should remove the select tag below *@
                 <input id="serviceId" type="hidden" asp-for="ServiceId" />
                 <input id="ServiceName" type="hidden" asp-for="ServiceName" />
                 <select class="form-control" id="servicesList">
@@ -54,8 +52,7 @@
 
             <div class="form-group">
                 <label class="text-black" asp-for="Date"><strong>Date</strong></label>
-                @* <input id="duration" type="text" class="form-control" asp-for="DurationIn" placeholder="01:30" maxlength="5" value=""/> @* better make it a list *@
-                <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
+                <div id="duration-slots"></div>
                 <select class="form-control" id="serviceDatesList" asp-for="Date">
                     <option value="">-- Select a Date --</option>
                 </select>
@@ -77,9 +74,6 @@
 
         <div class="col-5 datepicker" id="selectedDatePicker">
         </div>
-        @* <div class="col-md-5 m-2"> *@
-        @*     <div id="selectedServicesContainer" class="mt-3"></div> *@
-        @* </div> *@
     </div>
 </form>
 
@@ -109,7 +103,6 @@
                 const dateDropdown = document.getElementById('serviceDatesList');
                 dateDropdown.innerHTML = '<option value="">-- Select a Date --</option>';
                 data.dateTimeSlotGroups.forEach(group => {
-                    // const dateStr = new Date(group.date).toLocaleDateString();
 
                     const normalizedDate = group.date.replace(/-/g, '/'); // replace any dashes with slashes to avoid incorrect ISO date parsing
                     // "13-05-2025" might be misinterpreted as ISO (yyyy-MM-dd) and cause a RangeError..... while "13/05/2025" is more likely to be treated as a locale-specific (dd/MM/yyyy) date.
@@ -123,8 +116,6 @@
                     console.log("dateStr"+dateStr);
                     group.timeSlots.forEach(time => {
                         const option = document.createElement('option');
-                        //  option.value = group.date;
-                        // option.textContent = new Date(group.date).toLocaleDateString();
                         option.value = `${dateStr} - ${time}`;
                         option.textContent = `${dateStr} ${time}`;
                         dateDropdown.appendChild(option);
@@ -219,8 +210,5 @@
                     }
                 });
             };
-
-
     </script>
-
 }

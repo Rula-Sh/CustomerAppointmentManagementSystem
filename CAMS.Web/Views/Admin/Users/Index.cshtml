@@ -24,7 +24,7 @@
             <th>Email</th>
             <th>Roles</th>
             <th>Last Activity</th>
-            <th>Actions</th> @* aciton section that will have a button so that i can manage each role*@
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -74,7 +74,7 @@
                     },
 
                     "columns": [
-                        { "data": "fullName", "name": "fullName", "autoWidth": "10%", "className": "text-center", 
+                        { "data": "fullName", "name": "fullName", "autoWidth": "10%", "className": "text-center",
                             "render": function (data, type, row) {
                                 var cssClass = "text-info"; // default
                                 if (row.roles && row.roles.indexOf("Admin") !== -1) {
@@ -206,12 +206,6 @@
                                             method: 'POST',
                                             success: function(){
                                                 console.log("deactivate success");
-
-                                                // btn.parents('tr').setText.innerHTML.style.color = 'gray';
-                                                // btn.parents('tr').css('color', 'gray');
-                                                // btn.find('td').addClass('inactive-row');
-                                                // btn.style.visibility = "hidden";
-                                                // btn.parents('tr').find('.js-activate').css('visibility', 'visible');
                                                 btn.closest('tr').removeClass('active-row');
                                                 btn.closest('tr').addClass('inactive-row');
 

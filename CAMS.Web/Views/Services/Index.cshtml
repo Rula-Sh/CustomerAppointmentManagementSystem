@@ -24,8 +24,6 @@
     </div>
 </div>
 <!-- Page Header End -->
-
-
 @if (!Model.Any())
 {
     <h2 class="alert alert-warning">
@@ -71,7 +69,6 @@ else
                                 <i class="bi bi-list-ul"></i>
                                 Details
                             </a>
-                            @* <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-outline-primary js-edit"> *@
                             <a href="javascript:;" data-id="@service.Id" class="btn btn-outline-primary js-edit">
                                 <i class="bi bi-pencil"></i>
                                 Edit
@@ -86,10 +83,6 @@ else
             </div>
         }
     </div>
-    @*     <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary mt-4 "> *@
-    @*         <i class="bi bi-arrow-left"></i> *@
-    @*         Go Back *@
-    @*     </a> *@
 }
 
 
@@ -138,7 +131,6 @@ else
                                     }
                                 },
                                 callback: function (result) {
-                                    //var result = confirm('Are you sure that you need to delete this service?'); // before the bootbox
                                     if (result) {
                                         $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
                                             url: '/services/delete/' + btn.data('id'),

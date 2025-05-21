@@ -76,7 +76,7 @@ namespace PresentationLayer.Controllers
                 BestEmployee = bestEmployeeName,
                 AvgAppointmentsPerEmployee = avgAppointmentsPerEmployee,
                 MostBookedService = mostBookedServiceName,
-                
+
                 last7Days = last7DaysLabels,
                 dailyBookingCounts = dailyCounts,
 
@@ -88,7 +88,7 @@ namespace PresentationLayer.Controllers
                 servicesLabel = servicesLabel,
                 serviceAppointmentsCount = serviceAppointmentsCount,
 
-                ActiveAppointments= activeAppointments,
+                ActiveAppointments = activeAppointments,
             };
 
             return View(usersPath, model);

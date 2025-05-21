@@ -1,5 +1,5 @@
 ﻿namespace CAMS.Web.ViewModels
-{   
+{
     public class UserViewModel
     {
         public int Id { get; set; }

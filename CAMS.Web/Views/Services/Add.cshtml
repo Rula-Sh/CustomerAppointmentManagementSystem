@@ -3,9 +3,6 @@
 @{
     ViewData["Title"] = "Add Service";
 }
-
-
-
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-5 mb-5">
     <div class="container py-5">
@@ -25,9 +22,7 @@
 
     <div class="row justify-content-between">
         <div class="col-md-6">
-            @* columns medium 4 *@
             @* enctype="multipart/form-data" is used so that i can save the file in the server when i POST the form*@
-            @*i am already inside the controller, so i dont need to mention it*@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="EmployeeId" value="@Model.EmployeeId" />
             @* <input type="hidden" asp-for="Id"/> so that when i modify the service, i be able to change it based on the id*@
@@ -48,7 +43,7 @@
                 @* value="" to remove the default 0 value *@
                 <div id="duration-slots"></div> @* if i wanted to use the function initializeDurationDropdown i should removed the select tag below *@
                 <select class="form-control" id="durationList" asp-for="Duration">
-                    <option value="">-- Select Duration --</option> 
+                    <option value="">-- Select Duration --</option>
                     <option value="00:30">00:30</option>
                     <option value="01:00">01:00</option>
                     <option value="01:30">01:30</option>
@@ -95,7 +90,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial"); // to have validation for the input
     }
 
-
     <script>
 
         // $(function() { ... });  is jQuery short-hand for "$(document).ready(function() { ... });".... What it's designed to do (amongst other things) is ensure that your function is called once all the DOM elements of the page are ready to be used.
@@ -106,7 +100,6 @@
             initializeDatePicker();
 
             $("#durationList").on("change", function () { // added this here since i no longer use initializeDurationDropdown function
-                //document.getElementById('selectDurationAlert').style.display = "none";
                 $('#selectDurationAlert').hide(); // hide the alert box
             });
         });
@@ -147,7 +140,6 @@
             });*/
             // using jQuery... works same as the code above "document.getElementById("durationList")...."
             $("#durationList").on("change", function () {
-                //document.getElementById('selectDurationAlert').style.display = "none";
                 $('#selectDurationAlert').hide(); // hide the alert box
             });
         }
@@ -183,7 +175,6 @@
                         const dateIndex = selectedDates.indexOf(dateText); // to use the date index in the input tag later in renderDateSection
                         renderDateSection(dateText, dateIndex);
                     } else if(!durationValue){
-                        // document.getElementById('selectDurationAlert').style.display = "block";
                         $('#selectDurationAlert').show();
                         return;
                     }
@@ -211,7 +202,6 @@
                         ${timeOptions}
                     </select>
                     <input type="hidden" class="date-input" name="DateTimeSlotGroups[${index}].Date" value="${date}" />
-        @* <input type="hidden" asp-for="TimeSlots" name="SelectedDates[]" value="${date}" />*@
                 </div>
             `);
             // <div class="time-slots row"> will contain a list of when the service can be available
@@ -225,36 +215,13 @@
 
             var options = ''; // will contain a list of the times where a service can be available
             var doesDurationHasHalfAnHour = Object.is(durationValue.substring(3,5), '30'); // .equals() does not exist in JS either use == or ===
-            // console.log(Object.is(durationValue.substring(3,5), '30'));
             var doesRemainerHasHalfAnHourLeft = false; // if the previous endstHour ends with __:30 set doesRemainerHasHalfAnHourLeft to true so that the next index starts with __:30
             //var isHourIndexRangeValid = true to make sure that the service can be provided before the work hours or when the work hour ends (at 16:00... 4pm)
             var hourIndex = 8;
             var startHour = `${pad(hourIndex)}:00`; // services will be available starting with 8:00
             while (hourIndex < 16) {
-                 // options += `<option value="${hour.toString().padStart(2, '0')}:00">${hour}:00</option>`;
-                 // if (hour !== 16) {
-                 //     options += `<option value="${hour.toString().padStart(2, '0')}:30">${hour}:30</option>`;
-                 // }
-
 
                 hourIndex+=parseInt(durationValue.substring(0,2)); // the hour time + the service duration
-
-                // old code... improved it in the following code from ChatGpt suggestion
-                /*if(doesRemainerHasHalfAnHourLeft){
-                    if(++hourIndex <= 16){ // will add +1 to hourIndex if there was 30m remaining from the previous time-slot (having a remaining 30 means that the duration is __:30, which when combined adds to 1h)
-                        var isHourIndexRangeValid = true
-                    } else{
-                        //var isHourIndexRangeValid = false; // is set to false when the total of hourIndex exceeds 16 (used in the else of isHourIndexRangeValid to break out of the loop)
-                        break; // instead of having the break and the end of the if statement
-                    }
-                } else {
-                    if(hourIndex <= 16){
-                        var isHourIndexRangeValid = true
-                    } else{
-                        //var isHourIndexRangeValid = false;
-                        break;
-                    }
-                }*/
 
                 if (doesRemainerHasHalfAnHourLeft)
                 {
@@ -263,123 +230,28 @@
                     if (hourIndex > 16) break;
                 }
 
-                // if(isHourIndexRangeValid)
-                // {
-                    if(!doesDurationHasHalfAnHour){ // if the duration does NOT have __:30
-                        var endHour = `${pad(hourIndex)}:00`; // pad() is a funciton created to reduce using 'hourIndex.toString().padStart(2, '0');' on multiple places
+                if(!doesDurationHasHalfAnHour){ // if the duration does NOT have __:30
+                    var endHour = `${pad(hourIndex)}:00`; // pad() is a funciton created to reduce using 'hourIndex.toString().padStart(2, '0');' on multiple places
 
-                    } else { // if the duration DOES have __:30
-                        if(!doesRemainerHasHalfAnHourLeft) {// if the prev time-slot does NOT end with __:30
-                            var endHour = `${pad(hourIndex)}:30`;
-                            doesRemainerHasHalfAnHourLeft = true;
+                } else { // if the duration DOES have __:30
+                    if(!doesRemainerHasHalfAnHourLeft) {// if the prev time-slot does NOT end with __:30
+                        var endHour = `${pad(hourIndex)}:30`;
+                        doesRemainerHasHalfAnHourLeft = true;
 
-                        } else {// if the prev time-slot DOES end with __:30
-                            var endHour = `${pad(hourIndex)}:00`;
-                            doesRemainerHasHalfAnHourLeft = false;
-                        }
-                    }
-                    options += `<option value="${startHour} - ${endHour}">${startHour} - ${endHour}</option>`;// add to the list when a service can be available
-                    startHour=endHour; // to use the startHour with the next available time
-                // } else{
-                //     break;
-                // }
-            }
-            // const durationValue = $("#durationList").val();
-            // let options = '';
-            //  for (let hour = 8; hour <= 16; hour++) {
-            //     if(durationValue.substring(3,5).equals('00')) {
-            //         hour+=parseInt(durationValue.substring(0,2));
-            //         options += `<option value="${hour.toString().padStart(2, '0')}:00">${hour}:00</option>`;
-            //     } else if(durationValue.substring(3,5).equals('30') && hour !== 16) {
-            //         hour+=parseInt(durationValue.substring(0,2));
-            //         options += `<option value="${hour.toString().padStart(2, '0')}:30">${hour}:30</option>`;
-            //     }
-            //  }
-            return options;
-        }
-
-        function pad(num) {
-            return num.toString().padStart(2, '0');
-        }
-
-        //ChatGpt code.. works
-        /*
-            function generateTimeOptions() {
-            const duration = $("#durationList").val();
-            if (!duration) return '';
-
-            const [hoursStr, minutesStr] = duration.split(':');
-            const durationHours = parseInt(hoursStr);
-            const isHalfHour = minutesStr === '30';
-
-            let options = '';
-            let hour = 8;
-            let currentTime = `${pad(hour)}:00`;
-            let halfHourCarry = false;
-
-            while (hour < 16) {
-                let endHour = hour + durationHours;
-                let endMinutes = 0;
-
-                if (isHalfHour) {
-                    if (!halfHourCarry) {
-                        endMinutes = 30;
-                    } else {
-                        endHour += 1;
-                        endMinutes = 0;
+                    } else {// if the prev time-slot DOES end with __:30
+                        var endHour = `${pad(hourIndex)}:00`;
+                        doesRemainerHasHalfAnHourLeft = false;
                     }
                 }
-
-                if (endHour > 16 || (endHour === 16 && endMinutes > 0)) break;
-
-                const endTime = `${pad(endHour)}:${pad(endMinutes)}`;
-                options += `<option value="${currentTime} - ${endTime}">${currentTime} - ${endTime}</option>`;
-
-                currentTime = endTime;
-                hour = parseInt(endTime.split(':')[0]);
-                halfHourCarry = isHalfHour && !halfHourCarry;
+                options += `<option value="${startHour} - ${endHour}">${startHour} - ${endHour}</option>`;// add to the list when a service can be available
+                startHour=endHour; // to use the startHour with the next available time
             }
-
             return options;
         }
 
         function pad(num) {
             return num.toString().padStart(2, '0');
-        }*/
-
-        // Old ChatGpt code.... it lists every 30m
-        /*
-        function generateTimeOptions() {
-            const durationValue = $("#durationList").val(); // e.g., "1:30"
-            if (!durationValue) return '';
-
-            const [durationHours, durationMinutes] = durationValue.split(":").map(Number);
-            const durationInMinutes = durationHours * 60 + durationMinutes;
-
-            let options = '';
-            const startHour = 8;
-            const endHour = 16;
-            const totalDayMinutes = (endHour - startHour) * 60;
-
-            for (let minuteOffset = 0; minuteOffset + durationInMinutes <= totalDayMinutes; minuteOffset += 30) {
-                const start = minutesToTime(startHour * 60 + minuteOffset);
-                const end = minutesToTime(startHour * 60 + minuteOffset + durationInMinutes);
-                options += `<option value="${start} - ${end}">${start} - ${end}</option>`;
-            }
-
-            return options;
         }
-
-        function minutesToTime(totalMinutes) {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        }
-
-        $("#duration-slots").on("change", "#durationList", function () {
-            const slotOptions = generateTimeOptions();
-            $("#appointmentSlots").html(`${slotOptions}`);
-        });*/
 
         // -------------------------------------- add when the service can be available when selecting a time-slot form a sprcific date --------------------------------------
         function addTimeSlot(date) {
@@ -397,11 +269,9 @@
                 const section = $(`
                     <div class="time-slot col-4 mb-2 text-center">
                     ${time}
-        @*<input type="hidden" name="DateTimeSlotGroups[${dateIndex}].Date" value="${date}" /> @* moved tot in the renderDateSection function *@
                         <input type="hidden" name="DateTimeSlotGroups[${dateIndex}].TimeSlots[${timeIndex}]" value="${time}" />
         @*DateTimeSlotGroups[${dateIndex}].TimeSlots[${timeIndex}]      =       time*@
 
-        @* <input type="hidden" name="TimeSlots[${date}][]" value="${time}" /> *@
                         <i onclick="removeTimeSlot('${date}', '${time}', this)" class="bi bi-trash3" style="color:red;"></i>
                     </div>
                 `);
@@ -469,10 +339,5 @@
             }
         });
 
-
     </script>
-
-
-
-
 }

@@ -15,7 +15,7 @@ namespace CAMS.Application.Services
 
         public async Task SendNotificationAsync()
         {
-            await _hubContext.Clients.All.SendAsync("displayNotification","");
+            await _hubContext.Clients.All.SendAsync("displayNotification", "");
         }
     }
 }

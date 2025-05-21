@@ -4,7 +4,6 @@ using CAMS.Application.DTOs;
 using CAMS.Application.Interfaces;
 using CAMS.Data.Models;
 using CAMS.Data;
-using CAMS.Web.Models;
 using CAMS.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -114,8 +113,8 @@ namespace CAMS.Web.Controllers
                 Services = services,
             };
 
-                //return viewModel;
-                // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
+            //return viewModel;
+            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
             //}
 
             var bookAppointmentViewModel = _mapper.Map<BookAppointmentViewModel>(appointmentDTO);
@@ -135,8 +134,6 @@ namespace CAMS.Web.Controllers
 
             if (service == null)
                 return NotFound();
-
-            //var serviceViewModel = _manageServices.getSelectedServiceDetails(service);
 
             return Json(serviceViewModel);
             // this returns a the serviceViewModel as a JSON object... wraps it in an HTTP response... then sends it to the client browser

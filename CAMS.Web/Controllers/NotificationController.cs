@@ -17,9 +17,7 @@ namespace CAMS.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var notifications = await _notificationManager.GetUserNotifications(User);
-            //return Ok(notifications);
             return Ok(new { notifs = notifications, notifscount = notifications.Count });
-            //return View();
         }
 
         public IActionResult ReadNotification(int notificationId)

@@ -2,10 +2,6 @@
 {
     public class DashboardViewModel
     {
-        //public List<User> Users  { get; set; }
-        //public List<Service> Services { get; set; }
-        //public List<Appointment> Appointments { get; set; }
-
         public int TotalUsers { get; set; }
         public int TotalServices { get; set; }
         public int TotalAppointments { get; set; }

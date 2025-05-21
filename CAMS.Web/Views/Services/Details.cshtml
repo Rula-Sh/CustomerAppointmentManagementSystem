@@ -1,13 +1,10 @@
-﻿
-@model ServiceWithActiveAppointmentsViewModel
+﻿@model ServiceWithActiveAppointmentsViewModel
 
 @{
     ViewData["Title"] = "@Model.Name  Details";
     string FormatDate(string rawDate) => rawDate.Replace("/", "_");
 
 }
-
-
 
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-5 mb-5">
@@ -78,7 +75,6 @@
             else
             {
                 <div class="row">
-                    @* <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id"> *@
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -100,11 +96,9 @@
                             }
                         </tbody>
                     </table>
-                    @* </a> *@
                 </div>
             }
         </div>
-
     }
 </div>
 
