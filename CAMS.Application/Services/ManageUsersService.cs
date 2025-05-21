@@ -86,9 +86,9 @@ namespace CAMS.Application.Services
         }
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
         {
-            if (oldRole == "Employee")
+            if (oldRole == "Provider")
             {
-                var services = await _context.Services.Where(s => s.EmployeeId == user.Id).ToListAsync();
+                var services = await _context.Services.Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).Where(s => s.ProviderId == user.Id).ToListAsync();
                 if (services.Any())
                 {
                     //services != null → ensures the variable is not null(i.e., the list exists).
@@ -97,7 +97,7 @@ namespace CAMS.Application.Services
                     await _context.SaveChangesAsync();
                 }
 
-                await _auditLogService.AddAuditLog(1, "Admin", $"have fired {user.FullName} with ID: {user.Id}", "Fire Employee");
+                await _auditLogService.AddAuditLog(1, "Admin", $"have fired {user.FullName} with ID: {user.Id}", "Fire Provider");
             }
             else if (oldRole == "Customer")
             {
@@ -108,7 +108,7 @@ namespace CAMS.Application.Services
                     await _context.SaveChangesAsync();
                 }
 
-                await _auditLogService.AddAuditLog(1, "Admin", $"have hired {user.FullName} with ID: {user.Id}", "Hire Employee");
+                await _auditLogService.AddAuditLog(1, "Admin", $"have hired {user.FullName} with ID: {user.Id}", "Hire Provider");
             }
 
             await _userManager.RemoveFromRoleAsync(user, oldRole);
