@@ -74,18 +74,20 @@
         <table class="table table-striped">
             <thead>
                 <tr class="bg-primary text-white">
-                    <th>Customer Name</th>
+                    <th>Service</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
                     <th>Appointment Date</th>
-                    <th>Service Name</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var appointment in Model.ActiveAppointments)
                 {
                     <tr>
-                        <td>@appointment.CustomerName</td>
-                        <td>@appointment.AppointmentDate</td>
                         <td>@appointment.ServiceName</td>
+                        <td>@appointment.CustomerName</td>
+                        <td>@appointment.EmployeeName</td>
+                        <td>@appointment.AppointmentDate</td>
                     </tr>
                 }
             </tbody>

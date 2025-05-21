@@ -28,9 +28,10 @@ namespace CAMS.Application.Helpers
             CreateMap<Service, BookAppointmentDTO>();
 
             CreateMap<Appointment, ActiveAppointmentDTO>()
-            .ForMember(dest => dest.CustomerName,opt => opt.MapFrom(src => src.Customer.FullName)) 
-            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Date))
-            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name));
+            .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name))
+            .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FullName))
+            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee.FullName))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Date));
 
 
             CreateMap<Notification, NotificationDTO>();
