@@ -18,7 +18,7 @@ namespace CAMS.Web.Controllers
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices,IAuditLogService auditLogService)
+        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices, IAuditLogService auditLogService)
         {
             _manageUsers = manageUsers;
             _mapper = mapper;
@@ -36,11 +36,11 @@ namespace CAMS.Web.Controllers
             var usersViewModels = new List<UserViewModel>();
 
             foreach (var user in users)
-            {              
+            {
                 // using AutoMapper
                 var userViewModel = _mapper.Map<UserViewModel>(user);
                 userViewModel.LastActivity = TimeDifferenceHelper.getTimeDifference(user.LastActivityDate);
-                userViewModel.Roles = await _manageUsers.GetRoles(user);// Await roles asynchronously
+                userViewModel.Roles = await _manageUsers.GetRoles(user);
                 usersViewModels.Add(userViewModel);
             }
 
@@ -55,7 +55,8 @@ namespace CAMS.Web.Controllers
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
             {
                 var users = await _manageUsers.GetUsers();
-                var tableData = users.Select(a => new {
+                var tableData = users.Select(a => new
+                {
                     a.Id,
                     a.FullName,
                     a.Email,
@@ -69,7 +70,7 @@ namespace CAMS.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeAccountEmployement(int id, string from,string to)
+        public async Task<IActionResult> ChangeAccountEmployement(int id, string from, string to)
         {
             var user = await _manageUsers.GetUserById(id);
 
@@ -87,7 +88,7 @@ namespace CAMS.Web.Controllers
             else
             {
                 await _manageUsers.changeRoleFromTo(user, from, to);
-                return Ok(new { success = true, message = "The User Have Active Appointments, Please Wait for Them to be Completed!" });
+                return Ok(new { success = true, message = "Sucess!" });
             }
 
         }
