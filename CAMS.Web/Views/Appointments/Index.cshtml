@@ -49,7 +49,10 @@
 <div class="container-xxl py-5">
     <div class="container">
         <div class="row g-4">
-
+            @if (User.IsInRole("Admin"))
+            {
+                
+            }
             @if (User.IsInRole("Employee"))
             {
                 <partial name="_EmployeeAppointments" model="Model" />
@@ -103,7 +106,7 @@
                 $(tableId).DataTable({
 
                     "ajax": {
-                        "url": "Home/LoadCustomerAppointments",
+                        "url": "Appointments/LoadCustomerAppointments",
                         "type": "POST",
                         "datatype": "json"
                     },
@@ -117,7 +120,7 @@
                             render: function(data, type, row) {
                                 var actions = '';
                                 if (row.status === "Completed" || row.status === "Approved") {
-                                    actions += '<a href="/Home/Details/' + row.id + '" class="btn btn-outline-secondary me-1"><i class="bi bi-list-ul"></i></a>';
+                                    actions += '<a href="/Appointments/Details/' + row.id + '" class="btn btn-outline-secondary me-1"><i class="bi bi-list-ul"></i></a>';
                                 }
                                 if (row.status === "Pending" || row.status === "Rejected" || row.status === "Approved") {
                                     actions += '<a href="javascript:;" class="btn btn-danger js-delete ms-1" data-id="' + row.id + '"><i class="bi bi-trash"></i></a>';
@@ -145,7 +148,7 @@
                                 callback: function (result) {
                                     if(result){
                                         $.ajax({
-                                            url: 'home/delete/' + btn.data('id'),
+                                            url: 'Appointments/delete/' + btn.data('id'),
                                             type: 'DELETE',
                                             success: function () {
 
@@ -180,7 +183,7 @@
                     $(tableId).DataTable({
 
                         "ajax": {
-                            "url": "Home/LoadEmployeeAppointments",
+                            "url": "Appointments/LoadEmployeeAppointments",
                             "type": "POST",
                             "datatype": "json"
                         },

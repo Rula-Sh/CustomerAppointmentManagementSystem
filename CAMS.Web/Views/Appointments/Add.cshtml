@@ -89,7 +89,7 @@
         document.getElementById('servicesList').addEventListener('change', function () {
             const serviceId = this.value;
             if (!serviceId) return;
-            fetch(`/home/GetServiceDetails?serviceId=${serviceId}`)
+            fetch(`/Appointments/GetServiceDetails?serviceId=${serviceId}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById('servicePrice').textContent = `${data.price} JD`;
