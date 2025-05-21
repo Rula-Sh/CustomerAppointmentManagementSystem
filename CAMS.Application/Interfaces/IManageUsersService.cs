@@ -19,8 +19,6 @@ namespace CAMS.Application.Interfaces
         Task UpdateUserLastActivityDate(ClaimsPrincipal user);
         Task changeRoleFromTo(User user, string oldRole, string NewRole);
         Task updateAsync(User user);
-
-
         int GetTotalUsers();
 
     }

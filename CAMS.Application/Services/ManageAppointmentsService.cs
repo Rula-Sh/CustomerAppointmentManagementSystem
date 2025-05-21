@@ -40,18 +40,6 @@ namespace CAMS.Application.Services
                 appointmentsQuery = appointmentsQuery.Where(a => a.CustomerId == Int32.Parse(userId));
             }
 
-            /*var appointments = await appointmentsQuery.Select(a => new AppointmentViewModel
-            {
-                Id = a.Id,
-                CustomerId = a.CustomerId,
-                CustomerName = a.Customer.FullName,
-                EmployeeId = a.EmployeeId,
-                Name = a.Name,
-                Date = a.Date,
-                Notes = a.Notes,
-                Status = a.Status,
-                CreatedAt = a.CreatedAt,
-            }).ToListAsync();*/
             var appointmentList = await appointmentsQuery.Include(a => a.Customer).Include(a => a.Employee).ToListAsync();
             var appointments = _mapper.Map<List<AppointmentDTO>>(appointmentList);
 
@@ -64,34 +52,8 @@ namespace CAMS.Application.Services
             return _context.Appointments.Include(a => a.Employee).Where(a => a.CustomerId == userId && (a.Status == "Approved" || a.Status == "Pending")).Select(a => a.ServiceId).ToList();
         }
 
-        /*public async Task<BookAppointmentDTO> ViewAddAppointment()
-        {
-            var services = await _manageServices.GetServices();
-
-            var viewModel = new BookAppointmentDTO
-            {
-                Services = services,
-            };
-
-            return viewModel;
-            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
-        }*/
-
         public async Task addAppointment(BookAppointmentDTO bookAppointmentDTO, ClaimsPrincipal user)
         {
-            /*var appointment = new Appointment
-            {
-
-                CustomerId = Int32.Parse(_manageUsers.GetUserId(user)),
-                EmployeeId = 1, // had to set the employee Id to 1, so that i dont get a FOREIGN KEY constraint error.. couldnt either set it nullable
-                ServiceId = model.ServiceId,
-                Name = model.ServiceName,
-                Date = model.Date,
-                Status = "Pending",
-                CreatedAt = DateTime.Now,
-                //AppointmentServices = new List<AppointmentService>()
-                Notes = "",
-            };*/
             // using AutoMapper
             var appointment = _mapper.Map<Appointment>(bookAppointmentDTO);
             appointment.CustomerId = Int32.Parse(_manageUsers.GetUserId(user));
@@ -102,26 +64,11 @@ namespace CAMS.Application.Services
 
 
             await _notificationsManager.CreateNotificationForEmployeeOnAppointmentCreateOrDelete(appointment.Id, "Create");
-            await _auditLogService.AddAuditLog(appointment.CustomerId,"Customer", "have booked an appointment", "Book Appointment");
+            await _auditLogService.AddAuditLog(appointment.CustomerId, "Customer", "have booked an appointment", "Book Appointment");
         }
 
         public async Task<AppointmentDTO> appointmentDetails(int? id)
         {
-
-            /*var appointment = await _context.Appointments.Where(a => a.Id == id).Select(a => new AppointmentViewModel
-            {
-                Id = a.Id,
-                CustomerId = a.CustomerId,
-                Customer = a.Customer,
-                EmployeeId = a.EmployeeId,
-                Employee = a.Employee,
-                Name = a.Name,
-                Date = a.Date,
-                Notes = a.Notes,
-                Status = a.Status,
-                CreatedAt = a.CreatedAt,
-            }).SingleOrDefaultAsync();
-            return appointment;*/
             // using AutoMapper
             var appointment = await _context.Appointments
                 .Where(a => a.Id == id)
@@ -155,19 +102,6 @@ namespace CAMS.Application.Services
 
         public async Task<List<AppointmentDTO>> getPendingAppointments(ClaimsPrincipal user)
         {
-            /*var appointments = await _context.Appointments.Where(a => a.Status == "Pending").Select(a => new AppointmentViewModel
-            {
-                Id = a.Id,
-                CustomerId = a.CustomerId,
-                CustomerName = a.Customer.FullName,
-                EmployeeId = a.EmployeeId,
-                Name = a.Name,
-                Date = a.Date,
-                Notes = a.Notes,
-                Status = a.Status,
-                CreatedAt = a.CreatedAt,
-            }).ToListAsync();
-            return appointments;*/
             // using AutoMapper
             var employeeId = int.Parse(_manageUsers.GetUserId(user));
             var appointments = await _context.Appointments.Include(a => a.Customer).Include(a => a.Employee).Where(a => a.Status == "Pending" && a.EmployeeId == employeeId).ToListAsync();
@@ -206,7 +140,6 @@ namespace CAMS.Application.Services
         {
             //Average Appointments per Employee
             var TotalAppointments = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved").Count();
-            //var TotalEmployees = _context.Users.Include(u => u.UserRoles).Where(u=> u)
             var TotalEmployees = _context.UserRoles.Include(u => u.User).Where(u => u.Role.Name == "Employee").Count();
             return (double)TotalAppointments / (TotalEmployees - 1);
         }
@@ -236,28 +169,6 @@ namespace CAMS.Application.Services
 
             // count approved appointments per day
             return last7DaysDates.Select(d => _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt.Date == d.Date)).ToList();
-
-            /*
-             // old code
-                // get Approved Appointments Dates (old old)
-                var appointments = _context.Appointments.ToList();
-                var parsedAppointments = appointments.Where(a => a.Status == "Approved").Select(a =>
-                {
-                    var datePart = a.CreatedAt.Date.ToString("M/d/yyyy"); // "4/14/2025"
-                    return DateTime.ParseExact(datePart, "M/d/yyyy", CultureInfo.InvariantCulture);
-                }).ToList();
-
-                // get the last 7 days from now
-                var last7DaysDates = Enumerable.Range(0, 7)
-                                               .Select(i => DateTime.Now.Date.AddDays(-i))
-                                               .Reverse()
-                                               .ToList();
-
-                // set the last 7 days format to the days of the week
-                var last7DaysLabels = last7DaysDates.Select(d => d.ToString("dddd")).ToList();
-                // count approved appointments per day
-                var dailyCounts = last7DaysDates.Select(d => _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt.Date == d.Date)).ToList();
-             */
         }
 
         public List<DateTime> getLast4WeeksDates()
@@ -279,25 +190,6 @@ namespace CAMS.Application.Services
                 var weekEnd = weekStart.AddDays(7);
                 return _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt >= weekStart && a.CreatedAt < weekEnd);
             }).ToList();
-
-            //code in controller
-            /*
-            // get the start of the weeks date
-            var startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-            var past4WeeksStart = Enumerable.Range(0, 4)
-                .Select(i => startOfWeek.AddDays(-7 * i))
-                .OrderBy(d => d)
-                .ToList();
-
-            // set the start of the week date format
-            var weeklyLabels = past4WeeksStart.Select(d => d.ToString("MMM dd")).ToList();
-            // count approved appointments per week
-            var weeklyCounts = past4WeeksStart.Select(weekStart =>
-            {
-                var weekEnd = weekStart.AddDays(7);
-                return _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt >= weekStart && a.CreatedAt < weekEnd);
-            }).ToList();
-            */
         }
 
         public List<int> GetAppointmentsStatusCount()
@@ -325,20 +217,6 @@ namespace CAMS.Application.Services
         {
             var today = DateTime.Today.ToString("dd/MM/yyyy");
 
-            /*return await _context.Appointments
-                .Where(a =>
-                    a.Date.StartsWith(today) && a.Status == "Approved")
-                .Include(a => a.Customer)
-                .Include(a => a.Service)
-                .Select(a => new ActiveAppointmentViewModel
-                {
-                    CustomerName = a.Customer.FullName, // or FirstName + LastName
-                    AppointmentDate = a.Date,
-                    ServiceName = a.Service.Name
-                })
-                .OrderBy(a => a.AppointmentDate)
-                .ToListAsync();*/
-            //using AutoMapper
             return await _context.Appointments
                 .Where(a =>
                     a.Date.StartsWith(today) && a.Status == "Approved")
@@ -348,15 +226,14 @@ namespace CAMS.Application.Services
             // ProjectTo<T>() is an AutoMapper method that allows you to map entities directly to DTOs or view models in the database query (e.g., LINQ to Entities), rather than loading the full entity into memory and then mapping it.
             // ProjectTo() builds the SQL query that fetches only the fields needed for the view model — it’s efficient and runs completely on the database side.
             // or
-            var appointments = await _context.Appointments
-                .Where(a => a.Date.StartsWith(today) && a.Status == "Approved")
-                .Include(a => a.Customer)
-                .Include(a => a.Service)
-                .OrderBy(a => a.Date)
-                .ToListAsync();
+            //var appointments = await _context.Appointments
+            //    .Where(a => a.Date.StartsWith(today) && a.Status == "Approved")
+            //    .Include(a => a.Customer)
+            //    .Include(a => a.Service)
+            //    .OrderBy(a => a.Date)
+            //    .ToListAsync();
 
-            return _mapper.Map<List<ActiveAppointmentDTO>>(appointments);
-
+            //return _mapper.Map<List<ActiveAppointmentDTO>>(appointments);
         }
         public int GetTotalAppointments()
         {

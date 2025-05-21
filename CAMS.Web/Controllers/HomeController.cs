@@ -58,7 +58,8 @@ namespace CAMS.Web.Controllers
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
             {
                 var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
-                var tableData = appointments.Select(a => new {
+                var tableData = appointments.Select(a => new
+                {
                     a.Id,
                     a.Name,
                     Date = a.Date.ToString(),
@@ -76,7 +77,8 @@ namespace CAMS.Web.Controllers
             using (ApplicationDbContext appDBC = new ApplicationDbContext())
             {
                 var appointments = await _manageAppointments.getAppointmentsBasedOnRole(User);
-                var tableData = appointments.Select(a => new {
+                var tableData = appointments.Select(a => new
+                {
                     a.Id,
                     a.Name,
                     CustomerFullName = a.Customer.FullName,
@@ -102,12 +104,19 @@ namespace CAMS.Web.Controllers
             // 1- Stack overflow or infinite recursion.
             // 2- Difficulty in managing dependencies and testing.
             // 3- Problems during dependency injection, especially with frameworks like ASP.NET Core's built-in DI container.
+
+            //ViewAddAppointment code:
+            //public async Task<BookAppointmentDTO> ViewAddAppointment()
+            //{
             var services = await _manageServices.GetAvailableServicesInAddAppointment(User);
             var appointmentDTO = new BookAppointmentDTO
             {
                 Services = services,
             };
-            // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
+
+                //return viewModel;
+                // i  don’t need AutoMapper here because I'm not really mapping anything — just assigning a list to a property. 
+            //}
 
             var bookAppointmentViewModel = _mapper.Map<BookAppointmentViewModel>(appointmentDTO);
 
@@ -121,7 +130,7 @@ namespace CAMS.Web.Controllers
         {
             await _manageUsers.UpdateUserLastActivityDate(User);
 
-            var service = await _manageServices.getService(serviceId);
+            var service = await _manageServices.getServiceById(serviceId);
             var serviceViewModel = _mapper.Map<ServiceViewModel>(service);
 
             if (service == null)

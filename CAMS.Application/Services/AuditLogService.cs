@@ -21,7 +21,7 @@ namespace CAMS.Application.Services
             _manageUsersService = manageUsersService;
         }
 
-        public async Task AddAuditLog(int performerId,string role, string actionDescription, string actionType)
+        public async Task AddAuditLog(int performerId, string role, string actionDescription, string actionType)
         {
             var user = await _manageUsersService.Value.GetUserById(performerId);
 

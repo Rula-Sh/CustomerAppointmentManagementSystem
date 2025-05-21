@@ -62,7 +62,6 @@ namespace CAMS.Application.Services
         {
             return await _userManager.FindByIdAsync(id.ToString());
             // OR:  _context.Users.SingleOrDefault(a => a.Id == userId);
-            //return _mapper.Map<UserDTO>(gottenUser);
         }
 
         public async Task UpdateUserLastActivityDate(ClaimsPrincipal user)
@@ -87,10 +86,11 @@ namespace CAMS.Application.Services
         }
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
         {
-            if(oldRole == "Employee")
+            if (oldRole == "Employee")
             {
                 var services = await _context.Services.Where(s => s.EmployeeId == user.Id).ToListAsync();
-                if (services.Any()) {
+                if (services.Any())
+                {
                     //services != null → ensures the variable is not null(i.e., the list exists).
                     //services.Any() → ensures the list contains at least one item to remove.
                     _context.Services.RemoveRange(services);
@@ -99,7 +99,7 @@ namespace CAMS.Application.Services
 
                 await _auditLogService.AddAuditLog(1, "Admin", $"have fired {user.FullName} with ID: {user.Id}", "Fire Employee");
             }
-            else if(oldRole == "Customer")
+            else if (oldRole == "Customer")
             {
                 var appointments = await _context.Appointments.Where(s => s.CustomerId == user.Id).ToListAsync();
                 if (appointments.Any())

@@ -29,6 +29,7 @@ namespace CAMS.Application.Services
 
         public async Task<List<ServiceDTO>> GetAllServices()
         {
+            // without using the AutoMapper
             /*var services = await _context.Services.Select(s => new ServiceViewModel
             {
                 Id = s.Id,
@@ -76,63 +77,65 @@ namespace CAMS.Application.Services
 
         public async Task addService(ServiceDTO serviceDTO, ClaimsPrincipal user)
         {
-            /*
-                        // create Service
-                        *//*var service = new Service
-                        {
-                            Name = model.Name,
-                            Description = model.Description,
-                            Duration = model.Duration,
-                            Price = model.Price,
-                            ServiceDates = new List<ServiceDate>()
-                        };*//*
-                        // using AutoMapper
-                        var service = _mapper.Map<Service>(serviceDTO);
+            /*// without using the AutoMapper
+            //var service = new Service
+            //{
+            //    Name = model.Name,
+            //    Description = model.Description,
+            //    Duration = model.Duration,
+            //    Price = model.Price,
+            //    ServiceDates = new List<ServiceDate>()
+            //};
 
-                        // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
-                        foreach (var group in serviceDTO.DateTimeSlotGroups)
-                        {
-                            // parse the date string into DateOnly for Date prop in ServiceDate
-                            if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
-                            {
-                                // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
-                                //ModelState.AddModelError("", $"Invalid date format: {group.Date}");
-                                return;
-                            }
+            // using AutoMapper
+            var service = _mapper.Map<Service>(serviceDTO);
 
-                            // create ServiceDate
-                            *//*var serviceDate = new ServiceDate
-                            {
-                                ServiceId = service.Id, // to link it to Services Table
-                                Date = date,
-                                ServiceTimeSlots = new List<ServiceTimeSlot>()
-                            };*//*
-                            // using AutoMapper
-                            var serviceDate = _mapper.Map<ServiceDate>(group);
-                            serviceDate.Date = date;
+            // go through each DateTimeSlotGroup to get the all the dates and time-slots for each date
+            foreach (var group in serviceDTO.DateTimeSlotGroups)
+            {
+                // parse the date string into DateOnly for Date prop in ServiceDate
+                if (!DateOnly.TryParseExact(group.Date, "dd-MM-yyyy", out var date))
+                {
+                    // out var date is compiled if the parse was successful, create the var date and set the parsed group.Date (Parsed to DateOnly) to date
+                    //ModelState.AddModelError("", $"Invalid date format: {group.Date}");
+                    return;
+                }
 
-                            foreach (var time in group.TimeSlots)
-                            {
-                                // create ServiceTimeSlot
-                                *//*serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
-                                {
-                                    ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
-                                    Time = time
-                                });*//*
-                                // using AutoMapper
-                                var serviceTimeSlot = new ServiceTimeSlot
-                                {
-                                    ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
-                                    Time = time
-                                };
+                // create ServiceDate
+                //var serviceDate = new ServiceDate
+                //{
+                //    ServiceId = service.Id, // to link it to Services Table
+                //    Date = date,
+                //    ServiceTimeSlots = new List<ServiceTimeSlot>()
+                //};
 
-                                serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
+                // using AutoMapper
+                var serviceDate = _mapper.Map<ServiceDate>(group);
+                serviceDate.Date = date;
 
-                            }
+                foreach (var time in group.TimeSlots)
+                {
+                    // create ServiceTimeSlot
+                    serviceDate.ServiceTimeSlots.Add(new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    });
+                    // using AutoMapper
+                    var serviceTimeSlot = new ServiceTimeSlot
+                    {
+                        ServiceDateId = serviceDate.Id, // to link it to ServiceDate Table
+                        Time = time
+                    };
 
-                            service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
-                        }*/
+                    serviceDate.ServiceTimeSlots.Add(serviceTimeSlot);  // add it to ServiceDate Table
 
+                }
+
+                service.ServiceDates.Add(serviceDate); // add ServiceDate list to Services Table
+            }*/
+
+            // using AutoMapper
             await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Created");
 
             var service = _mapper.Map<Service>(serviceDTO);
@@ -148,11 +151,6 @@ namespace CAMS.Application.Services
         {
             await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Updated");
 
-            //    var service = _mapper.Map<Service>(serviceDTO);
-
-            //    _context.Services.Update(service);
-            //await _context.SaveChangesAsync();
-
             var existingService = await _context.Services
                 .Include(s => s.ServiceDates)
                 .ThenInclude(g => g.ServiceTimeSlots)
@@ -160,7 +158,7 @@ namespace CAMS.Application.Services
 
             if (existingService == null) return;
 
-            // remove ServiceDates and ServiceTimeSlots data since when i Update the db i get them back
+            // remove ServiceDates and ServiceTimeSlots data, because when i Update, the db i get them back
             _context.ServiceTimeSlots.RemoveRange(
                 existingService.ServiceDates.SelectMany(g => g.ServiceTimeSlots));
             _context.ServiceDates.RemoveRange(existingService.ServiceDates);
@@ -174,39 +172,9 @@ namespace CAMS.Application.Services
             await _auditLogService.AddAuditLog(serviceDTO.EmployeeId, "Employee", $"have updated {serviceDTO.Name} Service details", "Update Service");
         }
 
-        public async Task<ServiceDTO> getService(int? id)
-        {
-            var service = await _context.Services
-                .Include(p => p.ServiceDates)
-                .ThenInclude(d => d.ServiceTimeSlots)
-                .SingleOrDefaultAsync(m => m.Id == id);
-
-            return _mapper.Map<ServiceDTO>(service);
-        }
-        /*        public ServiceDTO getSelectedServiceDetails(Service service)
-                {
-                    *//*var serviceViewModel = new ServiceViewModel
-                    {
-                        Id = service.Id,
-                        Name = service.Name,
-                        Price = service.Price,
-                        Description = service.Description,
-                        DateTimeSlotGroups = service.ServiceDates.Select(d => new DateTimeSlotGroupViewModel
-                        {
-                            Date = d.Date.ToString(),
-                            TimeSlots = d.ServiceTimeSlots.Select(t => t.Time).ToList(),
-                        }).ToList()
-                    };*//*
-                    // using AutoMapper
-                    var serviceViewModel = _mapper.Map<ServiceDTO>(service);
-
-                    return serviceViewModel;
-                }*/
-
         public async Task<ServiceDTO> getServiceById(int? id)
         {
             var service = await _context.Services.Include(s => s.Employee).Include(s => s.ServiceDates).ThenInclude(sd => sd.ServiceTimeSlots).FirstOrDefaultAsync(a => a.Id == id);
-            // in other codes it was SingleOrDefaultAsync
             return _mapper.Map<ServiceDTO>(service);
         }
 
@@ -226,6 +194,9 @@ namespace CAMS.Application.Services
             //await _notificationsManager.CreateNotificationOnServiceDeleteForCustomer(serviceDTO.Id);
             await _notificationsManager.CreateNotificationForAdminOnServiceAction(serviceDTO.Id, serviceDTO.Name, user, "Deleted");
 
+            //var service = _mapper.Map<Service>(serviceDTO);
+            //_context.Services.Remove(service);
+
             var existingService = await _context.Services.FindAsync(serviceDTO.Id);
             if (existingService != null)
             {
@@ -233,13 +204,7 @@ namespace CAMS.Application.Services
                 await _context.SaveChangesAsync();
 
                 await _auditLogService.AddAuditLog(existingService.EmployeeId, "Employee", $"have deleted {existingService.Name} Service", "Delete Service");
-
             }
-
-
-            //var service = _mapper.Map<Service>(serviceDTO);
-            //_context.Services.Remove(service);
-            //await _context.SaveChangesAsync();
         }
 
         public string GetMostBookedServiceName()
@@ -296,7 +261,8 @@ namespace CAMS.Application.Services
             return serviceWithActiveAppointmentsDTO;
         }
 
-        public async Task<bool> doesTheUserHaveActiveAppointments(int userId){
+        public async Task<bool> doesTheUserHaveActiveAppointments(int userId)
+        {
             bool hasActiveAppointments;
             var userRole = await _context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.Role.Name).ToListAsync();
             if (userRole.Contains("Employee"))

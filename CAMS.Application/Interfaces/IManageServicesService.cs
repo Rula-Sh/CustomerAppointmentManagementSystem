@@ -9,10 +9,8 @@ namespace CAMS.Application.Interfaces
         Task<List<ServiceDTO>> GetAllServices();
         Task<List<ServiceDTO>> GetEmployeeServices(ClaimsPrincipal user);
         Task<List<ServiceDTO>> GetAvailableServicesInAddAppointment(ClaimsPrincipal user);
-        Task addService(ServiceDTO serviceDTO,ClaimsPrincipal user);
-        Task updateService(ServiceDTO serviceDTO,ClaimsPrincipal user);
-        Task<ServiceDTO> getService(int? id);
-        //ServiceDTO getSelectedServiceDetails(ServiceDTO service);
+        Task addService(ServiceDTO serviceDTO, ClaimsPrincipal user);
+        Task updateService(ServiceDTO serviceDTO, ClaimsPrincipal user);
         Task<bool> DoesTheServiceHaveAppointments(int? serviceId);
         Task DeleteService(ServiceDTO serviceDTO, ClaimsPrincipal user);
         Task<ServiceDTO> getServiceById(int? id);
@@ -22,5 +20,5 @@ namespace CAMS.Application.Interfaces
         int GetTotalServices();
         Task<ServiceWithActiveAppointmentsDTO> getServiceWithActiveAppointments(int? id);
         Task<bool> doesTheUserHaveActiveAppointments(int userId);
-    }  
+    }
 }

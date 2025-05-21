@@ -64,7 +64,8 @@ namespace CAMS.Application.Services
         {
             var employeeId = int.Parse(_manageUsers.GetUserId(user));
             var employeeName = _context.Users.Where(u => u.Id == employeeId).Select(u => u.FullName).FirstOrDefault();
-            if (employeeId != 1) {
+            if (employeeId != 1)
+            {
                 var notificationDTO = new NotificationDTO
                 {
                     UserId = 1,
@@ -77,10 +78,10 @@ namespace CAMS.Application.Services
             }
         }
 
-         public async Task CreateNotificationForEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
-         {
-             // this line is here first to get the appointment before deleting it (if action = "Delete")
-             var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
+        public async Task CreateNotificationForEmployeeOnAppointmentCreateOrDelete(int appointmentId, string action)
+        {
+            // this line is here first to get the appointment before deleting it (if action = "Delete")
+            var appointment = await _manageAppointments.Value.getAppointmentById(appointmentId);
 
             var message = $"You Have a New Pending Appointment on: {appointment.Date}";
             if (action == "Delete")
@@ -88,16 +89,16 @@ namespace CAMS.Application.Services
                 message = $"A Customer Have Canceled Their Appointment on: {appointment.Date}";
             }
 
-                //create a notification for the employee with the assigned appointment
-                var notificationDTO = new NotificationDTO
-                {
-                    UserId = appointment.EmployeeId,
-                    Message = message,
-                };
-             var notification = _mapper.Map<Notification>(notificationDTO);
-             await CreateNotification(notification);
-             await _signalRNotifier.SendNotificationAsync();
-         }
+            //create a notification for the employee with the assigned appointment
+            var notificationDTO = new NotificationDTO
+            {
+                UserId = appointment.EmployeeId,
+                Message = message,
+            };
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            await CreateNotification(notification);
+            await _signalRNotifier.SendNotificationAsync();
+        }
 
 
         public async Task CreateNotificationForCustomerOnAppointmentStatusChange(int appointmentId)
