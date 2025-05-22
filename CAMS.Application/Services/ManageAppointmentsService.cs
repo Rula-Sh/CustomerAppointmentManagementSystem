@@ -168,7 +168,7 @@ namespace CAMS.Application.Services
             var last7DaysDates = getLast7DaysDates();
 
             // count approved appointments per day
-            return last7DaysDates.Select(d => _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt.Date == d.Date)).ToList();
+            return last7DaysDates.Select(d => _context.Appointments.Where(a => a.Status == "Approved" || a.Status == "Completed").Count(a => a.CreatedAt.Date == d.Date)).ToList();
         }
 
         public List<DateTime> getLast4WeeksDates()
@@ -183,12 +183,11 @@ namespace CAMS.Application.Services
 
         public List<int> getTotalApprovedAppointemntPerWeek()
         {
-
             // count approved appointments per week
             return getLast4WeeksDates().Select(weekStart =>
             {
                 var weekEnd = weekStart.AddDays(7);
-                return _context.Appointments.Where(a => a.Status == "Approved").Count(a => a.CreatedAt >= weekStart && a.CreatedAt < weekEnd);
+                return _context.Appointments.Where(a => a.Status == "Approved" || a.Status == "Completed").Count(a => a.CreatedAt >= weekStart && a.CreatedAt < weekEnd);
             }).ToList();
         }
 
@@ -201,15 +200,14 @@ namespace CAMS.Application.Services
 
         public async Task<List<int>> getTotalAppointmentsPerService()
         {
-            var TotalAppointmentsPerService = await _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
-                                                             .Include(a => a.Service)
-                                                             .GroupBy(a => a.Service.Name)
-                                                             .Select(g => new TotalAppointmentsPerServiceDTO
-                                                             {
-                                                                 ServiceName = g.Key,
-                                                                 Count = g.Count()
-                                                             })
-                                                             .ToListAsync();
+            var TotalAppointmentsPerService = await _context.Services.Select(service => new
+                                                                    {
+                                                                        ServiceId = service.Id,
+                                                                        Count = service.Appointments
+                                                                            .Count(a => a.Status == "Completed" || a.Status == "Approved")
+                                                                    })
+                                                                    .OrderBy(x => x.ServiceId)
+                                                                    .ToListAsync();
             return TotalAppointmentsPerService.Select(x => x.Count).ToList();
         }
 
