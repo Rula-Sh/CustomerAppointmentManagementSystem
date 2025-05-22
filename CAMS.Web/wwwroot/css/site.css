@@ -63,6 +63,11 @@ body {
     background-color: #a0db8a;
 }
 
+select, input {
+    background-color: white !important;
+}
+
+
 /* -------------- Service Details --------------*/
 /* style service dates tab */
 .tab {
@@ -131,7 +136,7 @@ body {
     text-align: center;
 }
 
-/* //////////////////////// */
+/*-------------- Home --------------*/
 
 @media (min-width: 768px) {
     html {
@@ -147,8 +152,4 @@ body {
     width: 100%;
     height: 700px !important;
     object-fit: cover;
-}
-
-select, input {
-    background-color: white !important;
 }
