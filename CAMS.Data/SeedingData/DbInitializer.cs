@@ -8,35 +8,7 @@ public static class DbInitializer
 {
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
-        using var scope = serviceProvider.CreateScope();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-
-        string[] roles = { "Admin", "Provider", "Customer" };
-
-        foreach (var roleName in roles)
-        {
-            if (!await roleManager.RoleExistsAsync(roleName))
-            {
-                await roleManager.CreateAsync(new Role { Name = roleName });
-            }
-        }
-
-        if (await userManager.FindByNameAsync("admin") == null)
-        {
-            var admin = new User
-            {
-                UserName = "admin",
-                Email = "admin@example.com",
-                FullName = "Admin Admin"
-            };
-            await userManager.CreateAsync(admin, "!Q23wewe");//P@ssw0rd
-            await userManager.AddToRoleAsync(admin, "Admin");
-            await userManager.AddToRoleAsync(admin, "Provider");
-            await userManager.AddToRoleAsync(admin, "Customer");
-        }
-
-        // Repeat for Provider and Customer...
+        
     }
 }
 

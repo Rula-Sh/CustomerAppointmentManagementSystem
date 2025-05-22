@@ -43,7 +43,9 @@ namespace CAMS.Web
 
             var app = builder.Build();
             await DbInitializer.SeedAsync(app.Services);
+            await UserSeeding.SeedAsync(app.Services);
             await ServiceSeeding.SeedAsync(app.Services);
+            await AppointmentSeeding.SeedAsync(app.Services);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
