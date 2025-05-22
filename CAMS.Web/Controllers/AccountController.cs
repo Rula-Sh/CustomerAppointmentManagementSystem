@@ -38,6 +38,16 @@ public class AccountController : Controller
         if (ModelState.IsValid)
         {
             var user = await _userManager.FindByNameAsync(username);
+            if (user != null)
+            {
+                if (!user.IsActive)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account has been disabled.");
+                    return View();
+                }
+            }
+
+
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
             if (result.Succeeded)
             {
