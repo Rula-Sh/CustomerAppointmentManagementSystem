@@ -2,7 +2,7 @@
 {
     public class TotalAppointmentsPerServiceDTO
     {
-        public string ServiceName { get; set; }
+        public int ServiceId { get; set; }
         public int Count { get; set; }
     }
 }
