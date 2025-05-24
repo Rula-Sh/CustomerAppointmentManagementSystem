@@ -46,6 +46,11 @@ public class AccountController : Controller
                     return View();
                 }
             }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "User does not exist.");
+                return View();
+            }
 
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
