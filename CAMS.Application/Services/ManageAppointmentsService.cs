@@ -116,10 +116,10 @@ namespace CAMS.Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public string getProviderNameWithMostCompleteAndApprovedAppointments()
+        public string getProviderNameWithMostCompletedAppointments()
         {
             //best Provider
-            var bestProvider = _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved")
+            var bestProvider = _context.Appointments.Where(a => a.Status == "Completed")
                                                     .GroupBy(a => a.ProviderId)
                                                     .Select(group => new
                                                     {

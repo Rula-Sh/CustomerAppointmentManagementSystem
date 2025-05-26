@@ -30,7 +30,7 @@ namespace PresentationLayer.Controllers
         {
 
             //Best Provider
-            var bestProviderName = _manageAppointments.getProviderNameWithMostCompleteAndApprovedAppointments();
+            var bestProviderName = _manageAppointments.getProviderNameWithMostCompletedAppointments();
 
 
             //Average Appointments per Provider
