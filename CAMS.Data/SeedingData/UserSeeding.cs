@@ -37,7 +37,9 @@ public static class UserSeeding
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 FullName = "Admin User",
                 EmailConfirmed = true,
-                SecurityStamp = "1"
+                SecurityStamp = "1",
+                CreatedAt = DateTime.Today.AddDays(-10),
+                LastActivityDate = DateTime.Today.AddDays(-10),
             };
 
             await userManager.CreateAsync(admin, "!Q23wewe");//P@ssw0rd
@@ -57,7 +59,9 @@ public static class UserSeeding
                 Email = "provider1@gmail.com",
                 NormalizedEmail = "PROVIDER1@GMAIL.COM",
                 EmailConfirmed = true,
-                SecurityStamp = "2"
+                SecurityStamp = "2",
+                CreatedAt = DateTime.Today.AddDays(-10),
+                LastActivityDate = DateTime.Today.AddDays(-10),
             };
 
             await userManager.CreateAsync(provider, "!Q23wewe");//P@ssw0rd
@@ -74,7 +78,9 @@ public static class UserSeeding
                 Email = "provider2@gmail.com",
                 NormalizedEmail = "PROVIDER2@GMAIL.COM",
                 EmailConfirmed = true,
-                SecurityStamp = "2"
+                SecurityStamp = "2",
+                CreatedAt = DateTime.Today.AddDays(-10),
+                LastActivityDate = DateTime.Today.AddDays(-10),
             };
 
             await userManager.CreateAsync(provider, "!Q23wewe");//P@ssw0rd
@@ -92,7 +98,9 @@ public static class UserSeeding
                 Email = "customer1@gmail.com",
                 NormalizedEmail = "CUSTOMER1@GMAIL.COM",
                 EmailConfirmed = true,
-                SecurityStamp = "3"
+                SecurityStamp = "3",
+                CreatedAt = DateTime.Today.AddDays(-10),
+                LastActivityDate = DateTime.Today.AddDays(-10),
 
             };
 
@@ -107,11 +115,13 @@ public static class UserSeeding
             {
                 UserName = "customer2",
                 NormalizedUserName = "CUSTOMER2",
-                FullName = "customer2 User",
+                FullName = "Customer2 User",
                 Email = "customer2@gmail.com",
                 NormalizedEmail = "CUSTOMER2@GMAIL.COM",
                 EmailConfirmed = true,
-                SecurityStamp = "3"
+                SecurityStamp = "3",
+                CreatedAt = DateTime.Today.AddDays(-10),
+                LastActivityDate = DateTime.Today.AddDays(-10),
 
             };
 
