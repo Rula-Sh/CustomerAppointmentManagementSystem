@@ -1,4 +1,8 @@
-﻿using CAMS.Application.DTOs.Users;
+﻿using AutoMapper;
+using CAMS.Application.DTOs;
+using CAMS.Application.DTOs.Users;
+using CAMS.Application.Interfaces;
+using CAMS.Application.Services;
 using CAMS.Data.Models;
 using CAMS.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -12,12 +16,15 @@ public class AccountController : Controller
 {
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
-    private readonly RoleManager<Role> _roleManager;
-    public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<Role> roleManager)
+    private readonly IManageUsersService _manageUsersService;
+    private readonly IMapper _mapper;
+    public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IManageUsersService manageUsersService, IMapper mapper)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _roleManager = roleManager;
+        _manageUsersService = manageUsersService;
+        _mapper = mapper;
+
     }
     public IActionResult Index()
     {
@@ -80,7 +87,7 @@ public class AccountController : Controller
             {
                 FullName = model.Name,
                 Email = model.Email,
-                UserName = new MailAddress(model.Email).User,
+                UserName = model.Name,
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -179,6 +186,45 @@ public class AccountController : Controller
             ModelState.AddModelError("", "Something went wrong. try again.");
             return View(model);
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Profile()
+    {
+        await _manageUsersService.UpdateUserLastActivityDate(User);
+        var user = await _manageUsersService.GetUser(User);
+
+        if (user == null)
+            return RedirectToAction("Login");
+
+        var userView = _mapper.Map<ProfileViewModel>(_mapper.Map<UserDTO>(user));
+        return View(userView);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Profile(ProfileViewModel model)
+    {
+        await _manageUsersService.UpdateUserLastActivityDate(User);
+        var user = await _manageUsersService.GetUser(User);
+
+        if (user == null)
+            return RedirectToAction("Login");
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        if (model.ProfilePictureUpload != null && model.ProfilePictureUpload.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            await model.ProfilePictureUpload.CopyToAsync(ms);
+            model.ProfilePicture = ms.ToArray();
+        }
+
+        var userDTO = _mapper.Map<UserDTO>(user);
+        userDTO = _mapper.Map(model,userDTO);
+
+        await _manageUsersService.UpdateUserDetails(userDTO);
+        return RedirectToAction("Index", "Home");
     }
 
     public async Task<IActionResult> Logout()

@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CAMS.Data.Models
 {
@@ -13,13 +8,17 @@ namespace CAMS.Data.Models
     {
         // The properties of IdentityUser are already included in this class
 
-        [Required]
+
+        [Required(ErrorMessage = "Full Name is required")]
         [MaxLength(60)]
         public string FullName { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
 
         public byte[]? ProfilePicture { get; set; }
+
+        [RegularExpression(@"^07[789]\d{7}$", ErrorMessage = "Phone number must start with 077, 078, or 079 and contain 10 digits in total.")]
+        public string? PhoneNumber { get; set; }
 
         [Required]
         public bool IsActive { get; set; } = true;

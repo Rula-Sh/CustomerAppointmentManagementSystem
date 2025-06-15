@@ -38,6 +38,7 @@ public static class UserSeeding
                 FullName = "Admin User",
                 EmailConfirmed = true,
                 SecurityStamp = "1",
+                PhoneNumber = "0770000000",
                 CreatedAt = DateTime.Today.AddDays(-10),
                 LastActivityDate = DateTime.Today.AddDays(-10),
             };
@@ -60,6 +61,7 @@ public static class UserSeeding
                 NormalizedEmail = "PROVIDER1@GMAIL.COM",
                 EmailConfirmed = true,
                 SecurityStamp = "2",
+                PhoneNumber = "0770000000",
                 CreatedAt = DateTime.Today.AddDays(-10),
                 LastActivityDate = DateTime.Today.AddDays(-10),
             };
@@ -79,6 +81,7 @@ public static class UserSeeding
                 NormalizedEmail = "PROVIDER2@GMAIL.COM",
                 EmailConfirmed = true,
                 SecurityStamp = "2",
+                PhoneNumber = "0770000000",
                 CreatedAt = DateTime.Today.AddDays(-10),
                 LastActivityDate = DateTime.Today.AddDays(-10),
             };
@@ -99,6 +102,7 @@ public static class UserSeeding
                 NormalizedEmail = "CUSTOMER1@GMAIL.COM",
                 EmailConfirmed = true,
                 SecurityStamp = "3",
+                PhoneNumber = "0770000000",
                 CreatedAt = DateTime.Today.AddDays(-10),
                 LastActivityDate = DateTime.Today.AddDays(-10),
 
@@ -120,6 +124,7 @@ public static class UserSeeding
                 NormalizedEmail = "CUSTOMER2@GMAIL.COM",
                 EmailConfirmed = true,
                 SecurityStamp = "3",
+                PhoneNumber = "0770000000",
                 CreatedAt = DateTime.Today.AddDays(-10),
                 LastActivityDate = DateTime.Today.AddDays(-10),
 

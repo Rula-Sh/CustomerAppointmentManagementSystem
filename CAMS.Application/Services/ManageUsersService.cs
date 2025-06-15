@@ -84,6 +84,23 @@ namespace CAMS.Application.Services
                 await _context.SaveChangesAsync();  // Save changes
             }
         }
+
+        public async Task UpdateUserDetails(UserDTO userDTO)
+        {
+            var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
+
+            if (user == null)
+                throw new InvalidOperationException("User not found");
+
+            user.UserName = userDTO.FullName;
+
+            // var user = _mapper.Map<User>(userDTO); is WRONG Because i want to update user details not create a new one (it overrides all the properties)
+            _mapper.Map(userDTO, user);
+
+            await _context.SaveChangesAsync();
+            //await _auditLogService.AddAuditLog(user.Id, $"{user.UserRoles.First()}", $"have updated his profile", "Update Profile");
+        }
+
         public async Task changeRoleFromTo(User user, string oldRole, string NewRole)
         {
             if (oldRole == "Provider")

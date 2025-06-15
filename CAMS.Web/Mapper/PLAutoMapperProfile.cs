@@ -11,6 +11,7 @@ namespace CAMS.Web.Mapper
             // -------------------- GET --------------------
 
             CreateMap<UserDTO, UserViewModel>();
+            CreateMap<UserDTO, ProfileViewModel>();
 
             CreateMap<ServiceDTO, ServiceViewModel>();
             CreateMap<DateTimeSlotGroupDTO, DateTimeSlotGroupViewModel>()
@@ -26,6 +27,9 @@ namespace CAMS.Web.Mapper
             CreateMap<ServiceWithActiveAppointmentsDTO, ServiceWithActiveAppointmentsViewModel>();
 
             // -------------------- POST --------------------
+            //update profile
+            CreateMap<ProfileViewModel, UserDTO>();
+
             // create a service
             CreateMap<ServiceViewModel, ServiceDTO>();
             CreateMap<DateTimeSlotGroupViewModel, DateTimeSlotGroupDTO>();

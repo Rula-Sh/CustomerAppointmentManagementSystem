@@ -12,8 +12,7 @@ namespace CAMS.Application.Helpers
             // -------------------- GET --------------------
             CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.LastActivity, opt => opt.MapFrom(src => TimeDifferenceHelper.getTimeDifference(src.LastActivityDate)))
-                .ForMember(dest => dest.Roles, opt => opt.Ignore())
-                .ReverseMap();
+                .ForMember(dest => dest.Roles, opt => opt.Ignore());
             //Why did ignore Roles? Because getRoles() in the UsersController is asynchronous, and AutoMapper doesn't support asynchronous value resolvers out of the box. So I'll still have to set Roles manually after mapping.
 
             CreateMap<Service, ServiceDTO>()
@@ -41,6 +40,9 @@ namespace CAMS.Application.Helpers
                 .ForMember(dest => dest.DateTimeSlotGroups, opt => opt.MapFrom(src => src.ServiceDates));
 
             // -------------------- POST --------------------
+            //update profile
+            CreateMap<UserDTO, User>();
+
             // create a service
             CreateMap<ServiceDTO, Service>()
                 .ForMember(dest => dest.ServiceDates, opt => opt.MapFrom(src => src.DateTimeSlotGroups));

@@ -6,26 +6,27 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
-        {
-            <li class="nav-item">
-                <img class=" avatar rounded-circle" alt="profile picture" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))" />
-            </li>
-        }
+        <div class="d-flex flex-row">
         <li class="nav-item align-content-center m-2">
             <a class="notification border-0 position-relative" data-toggle="popover" title="Notifications">
                 <i class="bi bi-bell-fill h4 text-black"></i>
-                <span id="newNotification" class="d-none position-absolute bottom-50 start-50  bg-danger border border-light rounded-circle w-100 h-100 text-center text-white">
+                <span id="newNotification" class="d-none position-absolute bottom-50 start-50  bg-danger border border-light rounded-circle text-center text-white">
                     <span id="notificationCount" class="smallText"></span>
                 </span>
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-action="Index" asp-controller="Home" title="Manage">Hello @User.Identity?.Name!</a>
+        <li class="nav-item profile-nav">
+            <a class="nav-link text-dark ms-2" asp-action="Profile" asp-controller="Account" title="Manage">@(UserManager.GetUserAsync(User).Result.FullName?.Split(' ').FirstOrDefault() ?? "User")</a>
         </li>
+            @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+            {
+            <li class="nav-item me-3">
+                <img asp-action="Profile" asp-controller="Account" class="avatar rounded-circle" alt="profile picture" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))" />
+            </li>
+            }
+        </div>
         <li class="nav-item">
-
             <a class="nav-link text-dark" asp-area="" asp-action="Logout" asp-controller="Account">Logout</a>
         </li>
     }
