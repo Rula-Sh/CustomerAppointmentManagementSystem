@@ -1,0 +1,185 @@
+﻿@model IEnumerable<AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "Pending Appointments";
+}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown"><span class="text-primary">Pending Appointments</span></h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb animated slideInDown">
+                <a asp-action="Index" asp-controller="Appointments" class="breadcrumb-item text-white active"> Home </a>
+                <a asp-action="PendginAppointments" asp-controller="Appointments" class="breadcrumb-item text-white active"> Pending Appointments </a>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+@{
+    var pendingAppointments = Model.Where(a => a.Status == "Pending").ToList();
+}
+
+@if (!pendingAppointments.Any())
+{
+    <h2>
+        <i class="bi bi-exclamation-triangle"></i>
+        No Pending Appointments booked yet
+    </h2>
+}
+else
+{
+    <div class="row">
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th> Service </th>
+                    <th> Customer </th>
+                    <th> Date </th>
+                    <th> Status </th>
+                    <th> Actions</th>
+                </tr>
+            </thead>
+            <tbody class="pendingAppointments">
+                @foreach (var appointment in Model)
+                {
+                    if (appointment.Status == "Pending")
+                    {
+                        <tr>
+                            <a class="text-black link-underline link-underline-opacity-0" asp-action="Details" asp-route-id="Id">
+                            <td>@appointment.Name</td>
+                            <td>@appointment.Customer.FullName</td>
+                            <td>@appointment.Date</td>
+                            <td>@appointment.Status</td>
+                            </a>
+                            <td>
+                                <a href="javascript:;" class="btn btn-primary js-approve ms-1" data-id="@appointment.Id">
+                                    <i class="bi bi-check"></i>
+                                </a>
+                                <a href="javascript:;" class="btn btn-danger js-reject ms-1" data-id="@appointment.Id">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary mt-4 ">
+        <i class="bi bi-arrow-left"></i>
+        Go Back
+    </a>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $('.js-approve').on('click', function () {
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+                // Add instructions before approval
+                 // bootbox.prompt({
+                 //    title: "Add instructions before attending the appointment",
+                 //    centerVertical: true,
+                 //    callback: function(result){
+                            //  if user clicked "Cancel"
+                            // if (result === null) {  return; }
+                            //if(result == ''){result='no notes';}
+                            // ------------ Approve .ajax code ------------
+                 //    }
+                 // });
+
+                 bootbox.confirm({
+                    title: "Approve Appointment",
+                    message: "Are you sure you want to approve this appointment?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-primary'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-danger'
+                        }
+                    },
+                    centerVertical: true,
+                    callback: function(result){
+                        if (result) {
+                        $.ajax({
+                            url: 'Approve/' + btn.data('id'),
+                            // url: 'Approve/',
+                            // data: { 'id' : btn.data('id'), 'notes' : result },
+                            type: 'POST',
+                            success: function () {
+                                var row = btn.closest('tr');
+                                row.addClass('animate__animated', 'animate__zoomOut');
+
+                                setTimeout(function () {
+                                    row.remove();
+                                }, 1000);
+
+                                toastr.success('Appointment Approved');
+                            },
+                            error: function (err) {
+                                toastr.error('Something went wrong!', err);
+                            }
+                        });
+
+                        }
+
+                    }
+                });
+            });
+
+            $('.js-reject').on('click', function (){
+                var btn = $(this);
+
+                console.log(btn.data('id'));
+
+                    bootbox.confirm({
+                    title: "Reject Appointment",
+                    message: "Are you sure you want to reject this appointment?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-outline-secondary'
+                        }
+                    },
+                    centerVertical: true,
+                    callback: function(result){
+                        if (result) {
+                            $.ajax({
+                                url: 'Reject/' + btn.data('id'),
+                                type: 'POST',
+                                success: function () {
+                                var row = btn.closest('tr');
+                                row.addClass('animate__animated', 'animate__zoomOut');
+
+                                setTimeout(function () {
+                                    row.remove();
+                                }, 1000);
+
+
+                                    toastr.error('Appointment Rejected');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
+}

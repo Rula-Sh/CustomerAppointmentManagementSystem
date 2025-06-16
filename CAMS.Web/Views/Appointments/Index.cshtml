@@ -1,0 +1,255 @@
+﻿@model IEnumerable<AppointmentViewModel>
+
+<!-- Carousel Start -->
+<div class="container-fluid p-0 pb-5">
+    <div class="owl-carousel header-carousel position-relative">
+        <div class="owl-carousel-item position-relative">
+            <img class="img-fluid home-img" src="~/mytemplate/img/services-design-1.png" alt="">
+            <div class="carousel-inner">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-lg-8 text-center">
+                            <h1 class="display-3 text-white animated slideInDown mb-4">Best All Types of Service Providers</h1>
+                            <p class="fs-5 text-white mb-4 pb-2">The only platform where you can find and book all types of services — from beauty to repair, health, and beyond — in one place.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="owl-carousel-item position-relative">
+            <img class="img-fluid home-img" src="~/mytemplate/img/services-design-2.jpg" alt="">
+            <div class="carousel-inner">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-lg-8 text-center">
+                            <h1 class="display-3 text-white animated slideInDown mb-4">Book Appointments Anytime, Anywhere</h1>
+                            <p class="fs-5 text-white mb-4 pb-2">Manage your time effortlessly. Choose your preferred service, see real-time availability, and book with a click.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="owl-carousel-item position-relative">
+            <img class="img-fluid home-img" src="~/mytemplate/img/services-design-3.jpg" alt="">
+            <div class="carousel-inner">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-lg-8 text-center">
+                            <h1 class="display-3 text-white animated slideInDown mb-4">Trusted by Professionals & Customers</h1>
+                            <p class="fs-5 fw-medium text-white mb-4 pb-2">Join thousands of satisfied users and service providers who rely on our secure and reliable booking system every day.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            @if (User.IsInRole("Admin"))
+            {
+                
+            }
+            @if (User.IsInRole("Provider"))
+            {
+                <partial name="_ProviderAppointments" model="Model" />
+            }
+            else if (User.IsInRole("Customer"))
+            {
+                <partial name="_CustomerAppointments" model="Model" />
+            }
+            else
+            {
+                <div class="d-flex justify-content-around">
+                    <h2>Log in for the Best Experience with Our Services</h2>
+                    <a asp-action="Login" asp-controller="Account" class="btn btn-primary align-self-center">Login</a>
+                </div>
+            }
+
+            @* OR(older syntax): @Html.Partial("_ProviderAppointments", Model) *@
+            @* or i could do it like this, but each will have a controller: @{ Html.RenderAction("_ProviderAppointments"); } *@
+
+        </div>
+    </div>
+</div>
+
+<!-- Facts Start -->
+<!-- About Start -->
+<div class="container-fluid bg-light overflow-hidden my-5 px-lg-0">
+    <div class="container about px-lg-0">
+        <div class="row g-0 mx-lg-0">
+            <div class="col-lg-6 about-text py-5 wow fadeIn" data-wow-delay="0.5s">
+                <div class="p-lg-5 pe-lg-0">
+                    <div class="bg-primary mb-3" style="width: 60px; height: 2px;"></div>
+                    <h1 class="display-5 mb-4">About Us</h1>
+                    <p class="mb-4 pb-2">EasyServe is an all-in-one appointment management solution designed to connect customers with service providers across every industry — from salons and clinics to mechanics, tutors, and more</p>
+                    <a asp-action="About" class="btn btn-primary rounded-pill py-3 px-5">Explore More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            if ($("#customerAppointments").length) {
+                const tableId = '#customerAppointments';
+                if ($.fn.DataTable.isDataTable(tableId)) {
+                    $(tableId).DataTable().clear().destroy();
+                }
+                $(tableId).DataTable({
+
+                    "ajax": {
+                        "url": "Appointments/LoadCustomerAppointments",
+                        "type": "POST",
+                        "datatype": "json"
+                    },
+
+                    "columns": [
+                        { "data": "name", "name": "name", "autoWidth": "10%", "className": "text-center" },
+                        { "data": "date", "name": "date", "autoWidth": "20%", "className": "text-center" },
+                        { "data": "status", "name": "status", "autoWidth": "10%", "className": "text-center" },
+                        {
+                            data: null,
+                            render: function(data, type, row) {
+                                var actions = '';
+                                if (row.status === "Completed" || row.status === "Approved") {
+                                    actions += '<a href="/Appointments/Details/' + row.id + '" class="btn btn-outline-secondary me-1"><i class="bi bi-list-ul"></i></a>';
+                                }
+                                if (row.status === "Pending" || row.status === "Rejected" || row.status === "Approved") {
+                                    actions += '<a href="javascript:;" class="btn btn-danger js-delete ms-1" data-id="' + row.id + '"><i class="bi bi-trash"></i></a>';
+                                }
+                                return actions;
+                            },
+                        },
+                    ],
+                    "drawCallback": function () {
+                        // Bind delete button click handler
+                        $('.js-delete').off('click').on('click', function () {
+                            var btn = $(this);
+                            bootbox.confirm({
+                                message: "Are you sure you want to delete the appointment?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Yes',
+                                        className: 'btn-danger'
+                                    },
+                                    cancel: {
+                                        label: 'No',
+                                    className: 'btn-primary'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if(result){
+                                        $.ajax({
+                                            url: 'Appointments/delete/' + btn.data('id'),
+                                            type: 'DELETE',
+                                            success: function () {
+
+                                            var row = btn.closest('tr');
+                                            row.addClass('animate__animated animate__zoomOut');
+
+                                            setTimeout(function () {
+                                                row.remove();
+                                            }, 1000);
+
+                                            toastr.error('Appointment deleted');
+                                            },
+                                            error: function (err) {
+                                                console.log('An error occurred: ' + err);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        $(document).ready(function () {
+            if ($("#providerActiveAppointments").length) {
+                    const tableId = '#providerActiveAppointments';
+                    if ($.fn.DataTable.isDataTable(tableId)) {
+                        $(tableId).DataTable().clear().destroy();
+                    }
+                    $(tableId).DataTable({
+
+                        "ajax": {
+                            "url": "Appointments/LoadProviderAppointments",
+                            "type": "POST",
+                            "datatype": "json"
+                        },
+
+                        "columns": [
+                            { "data": "name", "name": "name", "autoWidth": "10%", "className": "text-center" },
+                            { "data": "customerFullName", "name": "customerFullName", "autoWidth": "20%", "className": "text-center" },
+                            { "data": "date", "name": "date", "autoWidth": "10%", "className": "text-center" },
+                            {
+                                data: null,
+                                render: function(row) {
+                                       return '<a href="javascript:;" class="btn btn-primary js-complete ms-1" data-id="' + row.id + '">Finish<i class="bi bi-check"></i></a> ';
+                                },
+                            },
+                        ],
+                        "drawCallback": function () {
+                            $('.js-complete').on('click', function () {
+                                var btn = $(this);
+
+                                console.log(btn.data('id'));
+
+                                // bootbox.prompt({
+                                //     title: "Provide your notes about the appointmet",
+                                bootbox.confirm({
+                                    title: "Complete Appointment",
+                                    message: "Are you sure you want to Finish this appointment?",
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Yes',
+                                        className: 'btn-primary'
+                                        },
+                                        cancel: {
+                                            label: 'No',
+                                            className: 'btn-outline-secondary'
+                                        }
+                                    },
+                                    centerVertical: true,
+                                    callback: function(result){
+                                        if(result){
+                                            // if(result == ''){result='no notes';}
+                                            $.ajax({ // $.ajax is a jQuery function used to perform an asynchronous HTTP (Ajax) request. Ajax allows you to send and receive data from a server without reloading the entire web page. This is particularly useful for creating dynamic and interactive web applications.
+                                            url: 'complete/'+ btn.data('id'),
+                                                type: 'POST',
+                                                // data: { 'id' : btn.data('id'), 'notes' : result },
+                                                success: function () {
+                                                    var row = btn.closest('tr');
+                                                    row.addClass('animate__animated animate__zoomOut');
+
+                                                    setTimeout(function () {
+                                                        row.remove();
+                                                    }, 1000);
+
+                                                    toastr.success('Appointment Completed');
+                                                },
+                                                error: function (err) {
+                                                    toastr.error('Something went wrong!',err);
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                 });
+                            });
+                        }
+                    });
+            }
+        });
+    </script>
+}

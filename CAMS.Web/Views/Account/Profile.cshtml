@@ -1,0 +1,83 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown"><span class="text-primary">Profile</span> Details</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb animated slideInDown">
+                <a asp-action="Index" asp-controller="@(User.IsInRole("Admin")? "Dashboard" : "Appointments" )" class="breadcrumb-item text-white active"> Home </a>
+                <a asp-action="Profile" asp-controller="Account" class="breadcrumb-item text-white active">Profile</a>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<form id="profile-form" method="post" enctype="multipart/form-data" class="d-flex flex-column justify-content-center">
+    <div class="pfp-container">
+        <div class="pfp-parent">
+            @if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)
+            {
+                <img id="ProfilePicture" class="pfp d-block mx-auto" alt="profile picture" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))" />
+            }
+            else
+            {
+                <img id="ProfilePicture" class="pfp d-block mx-auto" alt="profile picture" src="~/images/profile-def.png" />
+            }
+            <input type="file" accept=".jpg, .png" asp-for="@Model.ProfilePictureUpload" class="custom-file-input" onchange="document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0])" hidden />
+            @*document.getElementById('profilePicture').src = window.URL.CreateObjectUrl(this.files[0]) gets the selected image and views it in the image tag*@
+            @* accept="image/*" accepts any type of images*@
+
+            <label class="custom-file-label" asp-for="@Model.ProfilePictureUpload"> <i class="bi bi-camera-fill h2 text-primary"></i></label>
+            <span asp-validation-for="@Model.ProfilePictureUpload" class="text-danger"></span>
+
+        </div>
+    </div>
+    <div class="w-50 align-self-center mt-3">
+        <div class="w-100 d-flex justify-content-center">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-floating mb-3">
+            <input asp-for="@Model.FullName" class="form-control text-black" placeholder="Full Name." />
+            <label asp-for="@Model.FullName" class="form-label"></label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="@Model.Email" type="hidden" />
+            <input asp-for="@Model.Email" class="form-control" disabled />
+            <label asp-for="@Model.Email" class="form-label"></label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="PhoneNumber" class="form-control text-black"
+                   placeholder="Phone Number."
+                   maxlength="10"
+                   pattern="^07[789]\d{7}$" S
+                   id="PhoneNumber"
+                   title="Phone number must start with 077, 078, or 079 and contain 10 digits." />
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button id="update-profile-button" type="submit" class="btn btn-lg btn-primary align-self-center ps-4 pe-4">Save</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const phone = document.getElementById('PhoneNumber');
+
+            phone.addEventListener('input', () => {
+                // remove every non-numeric character
+                phone.value = phone.value.replace(/\D/g, '').slice(0, 10);
+            });
+        });
+    </script>
+}
