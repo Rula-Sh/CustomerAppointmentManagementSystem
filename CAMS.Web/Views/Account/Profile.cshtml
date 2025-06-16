@@ -17,7 +17,6 @@
 </div>
 <!-- Page Header End -->
 
-@* <partial name="_StatusMessage" for="StatusMessage" /> *@
 <form id="profile-form" method="post" enctype="multipart/form-data" class="d-flex flex-column justify-content-center">
     <div class="pfp-container">
         <div class="pfp-parent">
@@ -39,6 +38,9 @@
         </div>
     </div>
     <div class="w-50 align-self-center mt-3">
+        <div class="w-100 d-flex justify-content-center">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
         <input type="hidden" asp-for="Id" />
         <div class="form-floating mb-3">
             <input asp-for="@Model.FullName" class="form-control text-black" placeholder="Full Name." />
