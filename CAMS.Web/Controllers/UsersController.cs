@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CAMS.Web.ViewModels;
 using CAMS.Data;
+using CAMS.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CAMS.Web.Controllers
 {
@@ -15,16 +17,19 @@ namespace CAMS.Web.Controllers
         private readonly IManageServicesService _manageServices;
         private readonly IMapper _mapper;
         private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         const string usersPath = "~/Views/Admin/Users/Index.cshtml";
 
-        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices, IAuditLogService auditLogService)
+        public UsersController(IManageUsersService manageUsers, IMapper mapper, IManageServicesService manageServices, IAuditLogService auditLogService, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _manageUsers = manageUsers;
             _mapper = mapper;
             _manageServices = manageServices;
             _auditLogService = auditLogService;
-
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index()
@@ -115,6 +120,59 @@ namespace CAMS.Web.Controllers
             await _manageUsers.updateAsync(user);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult AddProvider()
+        {
+            var vm = new AddProviderViewModel();
+            return View(vm); // remember that i had to return a AddProviderViewModel so that i dont get a null error in the if statement "@if (Model.ProfilePicture != null && Model.ProfilePicture.Length > 0)"... the Model is  null because the action that renders the page never supplies a view‑model instance.
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProvider(AddProviderViewModel model)
+        {
+
+            if (model.ProfilePictureUpload != null && model.ProfilePictureUpload.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                await model.ProfilePictureUpload.CopyToAsync(ms);
+                model.ProfilePicture = ms.ToArray();
+                ModelState.Remove("ProfilePicture");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User user = new User
+            {
+                FullName = model.Name,
+                Email = model.Email,
+                UserName = model.Name,
+                PhoneNumber = model.PhoneNumber,
+                ProfilePicture = model.ProfilePicture,
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Provider");
+                await _userManager.FindByNameAsync(user.UserName);
+
+                return RedirectToAction("Index", "Users");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View(model);
+            }
         }
     }
 
