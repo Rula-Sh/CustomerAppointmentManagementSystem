@@ -215,4 +215,8 @@ i.bi-camera-fill {
     .profile-nav {
         margin-right: 10px;
     }
+
+    .navbar-brand {
+        margin-left: 10px;
+    }
 }
