@@ -25,7 +25,7 @@ namespace CAMS.Application.Interfaces
         List<int> GetAppointmentsStatusCount();
         Task<List<int>> getTotalAppointmentsPerService();
         Task<List<ActiveAppointmentDTO>> getTodaysAppointments();
-        int GetTotalAppointments();
+        int GetTotalActiveAndCompletedAppointments();
         Task<List<AppointmentDTO>> getActiveAppointmentsFromServiceId(int? id);
     }
 }

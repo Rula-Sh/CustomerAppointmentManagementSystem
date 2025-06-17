@@ -233,9 +233,9 @@ namespace CAMS.Application.Services
 
             //return _mapper.Map<List<ActiveAppointmentDTO>>(appointments);
         }
-        public int GetTotalAppointments()
+        public int GetTotalActiveAndCompletedAppointments()
         {
-            return _context.Appointments.Count();
+            return _context.Appointments.Where(a => a.Status == "Completed" || a.Status == "Approved").Count();
         }
 
         public async Task<List<AppointmentDTO>> getActiveAppointmentsFromServiceId(int? id)

@@ -71,7 +71,7 @@ namespace PresentationLayer.Controllers
             {
                 TotalUsers = _manageUsers.GetTotalUsers(),
                 TotalServices = _manageServices.GetTotalServices(),
-                TotalAppointments = _manageAppointments.GetTotalAppointments(),
+                TotalAppointments = _manageAppointments.GetTotalActiveAndCompletedAppointments(),
 
                 BestProvider = bestProviderName,
                 AvgAppointmentsPerProvider = avgAppointmentsPerProvider,
