@@ -92,7 +92,7 @@ public static class ServiceSeeding
                 },
 
                 new Service {
-                    Name = "Furniture assembly", ProviderId = 2, Price = 20.00m, Description = "Putting together flat-pack or modular furniture.", Duration = "1:00",
+                    Name = "Furniture assembly", ProviderId = 2, Price = 20.00m, Description = "Putting together flat-pack or modular furniture.", Duration = "01:00",
                     ServiceDates = new List<ServiceDate> {
                         new ServiceDate { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-2)),
                             ServiceTimeSlots = new List<ServiceTimeSlot> {
