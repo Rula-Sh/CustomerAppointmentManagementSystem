@@ -172,19 +172,36 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    <h5 class="text-light mb-4">Services</h5>
-                    <a class="btn btn-link" href="">Business Security</a>
-                    <a class="btn btn-link" href="">Fire Detection</a>
-                    <a class="btn btn-link" href="">Alarm Systems</a>
-                    <a class="btn btn-link" href="">CCTV & Video</a>
-                    <a class="btn btn-link" href="">Smart Home</a>
+                    <h5 class="text-light mb-4">Pages</h5>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Index" asp-controller="Dashboard" class="btn btn-link">Home</a>
+                        <a asp-action="Index" asp-controller="Users" class="btn btn-link">Manage Users</a>
+                        <a asp-action="Index" asp-controller="Services" class="btn btn-link">Manage Services</a>
+                        <a asp-action="Add" asp-controller="Services" class="btn btn-link">Add Service</a>
+                        <a asp-action="Index" asp-controller="Appointments" class="btn btn-link">Manage Appointments</a>
+                        <a asp-action="PendingAppointments" asp-controller="Appointments" class="btn btn-link">Pending Appointments</a>
+                    }
+                    else if (User.IsInRole("Provider"))
+                    {
+                        <a asp-action="Index" asp-controller="Appointments" class="btn btn-link">Home</a>
+                        <a asp-action="PendingAppointments" asp-controller="Appointments" class="btn btn-link">Pending Appointments</a>
+                        <a asp-action="Index" asp-controller="Services" class="btn btn-link">Manage Services</a>
+                        <a asp-action="Add" asp-controller="Services" class="btn btn-link">Add Service</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" asp-controller="Appointments" class="btn btn-link">Home</a>
+                        <a asp-action="Add" asp-controller="Appointments" class="btn btn-link">Book Appointment</a>
+                        <a asp-action="Profile" asp-controller="Account" class="btn btn-link">Profile</a>
+                    }
                 </div>
                 <div class="col-lg-4 col-md-4">
                     <div class="col-lg-4 col-md-4">
                         <h5 class="text-light mb-4">Quick Links</h5>
-                        <a class="btn btn-link" href="">About Us</a>
+                        <a asp-action="About" asp-controller="Appointments" class="btn btn-link">About Us</a>
+                        <a asp-action="Profile" asp-controller="Account" class="btn btn-link">Profile</a>
                         <a class="btn btn-link" href="">Contact Us</a>
-                        <a class="btn btn-link" href="">Our Services</a>
                         <a class="btn btn-link" href="">Terms & Condition</a>
                         <a class="btn btn-link" href="">Support</a>
                     </div>
