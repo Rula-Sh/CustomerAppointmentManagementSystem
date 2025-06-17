@@ -100,11 +100,11 @@
 
                                 if(row.id != 1)
                                 {
-                                    var isCustomer = row.roles && row.roles.indexOf("Customer") !== -1;
+                                    // var isCustomer = row.roles && row.roles.indexOf("Customer") !== -1;
                                     var isActive = row.isActive;
 
-                                    actions += '<a href="javascript:;" class="btn btn-primary js-hire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "" : "hidden") + '>Hire</a>';
-                                    actions += '<a href="javascript:;" class="btn btn-danger js-fire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "hidden" : "") + '>Fire</a>';
+                                    // actions += '<a href="javascript:;" class="btn btn-primary js-hire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "" : "hidden") + '>Hire</a>';
+                                    // actions += '<a href="javascript:;" class="btn btn-danger js-fire ms-1 me-1" data-id="' + row.id + '" '+ (isCustomer ? "hidden" : "") + '>Fire</a>';
 
                                     actions += '<a href="javascript:;" class="btn btn-warning js-deactivate ms-1 me-1" data-id="' + row.id + '" '+ (isActive ? "" : "hidden") + '>Deactivate</a>';
                                     actions += '<a href="javascript:;" class="btn btn-success js-activate ms-1 me-1" data-id="' + row.id + '" '+ (isActive ? "hidden" : "") + '>Activate</a>';
@@ -113,80 +113,85 @@
                             },
                         },
                     ],
+                    "createdRow": function(row, data, dataIndex) {// to show inactive-row class for inactive accounts
+                        if (!data.isActive) {
+                            $(row).removeClass('active-row').addClass('inactive-row');
+                        }
+                    },
                     "drawCallback": function () {
-                            $('.js-hire').on('click', function(){
-                            console.log("inside hire function");
-                            var btn = $(this);
-                            $.ajax({
-                                url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
-                                                                                '&from=' + encodeURIComponent('Customer') +
-                                                                                '&to=' + encodeURIComponent('Provider'),
-                                method: 'POST',
-                                success: function(result){
-                                    if(result.success){
-                                    console.log("hire success");
+                        //     $('.js-hire').on('click', function(){
+                        //     console.log("inside hire function");
+                        //     var btn = $(this);
+                        //     $.ajax({
+                        //         url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
+                        //                                                         '&from=' + encodeURIComponent('Customer') +
+                        //                                                         '&to=' + encodeURIComponent('Provider'),
+                        //         method: 'POST',
+                        //         success: function(result){
+                        //             if(result.success){
+                        //             console.log("hire success");
 
-                                    toastr.success('Provider Hired');
+                        //             toastr.success('Provider Hired');
 
-                                    btn.parents('tr').find('.Role').text("Provider");
+                        //             btn.parents('tr').find('.Role').text("Provider");
 
-                                    btn.prop('hidden', true);
-                                    btn.siblings('.js-fire').prop('hidden', false);
+                        //             btn.prop('hidden', true);
+                        //             btn.siblings('.js-fire').prop('hidden', false);
 
-                                    } else{
-                                        toastr.error(result.message);
-                                    }
+                        //             } else{
+                        //                 toastr.error(result.message);
+                        //             }
 
-                                },
-                                error: function(error){
-                                    alert('Something went wrong');
-                                },
-                            });
-                        });
+                        //         },
+                        //         error: function(error){
+                        //             alert('Something went wrong');
+                        //         },
+                        //     });
+                        // });
 
-                        $('.js-fire').on('click', function(){
-                            console.log("inside fire function");
-                            var btn = $(this);
-                            bootbox.confirm({
-                                message: "Are you sure you want to fire this user?",
-                                buttons: {
-                                    confirm: {
-                                        label: 'Yes',
-                                        className: 'btn-danger'
-                                    },
-                                    cancel: {
-                                        label: 'No',
-                                        className: 'btn-secondary'
-                                    }
-                                },
-                                callback: function (result) {
-                                    if(result){
-                                        $.ajax({
-                                            url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
-                                                                                '&from=' + encodeURIComponent('Provider') +
-                                                                                '&to=' + encodeURIComponent('Customer'),
-                                            method: 'POST',
-                                            success: function(result){
-                                                if(result.success){
-                                                    console.log("fire success");
-                                                    toastr.error("User Fired");
+                        // $('.js-fire').on('click', function(){
+                        //     console.log("inside fire function");
+                        //     var btn = $(this);
+                        //     bootbox.confirm({
+                        //         message: "Are you sure you want to fire this user?",
+                        //         buttons: {
+                        //             confirm: {
+                        //                 label: 'Yes',
+                        //                 className: 'btn-danger'
+                        //             },
+                        //             cancel: {
+                        //                 label: 'No',
+                        //                 className: 'btn-secondary'
+                        //             }
+                        //         },
+                        //         callback: function (result) {
+                        //             if(result){
+                        //                 $.ajax({
+                        //                     url: '/Users/ChangeAccountEmployement?id=' + btn.data('id')+
+                        //                                                         '&from=' + encodeURIComponent('Provider') +
+                        //                                                         '&to=' + encodeURIComponent('Customer'),
+                        //                     method: 'POST',
+                        //                     success: function(result){
+                        //                         if(result.success){
+                        //                             console.log("fire success");
+                        //                             toastr.error("User Fired");
 
-                                                    btn.parents('tr').find('.Role').text("Customer");
+                        //                             btn.parents('tr').find('.Role').text("Customer");
 
-                                                    btn.prop('hidden', true);
-                                                    btn.siblings('.js-hire').prop('hidden', false);
-                                                } else{
-                                                    toastr.error(result.message);
-                                                }
-                                            },
-                                            error: function(error){
-                                                alert('Something went wrong');
-                                            },
-                                        });
-                                    }
-                                }
-                            });
-                        });
+                        //                             btn.prop('hidden', true);
+                        //                             btn.siblings('.js-hire').prop('hidden', false);
+                        //                         } else{
+                        //                             toastr.error(result.message);
+                        //                         }
+                        //                     },
+                        //                     error: function(error){
+                        //                         alert('Something went wrong');
+                        //                     },
+                        //                 });
+                        //             }
+                        //         }
+                        //     });
+                        // });
 
                         $('.js-deactivate').on('click', function(){
                             console.log("inside deactivate function");
@@ -208,14 +213,19 @@
                                         $.ajax({
                                             url: '/users/changeAccountActivity?id=' + btn.data('id'),
                                             method: 'POST',
-                                            success: function(){
-                                                console.log("deactivate success");
-                                                btn.closest('tr').removeClass('active-row');
-                                                btn.closest('tr').addClass('inactive-row');
+                                            success: function(result){
+                                                if(result.success){
+                                                    console.log("deactivate success");
+                                                    toastr.error("Deactivated Account");
 
-                                                btn.prop('hidden', true);
-                                                btn.siblings('.js-activate').prop('hidden', false);
+                                                    btn.closest('tr').removeClass('active-row');
+                                                    btn.closest('tr').addClass('inactive-row');
 
+                                                    btn.prop('hidden', true);
+                                                    btn.siblings('.js-activate').prop('hidden', false);
+                                                } else{
+                                                    toastr.error(result.message);
+                                                }
                                             },
                                             error: function(error){
                                                 alert('Something went wrong');
@@ -234,6 +244,7 @@
                                 method: 'POST',
                                 success: function(){
                                     console.log("activate success");
+                                    toastr.success('Activated Account');
 
                                     btn.closest('tr').addClass('active-row');
                                         btn.closest('tr').removeClass('inactive-row');

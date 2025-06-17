@@ -74,7 +74,7 @@ namespace CAMS.Web.Controllers
             }
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> ChangeAccountEmployement(int id, string from, string to)
         {
             var user = await _manageUsers.GetUserById(id);
@@ -95,8 +95,7 @@ namespace CAMS.Web.Controllers
                 await _manageUsers.changeRoleFromTo(user, from, to);
                 return Ok(new { success = true, message = "Sucess!" });
             }
-
-        }
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> changeAccountActivity(int id)
@@ -106,20 +105,25 @@ namespace CAMS.Web.Controllers
             if (user == null)
                 return NotFound();
 
-            user.IsActive = !user.IsActive;
-
-            if (user.IsActive)
+            if (await _manageServices.doesTheUserHaveActiveAppointments(id))
             {
-                await _auditLogService.AddAuditLog(1, "Admin", $"have activated {user.FullName} with ID: {user.Id} account", "Activate Account");
+                return Ok(new { success = false, message = "The User Have Active Appointments, Please Wait for Them to be Completed!" });
             }
             else
             {
-                await _auditLogService.AddAuditLog(1, "Admin", $"have deactivated {user.FullName} with ID: {user.Id} account", "Deactivate Account");
+                user.IsActive = !user.IsActive;
+
+                if (user.IsActive)
+                {
+                    await _auditLogService.AddAuditLog(1, "Admin", $"have activated {user.FullName} with ID: {user.Id} account", "Activate Account");
+                }
+                else
+                {
+                    await _auditLogService.AddAuditLog(1, "Admin", $"have deactivated {user.FullName} with ID: {user.Id} account", "Deactivate Account");
+                }
+                await _manageUsers.updateAsync(user);
+                return Ok(new { success = true, message = "Sucess!" });
             }
-
-            await _manageUsers.updateAsync(user);
-
-            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
