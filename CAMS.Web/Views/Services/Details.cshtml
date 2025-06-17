@@ -1,7 +1,7 @@
 ﻿@model ServiceWithActiveAppointmentsViewModel
 @using System.Security.Claims
 @{
-    ViewData["Title"] = "@Model.Name  Details";
+    ViewData["Title"] = "Service Details";
     string FormatDate(string rawDate) => rawDate.Replace("/", "_");
     var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
     int userId = int.Parse(userIdString);
@@ -79,24 +79,24 @@
                 }
                 else
                 {
-                    <div class="row">
-                        <table class="table table-striped">
-                            <thead>
+                    <div class="border rounded overflow-hidden mb-2 p-0">
+                        <table class="table table-striped m-0 p-0">
+                            <thead class="bg-primary text-white">
                                 <tr>
-                                    <th> Name </th>
-                                    <th> Customer </th>
-                                    <th> Provider </th>
-                                    <th> Date </th>
+                                    <th>Name</th>
+                                    <th>Customer</th>
+                                    <th>Provider</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var appointment in Model.ActiveAppointments)
                                 {
                                     <tr>
-                                        <td class=" text-black">@appointment.Name</td>
-                                        <td class=" text-black">@appointment.Customer.FullName</td>
-                                        <td class=" text-black">@appointment.Provider.FullName</td>
-                                        <td class=" text-black">@appointment.Date</td>
+                                        <td class="text-black">@appointment.Name</td>
+                                        <td class="text-black">@appointment.Customer.FullName</td>
+                                        <td class="text-black">@appointment.Provider.FullName</td>
+                                        <td class="text-black">@appointment.Date</td>
                                     </tr>
                                 }
                             </tbody>
@@ -106,7 +106,6 @@
             </div>
         }
     </div>
-
 }
 else
 {

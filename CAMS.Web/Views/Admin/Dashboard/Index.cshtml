@@ -68,28 +68,29 @@
     }
     else
     {
-
-        <table class="table table-striped">
-            <thead>
-                <tr class="bg-primary text-white">
-                    <th>Service</th>
-                    <th>Customer</th>
-                    <th>Provider</th>
-                    <th>Appointment Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var appointment in Model.ActiveAppointments)
-                {
-                    <tr>
-                        <td>@appointment.ServiceName</td>
-                        <td>@appointment.CustomerName</td>
-                        <td>@appointment.ProviderName</td>
-                        <td>@appointment.AppointmentDate</td>
+        <div class="border rounded overflow-hidden mb-2 p-0">
+            <table class="table table-striped m-0 p-0">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th>Service</th>
+                        <th>Customer</th>
+                        <th>Provider</th>
+                        <th>Appointment Date</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model.ActiveAppointments)
+                    {
+                        <tr>
+                            <td>@appointment.ServiceName</td>
+                            <td>@appointment.CustomerName</td>
+                            <td>@appointment.ProviderName</td>
+                            <td>@appointment.AppointmentDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
 
