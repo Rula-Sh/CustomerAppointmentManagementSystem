@@ -221,6 +221,10 @@ public class AccountController : Controller
         }
 
         var userDTO = _mapper.Map<UserDTO>(user);
+        if (model.ProfilePictureUpload == null || model.ProfilePicture.Length <= 0)
+        {
+            model.ProfilePicture = userDTO.ProfilePicture;
+        }
         userDTO = _mapper.Map(model,userDTO);
 
         await _manageUsersService.UpdateUserDetails(userDTO);
