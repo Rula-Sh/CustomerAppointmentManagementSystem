@@ -1,8 +1,10 @@
 ﻿@model ServiceWithActiveAppointmentsViewModel
-
+@using System.Security.Claims
 @{
     ViewData["Title"] = "@Model.Name  Details";
     string FormatDate(string rawDate) => rawDate.Replace("/", "_");
+    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int userId = int.Parse(userIdString);
 }
 
 <!-- Page Header Start -->
@@ -20,89 +22,99 @@
 </div>
 <!-- Page Header End -->
 
-<div class="row border border-2 rounded-4 mt-4 p-4 border border-primary border-opacity-50">
-    <div class="column col-6 card-body d-flex flex-column justify-content-between">
+@if (userId == Model.ProviderId || User.IsInRole("Admin"))
+{
+    <div class="row border border-2 rounded-4 mt-4 p-4 border border-primary border-opacity-50">
+        <div class="column col-6 card-body d-flex flex-column justify-content-between">
 
-        <h2 class="card-title"><span class="text-primary">@Model.Name</span></h2>
-        <br />
-        <p><strong>Provider: </strong>@Model.Provider.FullName</p>
-        <p><strong>Email: </strong>@Model.Provider.Email</p>
-        <p><strong>Price: </strong>@Model.Price JD</p>
-        <p> <strong>Available in: </strong>@string.Join(" - ", Model.DateTimeSlotGroups.Select(a => a.Date))</p>
-        <div>
-            <strong>Description:</strong>
-            <p> @Model.Description</p>
-        </div>
-    </div>
-    <div class="column col-6 align-self-center">
-        <div class="row">
-            <div class="tab column col-sm-4  ps-0 pe-0 rounded-start">
-                <p class="w-100 text-center m-0 mt-1"><strong>Date</strong></p>
-                @foreach (var date in Model.DateTimeSlotGroups)
-                {
-                    var formattedDate = FormatDate(date.Date);
-                    <button class="tablinks w-100" onclick="openTimeAvailable(event, '@formattedDate')"><strong>@date.Date</strong></button>
-                    @* w-50 means taking 50% of the original width *@
-                }
+            <h2 class="card-title"><span class="text-primary">@Model.Name</span></h2>
+            <br />
+            <p><strong>Provider: </strong>@Model.Provider.FullName</p>
+            <p><strong>Email: </strong>@Model.Provider.Email</p>
+            <p><strong>Price: </strong>@Model.Price JD</p>
+            <p> <strong>Available in: </strong>@string.Join(" - ", Model.DateTimeSlotGroups.Select(a => a.Date))</p>
+            <div>
+                <strong>Description:</strong>
+                <p> @Model.Description</p>
             </div>
-            <div class="column col-sm-7 ps-0">
-                @foreach (var date in Model.DateTimeSlotGroups)
-                {
-                    var formattedDate = FormatDate(date.Date);
-                    <div id="@formattedDate" class="tabcontent h-100 rounded-end">
-                        <p class="w-100 text-center m-0 mt-1"><strong>Times Available</strong></p>
-                        <div class="ps-3 pe-3 pb-2 text-center ">
-                            @foreach (var timeSlot in date.TimeSlots)
-                            {
-                                <p class="mb-0 mt-2">@timeSlot</p>
-                            }
+        </div>
+        <div class="column col-6 align-self-center">
+            <div class="row">
+                <div class="tab column col-sm-4  ps-0 pe-0 rounded-start">
+                    <p class="w-100 text-center m-0 mt-1"><strong>Date</strong></p>
+                    @foreach (var date in Model.DateTimeSlotGroups)
+                    {
+                        var formattedDate = FormatDate(date.Date);
+                        <button class="tablinks w-100" onclick="openTimeAvailable(event, '@formattedDate')"><strong>@date.Date</strong></button>
+                        @* w-50 means taking 50% of the original width *@
+                    }
+                </div>
+                <div class="column col-sm-7 ps-0">
+                    @foreach (var date in Model.DateTimeSlotGroups)
+                    {
+                        var formattedDate = FormatDate(date.Date);
+                        <div id="@formattedDate" class="tabcontent h-100 rounded-end">
+                            <p class="w-100 text-center m-0 mt-1"><strong>Times Available</strong></p>
+                            <div class="ps-3 pe-3 pb-2 text-center ">
+                                @foreach (var timeSlot in date.TimeSlots)
+                                {
+                                    <p class="mb-0 mt-2">@timeSlot</p>
+                                }
+                            </div>
                         </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (User.IsInRole("Admin")) // to only show Active Appointments when the admin is signed in
+        {
+            <div class="column col-12">
+                <h4>Active Appointments</h4>
+                @if (!Model.ActiveAppointments.Any())
+                {
+                    <h5 class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        No Active appointments
+                    </h5>
+                }
+                else
+                {
+                    <div class="row">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th> Name </th>
+                                    <th> Customer </th>
+                                    <th> Provider </th>
+                                    <th> Date </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var appointment in Model.ActiveAppointments)
+                                {
+                                    <tr>
+                                        <td class=" text-black">@appointment.Name</td>
+                                        <td class=" text-black">@appointment.Customer.FullName</td>
+                                        <td class=" text-black">@appointment.Provider.FullName</td>
+                                        <td class=" text-black">@appointment.Date</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 }
             </div>
-        </div>
+        }
     </div>
-    @if (User.IsInRole("Admin")) // to only show Active Appointments when the admin is signed in
-    {
-        <div class="column col-12">
-            <h4>Active Appointments</h4>
-            @if (!Model.ActiveAppointments.Any())
-            {
-                <h5 class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    No Active appointments
-                </h5>
-            }
-            else
-            {
-                <div class="row">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th> Name </th>
-                                <th> Customer </th>
-                                <th> Provider </th>
-                                <th> Date </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var appointment in Model.ActiveAppointments)
-                            {
-                                <tr>
-                                    <td class=" text-black">@appointment.Name</td>
-                                    <td class=" text-black">@appointment.Customer.FullName</td>
-                                    <td class=" text-black">@appointment.Provider.FullName</td>
-                                    <td class=" text-black">@appointment.Date</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-        </div>
-    }
-</div>
 
+}
+else
+{
+    <h2 class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        404 Not Found
+    </h2>
+}
 <div>
     <a asp-action="Index" class="btn btn-outline-secondary mt-4">
         @* asp-route-id="@service.Id" used to select the service*@

@@ -1,7 +1,10 @@
 ﻿@model AppointmentViewModel
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Appointment";
+    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int userId = int.Parse(userIdString);
 }
 
 <!-- Page Header Start -->
@@ -18,42 +21,52 @@
 </div>
 <!-- Page Header End -->
 
-<div class="row border border-2 border-primary rounded-5 mt-4 p-4 border-opacity-25">
-    <div class="column col-6 card-body d-flex flex-column justify-content-between">
+@if (userId == Model.CustomerId)
+{
+    <div class="row border border-2 border-primary rounded-5 mt-4 p-4 border-opacity-25">
+        <div class="column col-6 card-body d-flex flex-column justify-content-between">
 
-        <h2 class="card-title mb-4"><span class="text-primary">@Model.Name</span></h2>
+            <h2 class="card-title mb-4"><span class="text-primary">@Model.Name</span></h2>
 
-        <p><strong>Customer: </strong>@Model.Customer.FullName</p>
-        <p><strong>Provider: </strong>@Model.Provider.FullName</p>
-        <p><strong>Provider Email: </strong>@Model.Provider.Email</p>
-        <p><strong>Date: </strong>@Model.Date</p>
-        <p>
-            <strong>Status: </strong>
+            <p><strong>Customer: </strong>@Model.Customer.FullName</p>
+            <p><strong>Provider: </strong>@Model.Provider.FullName</p>
+            <p><strong>Provider Email: </strong>@Model.Provider.Email</p>
+            <p><strong>Date: </strong>@Model.Date</p>
+            <p>
+                <strong>Status: </strong>
 
-            @if (Model.Status == "Approved")
-            {
-                <span>🔵</span>
-            }
-            else if (Model.Status == "Completed")
-            {
-                <span>🟢</span>
-            }
-            @* I know that Pending and Rejected Appointments cant be viewed but i placed it there incase if i wanted to show them later*@
-            else if (Model.Status == "Pending")
-            {
-                <span>🟠</span>
-            }
-            else if (Model.Status == "Rejected")
-            {
-                <span>🔴</span>
-            }
-            @Model.Status
-        </p>
-        @* <p><strong>Notes: </strong>@Model.Notes</p> *@
+                @if (Model.Status == "Approved")
+                {
+                    <span>🔵</span>
+                }
+                else if (Model.Status == "Completed")
+                {
+                    <span>🟢</span>
+                }
+                @* I know that Pending and Rejected Appointments cant be viewed but i placed it there incase if i wanted to show them later*@
+                else if (Model.Status == "Pending")
+                {
+                    <span>🟠</span>
+                }
+                else if (Model.Status == "Rejected")
+                {
+                    <span>🔴</span>
+                }
+                @Model.Status
+            </p>
+            @* <p><strong>Notes: </strong>@Model.Notes</p> *@
+        </div>
+        <div class="column col-6 datepicker" id="DatePicker">
+        </div>
     </div>
-    <div class="column col-6 datepicker" id="DatePicker">
-    </div>
-</div>
+}
+else
+{
+    <h2 class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        404 Not Found
+    </h2>
+}
 <div>
     <a asp-action="Index" class="btn btn-outline-secondary mt-3">
         <i class="bi bi-arrow-left"></i>
