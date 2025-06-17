@@ -66,7 +66,7 @@
                 </div>
             </div>
         </div>
-        @if (User.IsInRole("Admin")) // to only show Active Appointments when the admin is signed in
+        @if (userId == Model.ProviderId || User.IsInRole("Admin")) // to only show Active Appointments when the admin is signed in
         {
             <div class="column col-12">
                 <h4>Active Appointments</h4>
