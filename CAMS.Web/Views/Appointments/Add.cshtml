@@ -44,6 +44,9 @@
                 <span asp-validation-for="Services" class="text-danger"></span>
             </div>
 
+            <p class="mt-3" id="provider"><strong>Provider: </strong></p>
+            <p class="mt-3" id="email"><strong>Email: </strong></p>
+
             <div class="form-group mt-3">
                 <p><strong>Price: </strong> <span id="servicePrice" asp-for="ServicePrice"></span></p>
                 <input id="priceInput" type="hidden" asp-for="ServicePrice" />
@@ -98,6 +101,8 @@
                     $('#serviceId').val(serviceId);
                     $('#ServiceName').val(`${data.name}`);
                     $('#providerId').val(data.providerId);
+                    $('#provider').html(`<strong>Provider: </strong>${data.provider.fullName}`); // or document.getElementById('provider').innerHTML = `...`;
+                    $('#email').html(`<strong>Email: </strong>${data.provider.email}`);
                     console.log(`providerId= ${data.providerId}`);
 
                 const dateDropdown = document.getElementById('serviceDatesList');

@@ -25,6 +25,7 @@
 
         <p><strong>Customer: </strong>@Model.Customer.FullName</p>
         <p><strong>Provider: </strong>@Model.Provider.FullName</p>
+        <p><strong>Provider Email: </strong>@Model.Provider.Email</p>
         <p><strong>Date: </strong>@Model.Date</p>
         <p>
             <strong>Status: </strong>
@@ -48,7 +49,7 @@
             }
             @Model.Status
         </p>
-        <p><strong>Notes: </strong>@Model.Notes</p>
+        @* <p><strong>Notes: </strong>@Model.Notes</p> *@
     </div>
     <div class="column col-6 datepicker" id="DatePicker">
     </div>

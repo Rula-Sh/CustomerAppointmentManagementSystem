@@ -249,6 +249,7 @@ namespace CAMS.Application.Services
         public async Task<ServiceWithActiveAppointmentsDTO> getServiceWithActiveAppointments(int? id)
         {
             var service = await _context.Services
+                .Include(p => p.Provider)
                 .Include(p => p.ServiceDates)
                 .ThenInclude(d => d.ServiceTimeSlots)
                 .SingleOrDefaultAsync(m => m.Id == id);

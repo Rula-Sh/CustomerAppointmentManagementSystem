@@ -1,11 +1,4 @@
-﻿using CAMS.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CAMS.Application.DTOs
+﻿namespace CAMS.Application.DTOs
 {
     public class ServiceWithActiveAppointmentsDTO
     {
@@ -14,6 +7,9 @@ namespace CAMS.Application.DTOs
         public string Description { get; set; }
         public string Duration { get; set; }
         public decimal Price { get; set; }
+
+        public int ProviderId { get; set; }
+        public UserDTO Provider { get; set; }
 
         public List<DateTimeSlotGroupDTO> DateTimeSlotGroups { get; set; }
 
