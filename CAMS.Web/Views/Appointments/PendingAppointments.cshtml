@@ -22,7 +22,7 @@
 
 @if (!pendingAppointments.Any())
 {
-    <h2>
+    <h2 class="alert alert-warning">
         <i class="bi bi-exclamation-triangle"></i>
         No Pending Appointments booked yet
     </h2>
@@ -79,7 +79,7 @@ else
         $(document).ready(function () {
 
             $('.js-approve').on('click', function () {
-                var btn = $(this);
+                const btn = $(this); // i never intend to re-assign that variable after this, thats why i set it to const, a way of best practices
 
                 console.log(btn.data('id'));
                 // Add instructions before approval
@@ -117,10 +117,17 @@ else
                             type: 'POST',
                             success: function () {
                                 var row = btn.closest('tr');
+                                var table = row.closest('table');
+                                var totalRows = table.find('tbody tr').length;
+
                                 row.addClass('animate__animated', 'animate__zoomOut');
 
                                 setTimeout(function () {
-                                    row.remove();
+                                    if (totalRows === 1) {
+                                        window.location.href = '/Appointments';
+                                    } else{
+                                        row.remove();
+                                    }
                                 }, 1000);
 
                                 toastr.success('Appointment Approved');
@@ -137,7 +144,7 @@ else
             });
 
             $('.js-reject').on('click', function (){
-                var btn = $(this);
+                const btn = $(this);
 
                 console.log(btn.data('id'));
 
@@ -162,10 +169,17 @@ else
                                 type: 'POST',
                                 success: function () {
                                 var row = btn.closest('tr');
+                                var table = row.closest('table');
+                                var totalRows = table.find('tbody tr').length;
+
                                 row.addClass('animate__animated', 'animate__zoomOut');
 
                                 setTimeout(function () {
-                                    row.remove();
+                                    if (totalRows === 1) {
+                                        window.location.href = '/Appointments';
+                                    } else{
+                                        row.remove();
+                                    }
                                 }, 1000);
 
 

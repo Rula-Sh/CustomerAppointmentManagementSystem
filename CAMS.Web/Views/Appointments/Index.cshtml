@@ -51,7 +51,7 @@
         <div class="row g-4">
             @if (User.IsInRole("Admin"))
             {
-                
+
             }
             @if (User.IsInRole("Provider"))
             {
@@ -132,7 +132,7 @@
                     "drawCallback": function () {
                         // Bind delete button click handler
                         $('.js-delete').off('click').on('click', function () {
-                            var btn = $(this);
+                            const btn = $(this); // i never intend to re-assign that variable after this, thats why i set it to const, a way of best practices
                             bootbox.confirm({
                                 message: "Are you sure you want to delete the appointment?",
                                 buttons: {
@@ -151,13 +151,19 @@
                                             url: 'Appointments/delete/' + btn.data('id'),
                                             type: 'DELETE',
                                             success: function () {
+                                                var row = btn.closest('tr');
+                                                var table = row.closest('table');
+                                                var totalRows = table.find('tbody tr').length;
 
-                                            var row = btn.closest('tr');
-                                            row.addClass('animate__animated animate__zoomOut');
+                                                row.addClass('animate__animated', 'animate__zoomOut');
 
-                                            setTimeout(function () {
-                                                row.remove();
-                                            }, 1000);
+                                                setTimeout(function () {
+                                                    if (totalRows === 1) {
+                                                        window.location.href = '/Appointments';
+                                                    } else{
+                                                        row.remove();
+                                                    }
+                                                }, 1000);
 
                                             toastr.error('Appointment deleted');
                                             },
@@ -230,10 +236,17 @@
                                                 // data: { 'id' : btn.data('id'), 'notes' : result },
                                                 success: function () {
                                                     var row = btn.closest('tr');
-                                                    row.addClass('animate__animated animate__zoomOut');
+                                                    var table = row.closest('table');
+                                                    var totalRows = table.find('tbody tr').length;
+
+                                                    row.addClass('animate__animated', 'animate__zoomOut');
 
                                                     setTimeout(function () {
-                                                        row.remove();
+                                                        if (totalRows === 1) {
+                                                            window.location.href = '/Appointments';
+                                                        } else{
+                                                            row.remove();
+                                                        }
                                                     }, 1000);
 
                                                     toastr.success('Appointment Completed');
