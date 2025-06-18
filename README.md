@@ -1,5 +1,7 @@
 # 🚀 NextAppoint
 
+### 👨‍💻 Done By: Rula Hisham (https://github.com/Rula-Sh)
+
 ## 📚 Project Description
 **Customer Appointment Management System (CAMS)** allows:
 - **Customers** to book, view, and track appointments.
@@ -79,6 +81,52 @@ dotnet watch
 - **Customer**
   - Book appointments by selecting date/time for desired services
   - View and cancel appointments
+
+## 📸 Screenshots
+
+## 🏠 Home Page
+
+![Home Page image](CAMS.Web/wwwroot/images/screenshots/home_page.PNG)
+
+## 👑 Admin 
+
+### 📊 Dashboard (Home Page)
+![Admin Dashboard 1 image](CAMS.Web/wwwroot/images/screenshots/admin/dashboard1_admin.PNG)
+![Admin Dashboard 2 image](CAMS.Web/wwwroot/images/screenshots/admin/dashboard2_admin.PNG)
+
+### 👥 Manage Users
+![Admin Manage Users image](CAMS.Web/wwwroot/images/screenshots/admin/manage_users_admin.PNG)
+
+### 👤 Profile
+![Admin Profile image](CAMS.Web/wwwroot/images/screenshots/admin/profile_admin.PNG)
+
+## 👨‍💼 Provider 
+
+### 📅 Appointments (Home Page)
+![Provider Appointments image](CAMS.Web/wwwroot/images/screenshots/provider/appointments_provider.PNG)
+
+### 🕓 Pending Appointments
+![Provider Pending Appointments image](CAMS.Web/wwwroot/images/screenshots/provider/pending_appointments_provider.PNG)
+
+### 🛎️ Manage Services
+![Provider Manage Services image](CAMS.Web/wwwroot/images/screenshots/provider/manage_services_provider.PNG)
+
+### 🖋️ Edit Service
+![Provider Edit Service image](CAMS.Web/wwwroot/images/screenshots/provider/edit-service-provider.PNG)
+
+### 📋 Service Details
+![Provider Service Details image](CAMS.Web/wwwroot/images/screenshots/provider/service-details-provider.PNG)
+
+## 🙍🏻‍♂️ Customer 
+
+### 📅 Appointments (Home Page)
+![Customer Appointments image](CAMS.Web/wwwroot/images/screenshots/customer/appointments_customer.PNG)
+
+### 📝 Book Appointment
+![Customer Book Appointment image](CAMS.Web/wwwroot/images/screenshots/customer/book-appointment_customer.PNG)
+
+### 📋 Appointment Details
+![Customer Appointment Details image](CAMS.Web/wwwroot/images/screenshots/customer/appointment-details-customer.PNG)
 
 
 
