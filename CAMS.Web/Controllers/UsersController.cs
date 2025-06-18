@@ -157,6 +157,8 @@ namespace CAMS.Web.Controllers
                 UserName = model.Name,
                 PhoneNumber = model.PhoneNumber,
                 ProfilePicture = model.ProfilePicture,
+                CreatedAt = DateTime.Now,
+                LastActivityDate = DateTime.Now,
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
