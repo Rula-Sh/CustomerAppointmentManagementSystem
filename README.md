@@ -1,4 +1,4 @@
-# 🚀 NextAppoint
+# 🚀 EasyServe
 
 ### 👨‍💻 Done By: Rula Hisham (https://github.com/Rula-Sh)
 
